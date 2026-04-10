@@ -62,92 +62,122 @@ AI-powered job search automation built on Claude Code, focused on roles at ventu
 | Wants to build/deploy a portfolio site | `portfolio` |
 | Wants to join the talent network | `talent-network` |
 
-### First Run — Onboarding (IMPORTANT)
+### First Run — Onboarding (MANDATORY GATE)
 
-**Before doing ANYTHING else, check if the system is set up.** Run these checks silently every time a session starts:
+**Before doing ANYTHING else — before ANY mode, including portfolio, scan, or discovery — check if the user is set up.**
 
-1. Does `cv.md` exist?
-2. Does `config/profile.yml` exist (not just profile.example.yml)?
-3. Does `modes/_profile.md` exist (not just _profile.template.md)?
-4. Does `portals.yml` exist (not just templates/portals.example.yml)?
+Run these checks silently:
+1. Does `config/profile.yml` exist? (NOT just `config/profile.example.yml`)
+2. Does `cv.md` exist?
+3. If `config/profile.yml` exists, does it contain example placeholder data? (Check: does `full_name` equal `"Jane Smith"` or does `email` equal `"jane@example.com"`?)
 
-If `modes/_profile.md` is missing, copy from `modes/_profile.template.md` silently. This is the user's customization file — it will never be overwritten by updates.
+**If ANY check fails, BLOCK the requested mode and enter onboarding.** Say:
 
-**If ANY of these is missing, enter onboarding mode.** Do NOT proceed with evaluations, scans, or any other mode until the basics are in place. Guide the user step by step:
+> "Before we can do anything, I need to get to know you. Let's set up your profile — it takes about 5 minutes and I'll walk you through it."
 
-#### Step 1: CV (required)
-If `cv.md` is missing, ask:
-> "I don't have your CV yet. You can either:
-> 1. Paste your CV here and I'll convert it to markdown
-> 2. Paste your LinkedIn URL and I'll extract the key info
-> 3. Tell me about your experience and I'll draft a CV for you
+Then **enter plan mode** and run the guided onboarding below. Ask ONE question at a time. Wait for the user's response before moving on. Do not dump a wall of questions.
+
+---
+
+#### Onboarding Phase 1: Who are you?
+
+Ask these one at a time, waiting for each answer:
+
+**Q1:** "What's your full name?"
+
+**Q2:** "What's your email address?"
+
+**Q3:** "Where are you based?" (city, country)
+
+**Q4:** "Can you paste your LinkedIn URL?"
+
+After Q4: copy `config/profile.example.yml` → `config/profile.yml` and fill in the answers so far.
+
+---
+
+#### Onboarding Phase 2: Your background
+
+**Q5:** "Now I need your experience. You can either:
+- **Paste your resume/CV** and I'll convert it
+- **Paste your LinkedIn URL** and I'll pull the key info
+- **Just tell me** about your experience and I'll write it up
+
+Which works best?"
+
+Process whatever they provide → create `cv.md` with clean markdown sections (Summary, Experience, Projects, Education, Skills).
+
+After creating cv.md, show them a brief summary of what you captured:
+> "Here's what I got: [X years experience], most recently at [Company] as [Role]. [N] projects, skills in [top 3-5]. Does that look right, or should I adjust anything?"
+
+Wait for confirmation or corrections.
+
+---
+
+#### Onboarding Phase 3: What are you looking for?
+
+**Q6:** "What roles are you targeting?" (e.g., 'Senior Engineer', 'Founding Engineer', 'Product Manager')
+
+**Q7:** "What kind of companies excite you? Any deal-breakers?" (e.g., stage, size, remote policy, industries to avoid)
+
+**Q8:** "What's your salary target range? And what's your walk-away number?"
+
+Fill in `config/profile.yml` → `target_roles`, `compensation`, and store deal-breakers in `modes/_profile.md`.
+
+---
+
+#### Onboarding Phase 4: What makes you special?
+
+**Q9:** "What's your superpower — the thing you do better than most people in your field?"
+
+**Q10:** "What's the best thing you've built or accomplished? The one you'd lead with in an interview."
+
+**Q11:** "Are you building anything right now? Side projects, open source, a startup idea?"
+
+Store in `config/profile.yml` → `narrative` (headline, superpowers, proof_points, exit_story) and `talent_network.current_project`.
+
+---
+
+#### Onboarding Phase 5: Quick logistics
+
+**Q12:** "Are you considering founding a company, or purely looking to join one?" → store in `talent_network.considering_founding`
+
+**Q13:** "Are you a full-time student?" → if yes, ask graduation date and work arrangement preferences → store in `talent_network`
+
+---
+
+#### Onboarding Phase 6: Setup & confirmation
+
+Do these silently (don't ask the user):
+- Copy `templates/portals.example.yml` → `portals.yml` if missing
+- Customize `title_filter.positive` in `portals.yml` based on their target roles from Q6
+- Copy `modes/_profile.template.md` → `modes/_profile.md` if missing
+- Create `data/applications.md` tracker if missing
+- Create `article-digest.md` from any proof points/projects they mentioned
+
+Then confirm:
+
+> "You're set up! Here's what I built for you:
+> - **Profile:** [name], [location], targeting [roles]
+> - **CV:** [X years experience], [top skills]
+> - **Scanner:** Pre-loaded with 500+ startup career pages from a16z and other VC portfolios
 >
-> Which do you prefer?"
+> You can now:
+> - **Paste a job URL** to evaluate it
+> - `/speedrun scan` to discover roles at hundreds of startups
+> - `/speedrun portfolio` to build your personal site
+> - `/speedrun` to see all commands"
 
-Create `cv.md` from whatever they provide. Make it clean markdown with standard sections (Summary, Experience, Projects, Education, Skills).
+**Exit plan mode** and proceed to whatever the user originally requested (or wait for their next command).
 
-#### Step 2: Profile (required)
-If `config/profile.yml` is missing, copy from `config/profile.example.yml` and then ask:
-> "I need a few details to personalize the system:
-> - Your full name and email
-> - Your location and timezone
-> - What roles are you targeting? (e.g., 'Founding Engineer', 'Senior Backend Engineer', 'AI Product Manager')
-> - Your salary target range
->
-> I'll set everything up for you."
+---
 
-Fill in `config/profile.yml` with their answers. For archetypes and targeting narrative, store the user-specific mapping in `modes/_profile.md` or `config/profile.yml` rather than editing `modes/_shared.md`.
+#### Onboarding rules
 
-Also ask these additional questions during onboarding (needed for talent network):
-> - Are you considering or in the process of founding a company?
-> - Are you a full-time student? If so, when do you graduate?
-
-Store answers in `config/profile.yml` under `talent_network:` section.
-
-#### Step 3: Portals (recommended)
-If `portals.yml` is missing:
-> "I'll set up the job scanner with hundreds of pre-configured startup career pages — organized by VC portfolio. Want me to customize the search keywords for your target roles?"
-
-Copy `templates/portals.example.yml` → `portals.yml`. If they gave target roles in Step 2, update `title_filter.positive` to match.
-
-#### Step 4: Tracker
-If `data/applications.md` doesn't exist, create it:
-```markdown
-# Applications Tracker
-
-| # | Date | Company | Role | Score | Status | PDF | Report | Notes |
-|---|------|---------|------|-------|--------|-----|--------|-------|
-```
-
-#### Step 5: Get to know the user (important for quality)
-
-After the basics are set up, proactively ask for more context. The more you know, the better your evaluations will be:
-
-> "The basics are ready. But the system works much better when it knows you well. Can you tell me more about:
-> - What makes you unique? What's your 'superpower' that other candidates don't have?
-> - What kind of work excites you? What drains you?
-> - Any deal-breakers? (e.g., no on-site, no startups under 20 people, must be Series A+)
-> - Your best professional achievement — the one you'd lead with in an interview
-> - Any projects, articles, or case studies you've published?
->
-> The more context you give me, the better I filter. Think of it as onboarding a recruiter — the first week I need to learn about you, then I become invaluable."
-
-Store any insights the user shares in `config/profile.yml` (under narrative), `modes/_profile.md`, or in `article-digest.md` if they share proof points. Do not put user-specific archetypes or framing into `modes/_shared.md`.
-
-**After every evaluation, learn.** If the user says "this score is too high, I wouldn't apply here" or "you missed that I have experience in X", update your understanding in `modes/_profile.md`, `config/profile.yml`, or `article-digest.md`. The system should get smarter with every interaction without putting personalization into system-layer files.
-
-#### Step 6: Ready
-Once all files exist, confirm:
-> "You're all set! You can now:
-> - Paste a job URL to evaluate it
-> - Run `/speedrun scan` to search hundreds of startup career pages
-> - Run `/speedrun portfolio` to generate your personal portfolio site
-> - Run `/speedrun` to see all commands
->
-> Everything is customizable — just ask me to change anything."
-
-Then suggest:
-> "Want me to scan for new offers automatically? I can set up a recurring scan every few days so you don't miss anything. Just say 'scan every 3 days' and I'll configure it."
+- **ONE question at a time.** Never ask multiple questions in a single message.
+- **Be conversational**, not form-like. React to their answers. If they mention something interesting, acknowledge it briefly before asking the next question.
+- **Accept any format.** If they paste a wall of text instead of answering a specific question, extract what you can and move on. Don't make them repeat themselves.
+- **Fill gaps silently.** If they skip a question or say "I'll do that later", that's fine — fill in a reasonable default and move on.
+- **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`. The system should get smarter with every interaction.
 
 ### Personalization
 
