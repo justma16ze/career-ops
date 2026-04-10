@@ -115,7 +115,12 @@ Wait for confirmation or corrections.
 
 #### Onboarding Phase 3: What are you looking for?
 
-**Q6:** "What roles are you targeting?" (e.g., 'Senior Engineer', 'Founding Engineer', 'Product Manager')
+**Before asking Q6:** Read the `cv.md` you just created. Analyze the user's experience — their most recent roles, seniority level, domain expertise, and career trajectory. Infer 3-5 likely target roles.
+
+**Q6:** Present inferred roles as suggestions, not a blank question:
+> "Based on your experience, you'd probably be a strong fit for [X, Y, Z]. Does that sound right, or are you targeting something different?"
+
+If they confirm → use those roles. If they correct → use their version. Either way, don't make them start from scratch.
 
 **Q7:** "What kind of companies excite you? Any deal-breakers?" (e.g., stage, size, remote policy, industries to avoid)
 
