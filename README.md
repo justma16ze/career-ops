@@ -1,96 +1,78 @@
 # Speedrun Career Ops
 
-**AI-powered job search for startup talent — built by the a16z speedrun team.**
+**The best AI-powered job search tool on the internet. Free. Built by the a16z speedrun team.**
 
-Find, evaluate, and land roles at hundreds of high-growth startups across the venture ecosystem. Powered by Claude Code.
+You tell it about yourself. It builds your profile, generates a portfolio site, finds roles at hundreds of high-growth startups, evaluates every one against your background, writes tailored resumes, and — if you want — connects you directly to hiring teams through the a16z speedrun talent network. No forms. No job boards. Warm intros.
 
----
+## How it works
 
-## What is this?
+This runs inside [Claude Code](https://claude.ai/code). You install it, type `/speedrun`, and it walks you through everything.
 
-An AI job search pipeline that turns Claude Code into your personal career command center. Instead of tracking applications in a spreadsheet, you get an intelligent system that:
+### 1. It gets to know you
 
-- **Scans** hundreds of startup career pages (a16z portfolio, Sequoia, Founders Fund, and more)
-- **Evaluates** every role with A-F scoring across 10 weighted dimensions
-- **Generates** ATS-optimized CVs tailored to each specific job
-- **Builds** a personal portfolio site deployed to GitHub Pages
-- **Connects** you directly to hiring teams via the a16z speedrun talent network
-- **Tracks** your full pipeline in a git-friendly markdown tracker
+The system starts with an interactive onboarding — not a form, a conversation. It asks about your background, what you've built, what makes you stand out, and what you're looking for. It reads your resume, infers your target roles, surfaces your strongest signals, and builds your profile in real time.
 
-> **This is NOT for spamming companies.** This is a quality filter — it helps you find the few roles that deserve your time among hundreds. The system strongly discourages applying to anything below 4.0/5.
+### 2. It builds your portfolio
 
-## Quick Start
+If you don't have a personal site, it generates one from your profile data and deploys it to GitHub Pages. Four pages — home, work, experience, about — with a real design, not a template. Free, one command, yours to keep.
+
+### 3. It connects you to startups
+
+The a16z speedrun talent network works with hundreds of portfolio companies. If you opt in, the system submits your profile on your behalf — your name, background, accomplishments, portfolio, what you're looking for — directly to hiring teams. No Typeforms to fill out. One click.
+
+### 4. It finds and evaluates roles
+
+A scanner pre-loaded with 500+ startups across the VC ecosystem — a16z portfolio, Sequoia, Founders Fund, Benchmark, and more. It discovers open roles, scores each one against your profile (A-F across 10 dimensions), generates tailored resumes, drafts application answers, and tracks everything.
+
+a16z portfolio companies are flagged with warm intro availability.
+
+## Get started
 
 ```bash
-# Clone the repo
 git clone https://github.com/a16z/speedrun-career-ops.git
 cd speedrun-career-ops
-
-# Install dependencies
 npm install
-
-# Start Claude Code and run the onboarding
 claude
-# Then type: /speedrun
 ```
 
-The system will guide you through setup: importing your CV, configuring your profile, and customizing the job scanner for your target roles.
+Then type `/speedrun`. The system takes it from there.
 
-## Commands
+## What you can do
 
-| Command | What it does |
+| Command | What happens |
 |---------|-------------|
-| `/speedrun {JD}` | Paste a job description or URL — full auto-pipeline |
-| `/speedrun scan` | Scan hundreds of startup career pages for new roles |
-| `/speedrun oferta` | Evaluate a single role (A-F scoring) |
-| `/speedrun ofertas` | Compare and rank multiple offers |
-| `/speedrun pdf` | Generate an ATS-optimized CV |
-| `/speedrun portfolio` | Build and deploy your portfolio to GitHub Pages |
-| `/speedrun talent-network` | Join the a16z speedrun talent network |
-| `/speedrun deep` | Deep company research |
-| `/speedrun apply` | Live application assistant |
-| `/speedrun tracker` | Application status overview |
-| `/speedrun batch` | Parallel batch processing |
-| `/speedrun patterns` | Analyze rejection patterns and improve targeting |
+| `/speedrun` | Start here — onboarding or command menu |
+| `/speedrun scan` | Discover roles at hundreds of startups |
+| `/speedrun evaluate` | Score a specific role against your profile |
+| `/speedrun portfolio` | Build and deploy your personal site |
+| `/speedrun talent-network` | Join the talent network (one click) |
+| `/speedrun pdf` | Generate a tailored resume for a role |
+| `/speedrun compare` | Rank multiple offers side by side |
+| `/speedrun outreach` | Find contacts + draft a LinkedIn message |
+| `/speedrun deep` | Deep-dive research on a company |
+| `/speedrun apply` | Fill out an application form with AI |
+| `/speedrun tracker` | See your full application pipeline |
 
-## The Talent Network
+Or just paste a job URL — the system runs the full pipeline automatically.
 
-When you're ready, the system can auto-submit your profile to the a16z speedrun talent network — connecting you directly to hiring teams at hundreds of startups. No forms to fill out. We use the data you've already provided (name, email, LinkedIn, CV, portfolio) and submit on your behalf with one click.
+## The talent network
 
-[Join the talent network →](https://bit.ly/joinstartups)
+The a16z speedrun talent network connects exceptional candidates to hiring teams at hundreds of high-growth startups. Not a job board — direct introductions.
 
-## Portfolio Generation
+When you go through the onboarding, the system collects everything hiring teams need: your background, accomplishments, what you've built, what you're looking for. If you opt in, it submits everything on your behalf. You fill out nothing.
 
-Build a polished personal portfolio site from your career-ops data and deploy it to GitHub Pages for free:
+[Learn more →](https://bit.ly/joinstartups)
 
-```
-/speedrun portfolio
-```
+## Requirements
 
-Generates a responsive static site from your `cv.md`, `config/profile.yml`, and `article-digest.md` — deployed to `{username}.github.io/portfolio` in one command.
+- [Claude Code](https://claude.ai/code) (free)
+- Node.js 18+
+- A GitHub account (for portfolio deployment)
 
-## Startup-Focused Job Discovery
+## Credits
 
-The portal scanner is pre-configured with hundreds of venture-backed startups organized by portfolio:
-
-- **a16z portfolio** — primary scan target
-- **Speedrun network** — companies that hire through the talent network
-- **Other top VC portfolios** — Sequoia, Founders Fund, Benchmark, and more
-
-a16z portfolio companies are badged in evaluation reports with warm intro availability.
-
-## Dashboard
-
-A terminal UI for managing your pipeline:
-
-```bash
-cd dashboard && go run main.go -path ..
-```
-
-## Based on Career-Ops
-
-This project is a fork of the open-source [career-ops](https://github.com/santifer/career-ops) system. We've adapted it for the venture/startup ecosystem and integrated it with the a16z speedrun talent network.
+Built on [career-ops](https://github.com/santifer/career-ops) by Santiago Fernandez de Valderrama. Adapted for the startup/VC ecosystem by the a16z speedrun team.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT
