@@ -1,4 +1,4 @@
-# Modo: deep — Deep Research Prompt
+# Mode: deep — Deep Company Research
 
 Genera un prompt estructurado para Perplexity/Claude/ChatGPT con 6 ejes:
 
@@ -44,4 +44,4 @@ Dado mi perfil (read from cv.md and profile.yml for specific experience):
 - ¿Qué historia debería contar en la entrevista?
 ```
 
-Personalizar cada sección con el contexto específico de la oferta evaluada.
+Customize each section with the specific context of the evaluated offer.

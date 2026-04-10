@@ -1,4 +1,4 @@
-# Modo: training — Evaluación de Formación
+# Mode: training — Training & Certification Evaluation
 
 Para cada curso/cert que el candidato pregunte, evaluar 6 dimensiones:
 
