@@ -9,9 +9,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/santifer/career-ops/dashboard/internal/data"
-	"github.com/santifer/career-ops/dashboard/internal/theme"
-	"github.com/santifer/career-ops/dashboard/internal/ui/screens"
+	"github.com/a16z/speedrun-career-ops/dashboard/internal/data"
+	"github.com/a16z/speedrun-career-ops/dashboard/internal/theme"
+	"github.com/a16z/speedrun-career-ops/dashboard/internal/ui/screens"
 )
 
 type viewState int

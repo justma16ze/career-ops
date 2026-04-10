@@ -1,4 +1,4 @@
-# Career-Ops for Codex
+# Speedrun Speedrun Career Ops for Codex
 
 Read `CLAUDE.md` for all project instructions, routing, and behavioral rules. They apply equally to Codex.
 

@@ -354,8 +354,8 @@ async function main() {
     }
   }
 
-  console.log(`\n→ Run /career-ops pipeline to evaluate new offers.`);
-  console.log('→ Share results and get help: https://discord.gg/8pRpHETxa4');
+  console.log(`\n→ Run /speedrun pipeline to evaluate new offers.`);
+  console.log('→ Run /speedrun talent-network to get warm intros at a16z portfolio companies.');
 }
 
 main().catch(err => {
