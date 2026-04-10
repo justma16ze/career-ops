@@ -226,10 +226,27 @@ Then confirm:
 
 #### Onboarding rules
 
-- **ONE question at a time.** Never ask multiple questions in a single message.
-- **Be conversational**, not form-like. React to their answers. If they mention something interesting, acknowledge it briefly before asking the next question.
+- **Use plan mode.** The onboarding should feel like a collaborative planning session, not a form. Show a plan with phases, mark them as you go, let the user see progress.
+
+- **Suggest, don't just ask.** After each answer, do work with it — infer things, surface insights, propose something. Examples:
+  - After they paste their CV: "I notice you led the migration from monolith to microservices and shipped an agentic workflow system. Those are the two strongest signals in your background — should I lead with those?"
+  - After they describe their target roles: "Given your 0→1 experience, you'd probably be competitive at Series A/B companies hiring their first senior eng. Want me to weight the scanner toward early-stage?"
+  - After they mention a side project: "That's a solid proof point. I'd put this in the top section of your portfolio — it shows you build on your own time, not just at work."
+
+- **Build as you go.** Don't wait until the end to write files. After Phase 2 (CV), immediately write `cv.md` and show what you captured. After Phase 3 (roles), update `config/profile.yml` and show the inferred archetypes. After Phase 4 (standout), create `article-digest.md` with their proof points. The user should see the system taking shape in real time.
+
+- **Surface things they might not think to mention.** Read between the lines:
+  - If their CV shows a career progression from IC to lead, ask: "You went from engineer to leading a team of 3 in two years. That growth trajectory matters — should I highlight it?"
+  - If they mention a project with users, ask: "How many users? What was the growth like? Numbers make this 10x more compelling."
+  - If they have gaps or pivots in their resume, ask about them positively: "You switched from finance to engineering — that cross-domain perspective is actually a strength at startups. Want me to frame it that way?"
+
+- **ONE question at a time.** Never ask multiple questions in a single message. But pair each question with an observation or suggestion.
+
 - **Accept any format.** If they paste a wall of text instead of answering a specific question, extract what you can and move on. Don't make them repeat themselves.
-- **Fill gaps silently.** If they skip a question or say "I'll do that later", that's fine — fill in a reasonable default and move on.
+
+- **Fill gaps silently.** If they skip a question or say "I'll do that later", fill in a reasonable default and move on. You can always improve later.
+
+- **Let them add things unprompted.** If the user volunteers information you didn't ask for, incorporate it immediately and acknowledge it: "Good, I'll add that to your proof points." The phases are a guide, not a straitjacket.
 - **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`. The system should get smarter with every interaction.
 
 ### Personalization
