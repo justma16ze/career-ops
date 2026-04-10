@@ -2,7 +2,7 @@
 
 Generate a polished static HTML portfolio website from the user's career-ops data and deploy it to GitHub Pages.
 
-## Pipeline completo
+## Full Pipeline
 
 1. Read `cv.md` as source of truth for experience, education, skills
 2. Read `config/profile.yml` for name, email, LinkedIn, GitHub, portfolio URL, headline, superpowers, proof points
