@@ -1,4 +1,4 @@
-# Modo: tracker — Tracker de Aplicaciones
+# Mode: tracker — Application Tracker
 
 Lee y muestra `data/applications.md`.
 

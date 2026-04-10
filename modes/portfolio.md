@@ -1,4 +1,4 @@
-# Modo: portfolio — Portfolio Site Generation & Deploy
+# Mode: portfolio — Portfolio Site Generation & Deploy
 
 Generate a polished static HTML portfolio website from the user's career-ops data and deploy it to GitHub Pages.
 

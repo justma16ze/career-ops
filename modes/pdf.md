@@ -1,4 +1,4 @@
-# Modo: pdf — Generación de PDF ATS-Optimizado
+# Mode: pdf — ATS-Optimized PDF Generation
 
 ## Pipeline completo
 
@@ -174,4 +174,4 @@ d. Report: PDF path, file size, Canva design URL (for manual tweaking)
 
 ## Post-generación
 
-Actualizar tracker si la oferta ya está registrada: cambiar PDF de ❌ a ✅.
+Update tracker if the offer is already registered: change PDF from ❌ to ✅.

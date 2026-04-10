@@ -1,4 +1,4 @@
-# Modo: project — Evaluación de Proyecto Portfolio
+# Mode: project — Portfolio Project Evaluation
 
 Scoring 6 dimensiones (1-5):
 
