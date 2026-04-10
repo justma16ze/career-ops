@@ -336,6 +336,23 @@ function parseProjects(projectsBody, articleDigest, profileProofPoints) {
 }
 
 /**
+ * Group consecutive experience entries by company name.
+ * Returns an array of { company, roles: [{ role, dateRange, bullets }] }.
+ */
+function groupByCompany(entries) {
+  const groups = [];
+  for (const entry of entries) {
+    const last = groups[groups.length - 1];
+    if (last && last.company === entry.company) {
+      last.roles.push({ role: entry.role, dateRange: entry.dateRange, bullets: entry.bullets });
+    } else {
+      groups.push({ company: entry.company, location: entry.location, roles: [{ role: entry.role, dateRange: entry.dateRange, bullets: entry.bullets }] });
+    }
+  }
+  return groups;
+}
+
+/**
  * Render inline markdown (bold, links, code) to HTML.
  */
 function renderInlineMarkdown(text) {
@@ -414,7 +431,10 @@ nav a { color: #888; text-decoration: none; } nav a:hover { color: #222; }
 .project { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid #f0f0f0; }
 .project:last-child { border-bottom: none; padding-bottom: 0; }
 .metric { font-size: 0.85rem; color: #888; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-bottom: 0.3rem; }
-.job { margin-bottom: 1.5rem; } .job:last-child { margin-bottom: 0; }
+.job { margin-bottom: 2rem; } .job:last-child { margin-bottom: 0; }
+.sub-role { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid #f5f5f5; }
+.sub-role:first-child { margin-top: 0.25rem; padding-top: 0; border-top: none; }
+.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; }
 .job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 .job-header strong { font-size: 0.9rem; }
 .date { color: #999; font-size: 0.8rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; white-space: nowrap; }
@@ -453,8 +473,21 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; font-s
   // WORK
   const work = projects.length > 0 ? `<h1>Work</h1><p>Selected projects and things I've built.</p>${projects.map(p => `<div class="project"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>${p.heroMetric ? `<p class="metric">${esc(p.heroMetric)}</p>` : ''}${p.description ? `<p>${p.description}</p>` : ''}</div>`).join('\n')}` : '<h1>Work</h1><p>Nothing here yet.</p>';
 
-  // EXPERIENCE
-  const exp = `<h1>Experience</h1>${experience.map(j => `<div class="job"><div class="job-header"><strong>${esc(j.company)}</strong>${j.dateRange ? `<span class="date">${esc(j.dateRange)}</span>` : ''}</div>${j.role ? `<div class="role">${esc(j.role)}</div>` : ''}${j.bullets.length > 0 ? `<ul>${j.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('\n')}${education.length > 0 ? `<h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}` : ''}`;
+  // EXPERIENCE — group consecutive entries by company
+  const grouped = groupByCompany(experience);
+  const exp = `<h1>Experience</h1>${grouped.map(g => {
+    if (g.roles.length === 1) {
+      const r = g.roles[0];
+      return `<div class="job"><div class="job-header"><strong>${esc(g.company)}</strong>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.role ? `<div class="role">${esc(r.role)}</div>` : ''}${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`;
+    }
+    // Multi-role company: show company once, then each role as a sub-entry
+    const firstDate = g.roles[0].dateRange || '';
+    const lastDate = g.roles[g.roles.length - 1].dateRange || '';
+    const startYear = lastDate.match(/\d{4}/)?.[0] || '';
+    const endPart = firstDate.match(/[-–]\s*(.+)$/)?.[1] || '';
+    const spanDate = startYear && endPart ? `${startYear} - ${endPart}` : firstDate;
+    return `<div class="job"><div class="job-header"><strong>${esc(g.company)}</strong><span class="date">${esc(spanDate)}</span></div>${g.roles.map(r => `<div class="sub-role"><div class="sub-role-header"><div class="role">${esc(r.role)}</div>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('')}</div>`;
+  }).join('\n')}${education.length > 0 ? `<h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}` : ''}`;
 
   // ABOUT
   let ab = ['<h1>About</h1>'];

@@ -7,16 +7,16 @@ Two usage modes: **conductor --chrome** (navigates portals in real time) or **st
 ```
 Claude Conductor (claude --chrome --dangerously-skip-permissions)
   │
-  │  Chrome: navega portales (sesiones logueadas)
-  │  Lee DOM directo — el usuario ve todo en tiempo real
+  │  Chrome: navigates portals (logged-in sessions)
+  │  Reads DOM directly — the user sees everything in real time
   │
-  ├─ Oferta 1: lee JD del DOM + URL
+  ├─ Offer 1: reads JD from DOM + URL
   │    └─► claude -p worker → report .md + PDF + tracker-line
   │
-  ├─ Oferta 2: click siguiente, lee JD + URL
+  ├─ Offer 2: click next, reads JD + URL
   │    └─► claude -p worker → report .md + PDF + tracker-line
   │
-  └─ Fin: merge tracker-additions → applications.md + resumen
+  └─ Done: merge tracker-additions → applications.md + summary
 ```
 
 Each worker is a `claude -p` child process with a clean 200K token context. The conductor only orchestrates.
@@ -25,12 +25,12 @@ Each worker is a `claude -p` child process with a clean 200K token context. The 
 
 ```
 batch/
-  batch-input.tsv               # URLs (por conductor o manual)
-  batch-state.tsv               # Progreso (auto-generado, gitignored)
-  batch-runner.sh               # Script orquestador standalone
-  batch-prompt.md               # Prompt template para workers
-  logs/                         # Un log por oferta (gitignored)
-  tracker-additions/            # Líneas de tracker (gitignored)
+  batch-input.tsv               # URLs (from conductor or manual)
+  batch-state.tsv               # Progress (auto-generated, gitignored)
+  batch-runner.sh               # Standalone orchestrator script
+  batch-prompt.md               # Prompt template for workers
+  logs/                         # One log per offer (gitignored)
+  tracker-additions/            # Tracker lines (gitignored)
 ```
 
 ## Mode A: Conductor --chrome
