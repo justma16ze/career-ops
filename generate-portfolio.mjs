@@ -361,197 +361,120 @@ function esc(str) {
 }
 
 // ---------------------------------------------------------------------------
-// HTML generation
+// Multi-page HTML generation
 // ---------------------------------------------------------------------------
 
-function generateHTML({ profile, sections, articleDigest, theme }) {
-  const candidate = profile.candidate || {};
-  const narrative = profile.narrative || {};
-
-  const name = candidate.full_name || 'Portfolio';
-  const headline = narrative.headline || '';
-  const location = candidate.location || '';
-  const email = candidate.email || '';
-  const linkedin = candidate.linkedin || '';
-  const github = candidate.github || '';
-  const portfolioUrl = candidate.portfolio_url || '';
-  const superpowers = narrative.superpowers || [];
-  const proofPoints = narrative.proof_points || [];
-
-  const summarySection = sections.get('professional summary')
-    || sections.get('summary')
-    || sections.get('about')
-    || sections.get('_preamble')
-    || '';
-  const summaryText = summarySection
-    .split('\n\n')[0]
-    .replace(/\*\*/g, '')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .trim();
+function generatePages({ profile, sections, articleDigest }) {
+  const c = profile.candidate || {};
+  const n = profile.narrative || {};
+  const name = c.full_name || 'Portfolio';
+  const headline = n.headline || '';
+  const location = c.location || '';
+  const email = c.email || '';
+  const linkedin = c.linkedin || '';
+  const github = c.github || '';
+  const superpowers = n.superpowers || [];
+  const proofPoints = n.proof_points || [];
+  const exitStory = n.exit_story || '';
+  const currentProject = profile.talent_network?.current_project || n.current_project || '';
+  const targetRoles = profile.target_roles?.primary || [];
+  const locationFlex = profile.compensation?.location_flexibility || '';
+  const sum = sections.get('professional summary') || sections.get('summary') || sections.get('about') || sections.get('_preamble') || '';
+  const summaryText = sum.split('\n\n')[0].replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim();
   const summaryShort = summaryText.slice(0, 160).replace(/\s+\S*$/, '') + (summaryText.length > 160 ? '...' : '');
-
-  const experienceBody = sections.get('work experience') || sections.get('experience') || '';
-  const experience = parseExperience(experienceBody);
-  const recentBody = sections.get('recent engineering (last 12 months)') || sections.get('recent engineering') || '';
-
-  const educationBody = sections.get('education') || '';
-  const education = parseEducation(educationBody);
-
-  const skillsBody = sections.get('skills') || '';
-  const skills = parseSkills(skillsBody);
-
-  const projectsBody = sections.get('projects') || '';
-  const projects = parseProjects(projectsBody, articleDigest, proofPoints);
-
+  const experience = parseExperience(sections.get('work experience') || sections.get('experience') || '');
+  const education = parseEducation(sections.get('education') || '');
+  const skills = parseSkills(sections.get('skills') || '');
+  const techSkills = skills.filter(s => !superpowers.some(sp => sp.toLowerCase() === s.toLowerCase()));
+  const projects = parseProjects(sections.get('projects') || '', articleDigest, proofPoints);
   const linkedinUrl = linkedin.startsWith('http') ? linkedin : `https://${linkedin}`;
   const githubUrl = github.startsWith('http') ? github : `https://${github}`;
 
-  // -----------------------------------------------------------------------
-  // Build HTML sections
-  // -----------------------------------------------------------------------
+  const css = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+body { font-family: Georgia, 'Times New Roman', serif; color: #222; background: #fdfdfd; line-height: 1.7; max-width: 36rem; margin: 0 auto; padding: 3rem 1.5rem 2.5rem; }
+h1 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
+h2 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1rem; font-weight: 600; margin: 2rem 0 0.5rem; }
+h2:first-child { margin-top: 0; }
+h3 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.2rem; }
+h3:first-child { margin-top: 0; }
+h3 a { color: #222; text-decoration: underline; text-decoration-color: #ccc; text-underline-offset: 2px; }
+h3 a:hover { text-decoration-color: #222; }
+a { color: #222; } a:hover { color: #555; }
+p { margin-bottom: 0.6rem; } p:last-child { margin-bottom: 0; }
+nav { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.85rem; margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap; }
+nav .site-name { font-weight: 600; font-size: 0.9rem; color: #222; text-decoration: none; margin-right: auto; }
+nav a { color: #888; text-decoration: none; } nav a:hover { color: #222; }
+.nav-active { color: #222; font-weight: 500; }
+.subtitle { font-style: italic; color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
+.meta { color: #999; font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+.page-links { font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-top: 0.3rem; }
+.page-links a { margin-right: 1rem; color: #555; text-decoration: underline; text-decoration-color: #ddd; text-underline-offset: 2px; }
+.page-links a:hover { color: #222; text-decoration-color: #222; }
+.project { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid #f0f0f0; }
+.project:last-child { border-bottom: none; padding-bottom: 0; }
+.metric { font-size: 0.85rem; color: #888; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-bottom: 0.3rem; }
+.job { margin-bottom: 1.5rem; } .job:last-child { margin-bottom: 0; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+.job-header strong { font-size: 0.9rem; }
+.date { color: #999; font-size: 0.8rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; white-space: nowrap; }
+.role { color: #555; font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-bottom: 0.25rem; }
+ul { margin: 0.3rem 0 0 1.25rem; } li { font-size: 0.9rem; color: #444; margin-bottom: 0.15rem; line-height: 1.6; }
+.detail { font-size: 0.9rem; color: #555; } .detail strong { color: #333; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.75rem; color: #ccc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+@media print { nav, footer { display: none; } body { padding: 1rem 0; max-width: none; } }
+@media (max-width: 480px) { body { padding: 1.5rem 1rem; } nav { gap: 0.75rem; } .job-header { flex-direction: column; } }`;
 
-  // -- Experience --
-  const expHTML = experience.length > 0 ? `
-    <section>
-      <h2>Experience</h2>
-      ${experience.map(job => `
-      <div class="job">
-        <div class="job-header">
-          <strong>${esc(job.company)}</strong>
-          ${job.dateRange ? `<span class="date">${esc(job.dateRange)}</span>` : ''}
-        </div>
-        ${job.role ? `<div class="role">${esc(job.role)}</div>` : ''}
-        ${job.bullets.length > 0 ? `<ul>${job.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('\n')}</ul>` : ''}
-      </div>`).join('\n')}
-    </section>` : '';
+  const navItems = [
+    { href: 'index.html', label: 'Home' },
+    ...(projects.length > 0 ? [{ href: 'work.html', label: 'Work' }] : []),
+    ...(experience.length > 0 ? [{ href: 'experience.html', label: 'Experience' }] : []),
+    { href: 'about.html', label: 'About' },
+  ];
 
-  // -- Projects --
-  const projHTML = projects.length > 0 ? `
-    <section>
-      <h2>Projects</h2>
-      ${projects.map(p => `
-      <div class="project">
-        <strong>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</strong>${p.metric ? ` &mdash; ${esc(p.metric)}` : ''}
-        ${p.description ? `<p>${renderInlineMarkdown(p.description)}</p>` : ''}
-      </div>`).join('\n')}
-    </section>` : '';
+  function pg(title, active, body) {
+    const t = title === name ? title : `${title} — ${name}`;
+    const nv = navItems.map(ni => ni.href === active ? `<span class="nav-active">${esc(ni.label)}</span>` : `<a href="${ni.href}">${esc(ni.label)}</a>`).join(' ');
+    return `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${esc(t)}</title>\n<meta name="description" content="${esc(summaryShort)}">\n<meta property="og:title" content="${esc(t)}">\n<meta property="og:description" content="${esc(summaryShort)}">\n<meta property="og:type" content="website">\n<style>${css}</style>\n</head>\n<body>\n<nav><a href="index.html" class="site-name">${esc(name)}</a> ${nv}</nav>\n${body}\n<footer>&copy; ${new Date().getFullYear()} ${esc(name)}</footer>\n</body>\n</html>`;
+  }
 
-  // -- Skills --
-  // Only use actual technical skills, not superpowers
-  const techSkills = skills.filter(s =>
-    !superpowers.some(sp => sp.toLowerCase() === s.toLowerCase())
-  );
-  const skillsHTML = techSkills.length > 0 ? `
-    <section>
-      <h2>Skills</h2>
-      <p class="skills">${techSkills.map(s => esc(s)).join(', ')}</p>
-    </section>` : '';
-
-  // -- Education --
-  const eduHTML = education.length > 0 ? `
-    <section>
-      <h2>Education</h2>
-      ${education.map(e => `<p class="edu">${renderInlineMarkdown(typeof e === 'string' ? e : (e.raw || `${e.degree || ''} — ${e.school || ''}${e.year ? `, ${e.year}` : ''}`))}</p>`).join('\n')}
-    </section>` : '';
-
-  // -- Links --
   const links = [];
   if (linkedin) links.push(`<a href="${esc(linkedinUrl)}">LinkedIn</a>`);
   if (github) links.push(`<a href="${esc(githubUrl)}">GitHub</a>`);
   if (email) links.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
 
-  // -----------------------------------------------------------------------
-  // Final HTML — typography-first, no gimmicks
-  // -----------------------------------------------------------------------
+  // HOME
+  let hb = [];
+  if (summaryText) hb.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
+  if (exitStory) hb.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
+  if (currentProject) hb.push(`<p>Right now I'm ${renderInlineMarkdown(currentProject.charAt(0).toLowerCase() + currentProject.slice(1))}</p>`);
+  const home = `<header><h1>${esc(name)}</h1>${headline ? `<p class="subtitle">${esc(headline)}</p>` : ''}${location ? `<p class="meta">${esc(location)}</p>` : ''}${links.length > 0 ? `<p class="page-links">${links.join(' ')}</p>` : ''}</header>${hb.join('\n')}${superpowers.length > 0 ? `<p class="detail">${superpowers.join(' / ')}</p>` : ''}`;
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${esc(name)}${headline ? ` — ${esc(headline)}` : ''}</title>
-  <meta name="description" content="${esc(summaryShort)}">
-  <meta property="og:title" content="${esc(name)}${headline ? ` — ${esc(headline)}` : ''}">
-  <meta property="og:description" content="${esc(summaryShort)}">
-  <meta property="og:type" content="website">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      color: #1a1a1a;
-      background: #fff;
-      line-height: 1.6;
-      max-width: 38rem;
-      margin: 0 auto;
-      padding: 4rem 1.5rem 3rem;
-    }
-    h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
-    h2 { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #999; margin-bottom: 1rem; margin-top: 0; }
-    a { color: #1a1a1a; }
-    a:hover { color: #666; }
-    p { margin-bottom: 0.75rem; }
+  // WORK
+  const work = projects.length > 0 ? `<h1>Work</h1><p>Selected projects and things I've built.</p>${projects.map(p => `<div class="project"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>${p.heroMetric ? `<p class="metric">${esc(p.heroMetric)}</p>` : ''}${p.description ? `<p>${p.description}</p>` : ''}</div>`).join('\n')}` : '<h1>Work</h1><p>Nothing here yet.</p>';
 
-    .subtitle { color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
-    .meta { color: #999; font-size: 0.875rem; margin-bottom: 0.25rem; }
-    .links { font-size: 0.875rem; margin-bottom: 0; }
-    .links a { margin-right: 1rem; }
-    .links a:last-child { margin-right: 0; }
+  // EXPERIENCE
+  const exp = `<h1>Experience</h1>${experience.map(j => `<div class="job"><div class="job-header"><strong>${esc(j.company)}</strong>${j.dateRange ? `<span class="date">${esc(j.dateRange)}</span>` : ''}</div>${j.role ? `<div class="role">${esc(j.role)}</div>` : ''}${j.bullets.length > 0 ? `<ul>${j.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('\n')}${education.length > 0 ? `<h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}` : ''}`;
 
-    header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid #e0e0e0; }
+  // ABOUT
+  let ab = ['<h1>About</h1>'];
+  if (summaryText) ab.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
+  if (exitStory) ab.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
+  if (superpowers.length > 0) ab.push(`<p>What I do best: ${superpowers.join(', ').replace(/, ([^,]*)$/, ', and $1')}.</p>`);
+  if (currentProject) ab.push(`<h2>Now</h2><p>${renderInlineMarkdown(currentProject)}</p>`);
+  const lp = [];
+  if (targetRoles.length > 0) lp.push(`Interested in: ${targetRoles.join(', ')}.`);
+  if (locationFlex) lp.push(locationFlex + '.');
+  if (lp.length > 0) ab.push(`<h2>Looking for</h2><p>${lp.join(' ')}</p>`);
+  if (techSkills.length > 0) ab.push(`<h2>Tools</h2><p class="detail">${techSkills.map(s => esc(s)).join(', ')}</p>`);
+  if (links.length > 0) ab.push(`<h2>Contact</h2><p class="page-links">${links.join(' ')}</p>`);
 
-    section { margin-bottom: 2.5rem; }
-
-    .job { margin-bottom: 1.5rem; }
-    .job:last-child { margin-bottom: 0; }
-    .job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; }
-    .job-header strong { font-size: 0.95rem; }
-    .date { color: #999; font-size: 0.85rem; white-space: nowrap; }
-    .role { color: #555; font-size: 0.9rem; margin-bottom: 0.35rem; }
-    ul { margin: 0.35rem 0 0 1.25rem; }
-    li { font-size: 0.9rem; color: #444; margin-bottom: 0.2rem; line-height: 1.55; }
-
-    .project { margin-bottom: 0.75rem; }
-    .project p { font-size: 0.9rem; color: #555; margin: 0.15rem 0 0; }
-
-    .skills { font-size: 0.9rem; color: #555; }
-
-    .edu { font-size: 0.9rem; color: #444; margin-bottom: 0.35rem; }
-
-    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0; font-size: 0.8rem; color: #bbb; }
-    footer a { color: #bbb; }
-    footer a:hover { color: #999; }
-
-    @media print {
-      body { padding: 1rem 0; font-size: 11pt; max-width: none; }
-      header { margin-bottom: 1.5rem; padding-bottom: 1rem; }
-      section { margin-bottom: 1.25rem; }
-      a[href]::after { content: " (" attr(href) ")"; font-size: 0.75em; color: #999; }
-      footer { display: none; }
-    }
-    @media (max-width: 480px) {
-      body { padding: 2rem 1rem 2rem; }
-      .job-header { flex-direction: column; }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>${esc(name)}</h1>
-    ${headline ? `<p class="subtitle">${esc(headline)}</p>` : ''}
-    ${location ? `<p class="meta">${esc(location)}</p>` : ''}
-    ${links.length > 0 ? `<p class="links">${links.join('\n')}</p>` : ''}
-  </header>
-
-  ${summaryText ? `<section><h2>About</h2><p>${renderInlineMarkdown(summaryText)}</p></section>` : ''}
-  ${expHTML}
-  ${projHTML}
-  ${skillsHTML}
-  ${eduHTML}
-
-  <footer>&copy; ${new Date().getFullYear()} ${esc(name)}</footer>
-</body>
-</html>`;
+  return {
+    'index.html': pg(name, 'index.html', home),
+    ...(projects.length > 0 ? { 'work.html': pg('Work', 'work.html', work) } : {}),
+    ...(experience.length > 0 ? { 'experience.html': pg('Experience', 'experience.html', exp) } : {}),
+    'about.html': pg('About', 'about.html', ab.join('\n')),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -560,47 +483,24 @@ function generateHTML({ profile, sections, articleDigest, theme }) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  const outputPath = resolve(__dirname, args.output);
-
-  console.log(`Portfolio generator`);
-  console.log(`  Theme:  ${args.theme}`);
-  console.log(`  Output: ${outputPath}`);
-  console.log('');
-
-  // Read data files
-  const [profile, cvRaw, articleDigest] = await Promise.all([
-    readProfile(),
-    readCV(),
-    readArticleDigest(),
-  ]);
-
-  // Parse cv.md sections
+  const outputDir = resolve(__dirname, 'dist');
+  console.log('Portfolio generator (multi-page)');
+  console.log(`  Output: ${outputDir}/\n`);
+  const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
   const sections = parseSections(cvRaw);
-
-  console.log(`  Sections found: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
-  if (articleDigest) console.log('  article-digest.md: found');
-  else console.log('  article-digest.md: not found (skipping)');
-  console.log('');
-
-  // Generate HTML
-  const html = generateHTML({ profile, sections, articleDigest, theme: args.theme });
-
-  // Ensure output directory exists
-  await mkdir(dirname(outputPath), { recursive: true });
-
-  // Write file
-  await writeFile(outputPath, html, 'utf-8');
-
-  const sizeKB = (Buffer.byteLength(html, 'utf-8') / 1024).toFixed(1);
-  console.log(`Portfolio generated: ${outputPath}`);
-  console.log(`  Size: ${sizeKB} KB`);
-  console.log(`  Sections: hero, about, experience, projects, skills, education`);
-  console.log('');
-  console.log('Open in browser:');
-  console.log(`  open ${outputPath}`);
+  console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
+  console.log(`  article-digest.md: ${articleDigest ? 'found' : 'not found (skipping)'}\n`);
+  const pages = generatePages({ profile, sections, articleDigest });
+  await mkdir(outputDir, { recursive: true });
+  let total = 0;
+  for (const [f, html] of Object.entries(pages)) {
+    await writeFile(resolve(outputDir, f), html, 'utf-8');
+    const sz = Buffer.byteLength(html, 'utf-8');
+    total += sz;
+    console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
+  }
+  console.log(`\n  ${Object.keys(pages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
+  console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
 }
 
-main().catch((err) => {
-  console.error('Portfolio generation failed:', err.message);
-  process.exit(1);
-});
+main().catch(e => { console.error('Failed:', e.message); process.exit(1); });
