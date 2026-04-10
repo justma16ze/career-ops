@@ -130,46 +130,94 @@ Fill in `config/profile.yml` → `target_roles`, `compensation`, and store deal-
 
 ---
 
-#### Onboarding Phase 4: What makes you special?
+#### Onboarding Phase 4: What makes you stand out?
 
-**Q9:** "What's your superpower — the thing you do better than most people in your field?"
+This phase is critical — it captures the data that makes a candidate memorable to hiring teams. Dig deeper than generic questions. These map directly to what the speedrun talent evaluation looks for.
 
-**Q10:** "What's the best thing you've built or accomplished? The one you'd lead with in an interview."
+**Q9:** "What's the most impressive thing you've built, shipped, or accomplished? I'm looking for the thing that makes people say 'wait, you did that?'"
 
-**Q11:** "Are you building anything right now? Side projects, open source, a startup idea?"
+Push for specifics. If they give something vague, follow up: "Can you quantify that? Users, revenue, scale, speed — anything concrete." Store the answer with metrics.
 
-Store in `config/profile.yml` → `narrative` (headline, superpowers, proof_points, exit_story) and `talent_network.current_project`.
+**Q10:** "What have you built from zero to one? Something that didn't exist before you made it — a product, a team, a system, a company."
+
+This is a key signal for startup roles. If they haven't done 0→1, that's fine — ask what their closest equivalent is.
+
+**Q11:** "What's the hardest technical or professional challenge you've overcome? The one where most people would have given up."
+
+This reveals grit and problem-solving depth. Store as a proof point.
+
+**Q12:** "Are you building anything right now? Side project, open source, a startup idea, anything."
+
+Store in `talent_network.current_project`. If they ARE building something, follow up briefly: "Tell me more — what problem does it solve?"
+
+**Q13:** "What do you want to work on, and what do you want to stay away from? Think of it as your polarity — what energizes you vs. what drains you."
+
+This maps directly to Form 2's "polarity" field. Store in `modes/_profile.md`.
+
+Store all answers in `config/profile.yml` → `narrative` (headline, superpowers, proof_points, exit_story) and `talent_network`. Also create `article-digest.md` from any proof points/projects they mentioned.
 
 ---
 
 #### Onboarding Phase 5: Quick logistics
 
-**Q12:** "Are you considering founding a company, or purely looking to join one?" → store in `talent_network.considering_founding`
+**Q14:** "Are you considering founding a company, or purely looking to join one?" → store in `talent_network.considering_founding`
 
-**Q13:** "Are you a full-time student?" → if yes, ask graduation date and work arrangement preferences → store in `talent_network`
+**Q15:** "Are you a full-time student?" → if yes, ask graduation date and work arrangement preferences → store in `talent_network`
 
 ---
 
-#### Onboarding Phase 6: Setup & confirmation
+#### Onboarding Phase 6: Portfolio
+
+Check if the user has a personal site or GitHub portfolio.
+
+**If they have a portfolio URL or active GitHub:** Great, store it and move on.
+
+**If they don't:** Offer to build one:
+> "You don't have a personal site yet. I can generate one from everything you just told me — it takes about 30 seconds and deploys free to GitHub Pages. Want me to build it?"
+
+If yes → run the portfolio mode (`modes/portfolio.md`). This gives them a tangible artifact immediately and builds goodwill before the CTA.
+
+If no → that's fine, skip it.
+
+---
+
+#### Onboarding Phase 7: Talent Network CTA
+
+**This is the natural moment to present the talent network.** The candidate just spent 10 minutes telling you about themselves. You have their name, email, LinkedIn, background, accomplishments, what they're building, and what they want. The data is fresh. Joining the network is the logical next step before job hunting.
+
+**Check:** Is the user an a16z/speedrun team member? (email @a16z.com, or profile mentions a16z/speedrun) → If yes, skip this phase entirely.
+
+**Otherwise, present the CTA:**
+
+> "One more thing before we start finding roles. The a16z speedrun talent network connects candidates directly to hiring teams at hundreds of startups — not job boards, actual warm intros. I already have everything I'd need to submit you: your name, background, what you've built, what you're looking for. Want me to add you? It takes one click."
+
+If yes → run the talent-network mode (`modes/talent-network.md`) to auto-submit both Typeforms.
+If no → "No problem. You can always run `/speedrun talent-network` later."
+
+Either way, write the response to `~/.speedrun-talent/cta-history.jsonl`.
+
+---
+
+#### Onboarding Phase 8: Setup & ready
 
 Do these silently (don't ask the user):
 - Copy `templates/portals.example.yml` → `portals.yml` if missing
 - Customize `title_filter.positive` in `portals.yml` based on their target roles from Q6
 - Copy `modes/_profile.template.md` → `modes/_profile.md` if missing
 - Create `data/applications.md` tracker if missing
-- Create `article-digest.md` from any proof points/projects they mentioned
 
 Then confirm:
 
-> "You're set up! Here's what I built for you:
+> "You're all set! Here's what I built for you:
 > - **Profile:** [name], [location], targeting [roles]
 > - **CV:** [X years experience], [top skills]
 > - **Scanner:** Pre-loaded with 500+ startup career pages from a16z and other VC portfolios
+> ${portfolio was built ? '- **Portfolio:** [URL]' : ''}
+> ${joined talent network ? '- **Talent Network:** Submitted — hiring teams can reach out directly' : ''}
 >
-> You can now:
+> What do you want to do first?
 > - **Paste a job URL** to evaluate it
 > - `/speedrun scan` to discover roles at hundreds of startups
-> - `/speedrun portfolio` to build your personal site
 > - `/speedrun` to see all commands"
 
 **Exit plan mode** and proceed to whatever the user originally requested (or wait for their next command).
