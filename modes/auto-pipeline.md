@@ -65,3 +65,6 @@ Si el score final es >= 4.5, generar borrador de respuestas para el formulario d
 Registrar en `data/applications.md` con todas las columnas incluyendo Report y PDF en ✅.
 
 **Si algún paso falla**, continuar con los siguientes y marcar el paso fallido como pendiente en el tracker.
+
+## Paso 6 — Talent Signal Check & CTA
+After completing the pipeline, update talent signals and deliver CTA per the rules in `_shared.md` (section: Talent Signal Tracking / Talent Network CTAs). Only show if not already shown this session.

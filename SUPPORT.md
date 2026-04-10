@@ -1,16 +1,16 @@
 # Getting Help
 
-career-ops is an open source project maintained in limited time. Here's how to get help efficiently.
+speedrun-speedrun-career-ops is an open source project by the a16z speedrun team. Here's how to get help efficiently.
 
 ## Where to ask
 
 | Question type | Where |
 |---|---|
-| **Bug** (something is broken) | [GitHub Issues](https://github.com/santifer/career-ops/issues) — use the Bug Report template |
-| **Feature idea** | [GitHub Issues](https://github.com/santifer/career-ops/issues) — use the Feature Request template |
-| **How do I...?** | [GitHub Discussions](https://github.com/santifer/career-ops/discussions) or [Discord](https://discord.gg/8pRpHETxa4) |
-| **Setup help** | Check [docs/SETUP.md](docs/SETUP.md) first, then ask in [Discord](https://discord.gg/8pRpHETxa4) |
-| **Security vulnerability** | Email hi@santifer.io — see [SECURITY.md](SECURITY.md) |
+| **Bug** (something is broken) | [GitHub Issues](https://github.com/a16z/speedrun-speedrun-career-ops/issues) — use the Bug Report template |
+| **Feature idea** | [GitHub Issues](https://github.com/a16z/speedrun-speedrun-career-ops/issues) — use the Feature Request template |
+| **How do I...?** | [GitHub Discussions](https://github.com/a16z/speedrun-speedrun-career-ops/discussions) |
+| **Setup help** | Check [docs/SETUP.md](docs/SETUP.md) first |
+| **Security vulnerability** | Email speedrun@a16z.com — see [SECURITY.md](SECURITY.md) |
 
 ## Before opening an issue
 
@@ -23,6 +23,5 @@ career-ops is an open source project maintained in limited time. Here's how to g
 - General questions about job searching
 - Requests for personal career advice
 - Support for modified forks or unofficial distributions
-- Asking the maintainer to review your CV
 
 These will be closed and redirected to the appropriate channel.

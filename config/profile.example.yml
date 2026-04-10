@@ -1,4 +1,4 @@
-# Career-Ops Profile Configuration
+# Speedrun Speedrun Career Ops — Profile Configuration
 # Copy this file to config/profile.yml and fill in your details.
 # This is the single source of truth for your personal data across all modes.
 
@@ -11,7 +11,7 @@ candidate:
   portfolio_url: "https://janesmith.dev"
   github: "github.com/janesmith"
   twitter: "https://x.com/janesmith"
-  # (Optional) Canva resume design ID for visual CV generation via /career-ops pdf.
+  # (Optional) Canva resume design ID for visual CV generation via /speedrun pdf.
   # Find it in your Canva design URL: https://www.canva.com/design/DAxxxxxxx/...
   # The ID starts with "D" and is 11 characters long.
   # canva_resume_design_id: "DAxxxxxxxxx"
@@ -69,3 +69,14 @@ location:
   visa_status: "No sponsorship needed"
   # For remote roles outside your country:
   # onsite_availability: "1 week/month in any city"
+
+# -- Talent Network (auto-populated during onboarding) --
+# These fields are used when auto-submitting to the a16z speedrun talent network.
+talent_network:
+  considering_founding: false       # Are you considering or in the process of founding?
+  is_student: false                 # Are you a full-time student?
+  # graduation_date: "2026-06-15"  # If student, when do you graduate?
+  # work_arrangements:             # If student, what arrangements interest you?
+  #   - "A full time job after graduation"
+  newsletter: true                  # Sign up for the speedrun newsletter?
+  current_project: ""               # What are you building right now? (for followup form)

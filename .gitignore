@@ -17,14 +17,20 @@ jds/*
 
 # User config and customization (never auto-updated)
 config/profile.yml
+config/secrets.yml
 portals.yml
 modes/_profile.md
 .update-dismissed
 .update-lock
 
 # Generated
+dist/
 .resolved-prompt-*
 node_modules/
+portcos.yml
+
+# Scraped data
+portcos-*.yml
 
 # OS
 .DS_Store

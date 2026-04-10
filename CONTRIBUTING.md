@@ -1,6 +1,6 @@
-# Contributing to Career-Ops
+# Contributing to Speedrun Speedrun Career Ops
 
-Thanks for your interest in contributing! Career-Ops is built with Claude Code, and you can use it for development too.
+Thanks for your interest in contributing! This project is built with Claude Code, and you can use it for development too.
 
 ## Before Submitting a PR
 
@@ -27,21 +27,22 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 ## What to Contribute
 
 **Good first contributions:**
-- Add companies to `templates/portals.example.yml`
+- Add startup companies to `templates/portals.example.yml`
 - Translate modes to other languages
 - Improve documentation
 - Add example CVs for different roles (in `examples/`)
-- Report bugs via [Issues](https://github.com/santifer/career-ops/issues)
+- Report bugs via [Issues](https://github.com/a16z/speedrun-speedrun-career-ops/issues)
 
 **Bigger contributions:**
 - New evaluation dimensions or scoring logic
 - Dashboard TUI features (in `dashboard/`)
 - New skill modes (in `modes/`)
 - Script improvements (`.mjs` utilities)
+- Portfolio template improvements
 
 ## Guidelines
 
-- Keep modes language-agnostic when possible (Claude handles both EN and ES)
+- Keep modes language-agnostic when possible (Claude handles multiple languages)
 - Scripts should handle missing files gracefully (check `existsSync` before `readFileSync`)
 - Dashboard changes require `go build` — test with real data before submitting
 - Don't commit personal data (cv.md, profile.yml, applications.md, reports/)
@@ -49,7 +50,7 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 ## What we do NOT accept
 
 - **PRs that scrape platforms prohibiting automated access** (LinkedIn, etc.). We actively reject these to respect third-party ToS.
-- **PRs that enable auto-submitting applications** without human review. career-ops is a decision-support tool, not a spam bot.
+- **PRs that enable auto-submitting applications** without human review. This is a decision-support tool, not a spam bot.
 - **PRs that add external API dependencies** without prior discussion in an issue.
 - **PRs containing personal data** (real CVs, emails, phone numbers). Use `examples/` with fictional data instead.
 
@@ -62,12 +63,11 @@ node verify-pipeline.mjs     # Health check
 node cv-sync-check.mjs        # Config check
 
 # Dashboard
-cd dashboard && go build -o career-dashboard .
-./career-dashboard --path ..
+cd dashboard && go build -o speedrun-dashboard .
+./speedrun-dashboard --path ..
 ```
 
 ## Need Help?
 
-- [Join the Discord](https://discord.gg/8pRpHETxa4) — fastest way to get answers and connect with other contributors
-- [Open an issue](https://github.com/santifer/career-ops/issues)
+- [Open an issue](https://github.com/a16z/speedrun-speedrun-career-ops/issues)
 - [Read the architecture docs](docs/ARCHITECTURE.md)

@@ -1,0 +1,59 @@
+candidate:
+  full_name: "Alex Chen"
+  email: "alex@example.com"
+  phone: "+1-555-0199"
+  location: "San Francisco, CA"
+  linkedin: "linkedin.com/in/alexchen"
+  portfolio_url: ""
+  github: "github.com/alexchen"
+  twitter: "https://x.com/alexchen"
+
+target_roles:
+  primary:
+    - "Senior Engineer"
+    - "Staff Engineer"
+    - "Founding Engineer"
+  archetypes:
+    - name: "AI/ML Engineer"
+      level: "Senior/Staff"
+      fit: "primary"
+    - name: "Founding Engineer"
+      level: "Senior"
+      fit: "primary"
+    - name: "Full Stack Engineer"
+      level: "Staff"
+      fit: "secondary"
+
+narrative:
+  headline: "Full-stack engineer who builds AI products from 0→1"
+  exit_story: "Built two products from scratch at early-stage startups. Looking for the next 0→1 challenge at a company solving hard problems."
+  superpowers:
+    - "0→1 product development"
+    - "Production RAG and LLM systems"
+    - "Fast shipping (idea to prod in weeks, not months)"
+  proof_points:
+    - name: "AI Code Review Bot"
+      url: "https://github.com/alexchen/ai-review"
+      hero_metric: "1.5K GitHub stars, used by 200+ teams"
+    - name: "VoiceNote"
+      url: "https://voicenote.app"
+      hero_metric: "5K users, 4.8 star rating"
+  current_project: "Building an open-source AI code review tool that uses Claude to review PRs"
+
+compensation:
+  target_range: "$180K-250K"
+  currency: "USD"
+  minimum: "$160K"
+  location_flexibility: "Remote preferred, open to hybrid in SF/NYC"
+
+location:
+  country: "United States"
+  city: "San Francisco"
+  timezone: "PST"
+  visa_status: "No sponsorship needed"
+
+talent_network:
+  considering_founding: true
+  is_student: false
+  newsletter: true
+  current_project: "Building an open-source AI code review tool that uses Claude to review PRs"

@@ -5,15 +5,18 @@
 This is the single source of truth for your identity. All modes read from here.
 
 Key sections:
-- **candidate**: Name, email, phone, location, LinkedIn, portfolio
+- **candidate**: Name, email, phone, location, LinkedIn, portfolio, GitHub
 - **target_roles**: Your North Star roles and archetypes
 - **narrative**: Your headline, exit story, superpowers, proof points
 - **compensation**: Target range, minimum, currency
 - **location**: Country, timezone, visa status, on-site availability
+- **talent_network**: Founding status, student status, current project (for auto-submit)
 
-## Target Roles (modes/_shared.md)
+## Target Roles (modes/_profile.md)
 
-The archetype table in `_shared.md` determines how offers are scored and CVs are framed. Edit the table to match YOUR career targets:
+Your personal customizations go in `modes/_profile.md` (never auto-updated). This file overrides system defaults in `_shared.md`.
+
+The archetype table determines how offers are scored and CVs are framed. Edit to match YOUR career targets:
 
 ```markdown
 | Archetype | Thematic axes | What they buy |
@@ -30,28 +33,60 @@ Copy from `templates/portals.example.yml` and customize:
 
 1. **title_filter.positive**: Keywords matching your target roles
 2. **title_filter.negative**: Tech stacks or domains to exclude
-3. **search_queries**: WebSearch queries for job boards (Ashby, Greenhouse, Lever)
-4. **tracked_companies**: Companies to check directly
+3. **search_queries**: WebSearch queries for startup job boards
+4. **tracked_companies**: Organized by VC tier:
+   - `tier: a16z` — a16z portfolio companies (warm intros available)
+   - `tier: speedrun` — speedrun network companies
+   - `tier: other_vc` — other VC portfolios
+
+### Adding companies
+
+Add entries under `tracked_companies`:
+
+```yaml
+  - name: "NewCo"
+    careers_url: "https://jobs.lever.co/newco"
+    tier: a16z           # or speedrun, other_vc
+    enabled: true
+```
+
+### Refreshing the company list
+
+Run the scraper to pull the latest companies from a16z's sites:
+
+```bash
+npm run scrape -- --source=both
+```
+
+This outputs `portcos.yml` which you can merge into your `portals.yml`.
 
 ## CV Template (templates/cv-template.html)
 
 The HTML template uses these design tokens:
-- **Fonts**: Space Grotesk (headings) + DM Sans (body) -- self-hosted in `fonts/`
+- **Fonts**: Space Grotesk (headings) + DM Sans (body) — self-hosted in `fonts/`
 - **Colors**: Cyan primary (`hsl(187,74%,32%)`) + Purple accent (`hsl(270,70%,45%)`)
 - **Layout**: Single-column, ATS-optimized
 
 To customize fonts/colors, edit the CSS in the template. Update font files in `fonts/` if switching fonts.
 
-## Negotiation Scripts (modes/_shared.md)
+## Portfolio Site
 
-The negotiation section provides frameworks for salary discussions. Replace the example scripts with your own:
+The portfolio generator (`generate-portfolio.mjs`) creates a static HTML site from your data. Customize:
+
+- **Theme**: `--theme=dark` or `--theme=light`
+- **Design**: Edit the CSS custom properties in the generated HTML, or modify `generate-portfolio.mjs` directly
+- **Sections**: The generator includes Hero, About, Experience, Projects, Skills, Education, Contact. Sections are omitted if the source data is missing.
+
+## Negotiation Scripts (modes/_profile.md)
+
+The negotiation section provides frameworks for salary discussions. Store your customizations in `modes/_profile.md`:
 - Target ranges
 - Geographic arbitrage strategy
 - Pushback responses
 
 ## Hooks (Optional)
 
-Career-ops can integrate with external systems via Claude Code hooks. Example hooks:
+The system can integrate with external tools via Claude Code hooks. Example:
 
 ```json
 {
@@ -59,7 +94,7 @@ Career-ops can integrate with external systems via Claude Code hooks. Example ho
     "SessionStart": [{
       "hooks": [{
         "type": "command",
-        "command": "echo 'Career-ops session started'"
+        "command": "node track-signals.mjs --check"
       }]
     }]
   }
