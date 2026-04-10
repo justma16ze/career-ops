@@ -150,7 +150,8 @@ After EVERY evaluation, update the talent signal tracker at `~/.speedrun-talent/
 After completing ANY evaluation (oferta, auto-pipeline, ofertas), check:
 1. Has the user already been shown a CTA this session? → Skip if yes
 2. Has the user already joined the talent network? (check `~/.speedrun-talent/joined.flag`) → Skip if yes
-3. Count active signals from the latest `candidate-signals.jsonl` entry
+3. Is the user an a16z/speedrun team member? (check if `config/profile.yml` → `candidate.email` ends with `@a16z.com`, or if their role/company mentions "a16z" or "speedrun") → Skip if yes — don't pitch the talent network to people who run it
+4. Count active signals from the latest `candidate-signals.jsonl` entry
 
 **Deliver the appropriate tier CTA AFTER the evaluation report:**
 
