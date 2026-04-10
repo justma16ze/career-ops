@@ -2,11 +2,12 @@
 # Used by /speedrun scan to discover new offers automatically.
 #
 # Strategy (3 levels):
-#   1. Playwright → careers_url of each company (real-time, reliable)
-#   2. Greenhouse API → structured JSON (fast, Greenhouse-only)
-#   3. WebSearch with site: filters (broad discovery, may be stale)
+#   1. WebSearch with site: filters (broad discovery across Greenhouse/Ashby/Lever)
+#   2. Playwright → career page if careers_url is provided (real-time, reliable)
+#   3. Greenhouse API → structured JSON if api: is provided (fast, Greenhouse-only)
 #
-# IMPORTANT: Each company in tracked_companies MUST have careers_url.
+# Company names are scraped from portfoliojobs.a16z.com and speedrun.a16z.com.
+# Career URLs are discovered dynamically at scan time — not hardcoded.
 #
 # HOW TO CUSTOMIZE:
 #   1. Copy this file to portals.yml in the project root
@@ -252,371 +253,2078 @@ search_queries:
 tracked_companies:
 
   # ============================================================
-  # TIER 1 — a16z PORTFOLIO
-  # These are a16z-backed companies. Candidates in the speedrun
-  # talent network may be eligible for warm intros.
+  # TIER 1 — a16z PORTFOLIO (340 companies)
+  # Scraped from portfoliojobs.a16z.com on 2026-04-10.
+  # Company names only — career URLs discovered at scan time.
+  # Candidates in the talent network may get warm intros.
   # ============================================================
 
-  # -- Defense & Infrastructure --
-
-  - name: Anduril
-    careers_url: https://job-boards.greenhouse.io/andurilindustries
-    api: https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs
+  - name: "11x.ai"
     tier: a16z
-    notes: "Defense tech. Software-defined weapons systems. Large engineering org."
     enabled: true
 
-  # -- Data & Analytics --
-
-  - name: Databricks
-    careers_url: https://job-boards.greenhouse.io/databricks
-    api: https://boards-api.greenhouse.io/v1/boards/databricks/jobs
+  - name: "ADDI"
     tier: a16z
-    notes: "Unified data analytics & AI platform. Massive hiring."
     enabled: true
 
-  - name: dbt Labs
-    careers_url: https://job-boards.greenhouse.io/daboralabsinc
-    api: https://boards-api.greenhouse.io/v1/boards/daboralabsinc/jobs
+  - name: "AKASA"
     tier: a16z
-    notes: "Data transformation framework. Analytics engineering standard."
     enabled: true
 
-  - name: Hex
-    careers_url: https://job-boards.greenhouse.io/hex
-    api: https://boards-api.greenhouse.io/v1/boards/hex/jobs
+  - name: "Abridge"
     tier: a16z
-    notes: "Collaborative data workspace with AI. Series B."
     enabled: true
 
-  # -- Fintech --
-
-  - name: Ramp
-    careers_url: https://jobs.ashbyhq.com/ramp
+  - name: "Adaptive"
     tier: a16z
-    notes: "Corporate spend management. Fastest-growing fintech."
     enabled: true
 
-  # -- Design & Collaboration --
-
-  - name: Figma
-    careers_url: https://job-boards.greenhouse.io/figma
-    api: https://boards-api.greenhouse.io/v1/boards/figma/jobs
+  - name: "Adaptive Security"
     tier: a16z
-    notes: "Collaborative design platform. AI features expanding."
     enabled: true
 
-  - name: Notion
-    careers_url: https://job-boards.greenhouse.io/notion
-    api: https://boards-api.greenhouse.io/v1/boards/notion/jobs
+  - name: "Air Space Intelligence"
     tier: a16z
-    notes: "All-in-one workspace with AI. Heavy platform + product eng hiring."
     enabled: true
 
-  - name: Coda
-    careers_url: https://job-boards.greenhouse.io/caboralabs
-    api: https://boards-api.greenhouse.io/v1/boards/caboralabs/jobs
+  - name: "AirGarage"
     tier: a16z
-    notes: "All-in-one doc with automations and AI."
     enabled: true
 
-  # -- Commerce --
-
-  - name: Instacart
-    careers_url: https://job-boards.greenhouse.io/instacart
-    api: https://boards-api.greenhouse.io/v1/boards/instacart/jobs
+  - name: "Alchemy"
     tier: a16z
-    notes: "Grocery delivery & retail tech. ML-heavy platform."
     enabled: true
 
-  - name: Faire
-    careers_url: https://job-boards.greenhouse.io/faire
-    api: https://boards-api.greenhouse.io/v1/boards/faire/jobs
+  - name: "Alloy Automation"
     tier: a16z
-    notes: "Wholesale marketplace. Strong data & ML org."
     enabled: true
 
-  # -- Developer Tools --
-
-  - name: Retool
-    careers_url: https://retool.com/careers
-    scan_method: websearch
-    scan_query: 'site:retool.com/careers "Deployed" OR "AI" OR "Solutions" OR "Engineer"'
+  - name: "Alluxio"
     tier: a16z
-    notes: "Internal tools platform. Popularized Deployed Engineer role."
     enabled: true
 
-  - name: Replit
-    careers_url: https://jobs.ashbyhq.com/replit
+  - name: "Alpha-9 Oncology"
     tier: a16z
-    notes: "AI-native code editor & deployment platform."
     enabled: true
 
-  - name: Vercel
-    careers_url: https://job-boards.greenhouse.io/vercel
-    api: https://boards-api.greenhouse.io/v1/boards/vercel/jobs
+  - name: "Ambience Healthcare"
     tier: a16z
-    notes: "Frontend cloud, AI SDK, v0.dev. Strong DX/DevRel hiring."
     enabled: true
 
-  - name: Sourcegraph
-    careers_url: https://job-boards.greenhouse.io/sourcegraph91
-    api: https://boards-api.greenhouse.io/v1/boards/sourcegraph91/jobs
+  - name: "Ambient"
     tier: a16z
-    notes: "Code intelligence platform. Cody AI assistant."
     enabled: true
 
-  # -- AI / ML Companies --
-
-  - name: Scale AI
-    careers_url: https://job-boards.greenhouse.io/scaleai
-    api: https://boards-api.greenhouse.io/v1/boards/scaleai/jobs
+  - name: "Amca"
     tier: a16z
-    notes: "AI data infrastructure. Government & enterprise AI."
     enabled: true
 
-  - name: Mistral
-    careers_url: https://jobs.lever.co/mistral
+  - name: "Anchorage"
     tier: a16z
-    notes: "Paris. European frontier AI lab."
     enabled: true
 
-  - name: ElevenLabs
-    careers_url: https://jobs.ashbyhq.com/elevenlabs
+  - name: "Anduril Industries"
     tier: a16z
-    notes: "Voice AI / TTS leader. Fast-growing."
     enabled: true
 
-  - name: Glean
-    careers_url: https://job-boards.greenhouse.io/gleanwork
-    api: https://boards-api.greenhouse.io/v1/boards/gleanwork/jobs
+  - name: "Apex Space"
     tier: a16z
-    notes: "Enterprise AI search. Rapid enterprise adoption."
     enabled: true
 
-  - name: Together AI
-    careers_url: https://job-boards.greenhouse.io/togetherai
-    api: https://boards-api.greenhouse.io/v1/boards/togetherai/jobs
+  - name: "Apollo GraphQL"
     tier: a16z
-    notes: "Open-source AI inference & fine-tuning cloud."
     enabled: true
 
-  - name: Modal
-    careers_url: https://jobs.ashbyhq.com/modal
+  - name: "Applied Intuition"
     tier: a16z
-    notes: "Serverless GPU cloud for AI/ML workloads."
     enabled: true
 
-  - name: Character.ai
-    careers_url: https://jobs.ashbyhq.com/character
+  - name: "Arc Boat Company"
     tier: a16z
-    notes: "Conversational AI characters platform."
     enabled: true
 
-  - name: Harvey
-    careers_url: https://job-boards.greenhouse.io/harvey
-    api: https://boards-api.greenhouse.io/v1/boards/harvey/jobs
+  - name: "Arena"
     tier: a16z
-    notes: "AI for legal professionals. Frontier model applications."
     enabled: true
 
-  - name: Sierra
-    careers_url: https://jobs.ashbyhq.com/sierra
+  - name: "Asimov"
     tier: a16z
-    notes: "Bret Taylor (ex-CEO Salesforce). AI customer experience agents."
     enabled: true
 
-  - name: Runway
-    careers_url: https://job-boards.greenhouse.io/runwayml
-    api: https://boards-api.greenhouse.io/v1/boards/runwayml/jobs
+  - name: "Astranis"
     tier: a16z
-    notes: "Generative AI for video and creative tools."
     enabled: true
 
-  - name: Replicate
-    careers_url: https://job-boards.greenhouse.io/replicate
-    api: https://boards-api.greenhouse.io/v1/boards/replicate/jobs
+  - name: "Astro Mechanica"
     tier: a16z
-    notes: "Run open-source ML models via API."
     enabled: true
 
-  - name: Weights & Biases
-    careers_url: https://jobs.lever.co/wandb
+  - name: "Atlys"
     tier: a16z
-    notes: "MLOps / experiment tracking platform."
     enabled: true
 
-  - name: Snorkel AI
-    careers_url: https://job-boards.greenhouse.io/snorkelai
-    api: https://boards-api.greenhouse.io/v1/boards/snorkelai/jobs
+  - name: "Ava Labs"
     tier: a16z
-    notes: "Data-centric AI / programmatic labeling."
     enabled: true
 
-  - name: Anyscale
-    careers_url: https://jobs.lever.co/anyscale
+  - name: "Azra Games"
     tier: a16z
-    notes: "Ray framework. Distributed AI compute."
     enabled: true
 
-  - name: Abridge
-    careers_url: https://job-boards.greenhouse.io/aaboralgeai
-    api: https://boards-api.greenhouse.io/v1/boards/aaboralgeai/jobs
+  - name: "Babylon Labs"
     tier: a16z
-    notes: "AI medical scribe. Healthcare AI."
     enabled: true
 
-  # -- Media & Content --
-
-  - name: Substack
-    careers_url: https://job-boards.greenhouse.io/substackinc
-    api: https://boards-api.greenhouse.io/v1/boards/substackinc/jobs
+  - name: "Base Power Company"
     tier: a16z
-    notes: "Newsletter & subscription media platform."
     enabled: true
 
-  # -- Travel & Enterprise --
-
-  - name: Navan
-    careers_url: https://job-boards.greenhouse.io/naboralan
-    api: https://boards-api.greenhouse.io/v1/boards/naboralan/jobs
+  - name: "Bastion"
     tier: a16z
-    notes: "Corporate travel & expense management."
+    enabled: true
+
+  - name: "Bayesian Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Bead AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Belong"
+    tier: a16z
+    enabled: true
+
+  - name: "Benchling"
+    tier: a16z
+    enabled: true
+
+  - name: "BigHat Biosciences"
+    tier: a16z
+    enabled: true
+
+  - name: "Black Forest Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Blackbird"
+    tier: a16z
+    enabled: true
+
+  - name: "Bold"
+    tier: a16z
+    enabled: true
+
+  - name: "Bonfire Studios"
+    tier: a16z
+    enabled: true
+
+  - name: "Bounce"
+    tier: a16z
+    enabled: true
+
+  - name: "Braintrust Data"
+    tier: a16z
+    enabled: true
+
+  - name: "CAMP4 Therapeutics"
+    tier: a16z
+    enabled: true
+
+  - name: "CCP"
+    tier: a16z
+    enabled: true
+
+  - name: "CX2"
+    tier: a16z
+    enabled: true
+
+  - name: "CYGNVS"
+    tier: a16z
+    enabled: true
+
+  - name: "Camber"
+    tier: a16z
+    enabled: true
+
+  - name: "Cantina"
+    tier: a16z
+    enabled: true
+
+  - name: "Cape"
+    tier: a16z
+    enabled: true
+
+  - name: "Capitolis"
+    tier: a16z
+    enabled: true
+
+  - name: "Carta"
+    tier: a16z
+    enabled: true
+
+  - name: "Cartography Biosciences"
+    tier: a16z
+    enabled: true
+
+  - name: "Castelion"
+    tier: a16z
+    enabled: true
+
+  - name: "Cedar"
+    tier: a16z
+    enabled: true
+
+  - name: "Chariot Defense"
+    tier: a16z
+    enabled: true
+
+  - name: "ChartHop"
+    tier: a16z
+    enabled: true
+
+  - name: "Cider"
+    tier: a16z
+    enabled: true
+
+  - name: "ClickUp"
+    tier: a16z
+    enabled: true
+
+  - name: "Clubhouse"
+    tier: a16z
+    enabled: true
+
+  - name: "Clutch"
+    tier: a16z
+    enabled: true
+
+  - name: "CoinSwitch Kuber"
+    tier: a16z
+    enabled: true
+
+  - name: "Concourse"
+    tier: a16z
+    enabled: true
+
+  - name: "ConductorAI"
+    tier: a16z
+    enabled: true
+
+  - name: "Convex"
+    tier: a16z
+    enabled: true
+
+  - name: "Cresta"
+    tier: a16z
+    enabled: true
+
+  - name: "Cross River"
+    tier: a16z
+    enabled: true
+
+  - name: "Crux"
+    tier: a16z
+    enabled: true
+
+  - name: "Cuenca"
+    tier: a16z
+    enabled: true
+
+  - name: "Current"
+    tier: a16z
+    enabled: true
+
+  - name: "Cursor"
+    tier: a16z
+    enabled: true
+
+  - name: "Cyngn"
+    tier: a16z
+    enabled: true
+
+  - name: "Databricks"
+    tier: a16z
+    enabled: true
+
+  - name: "Decagon"
+    tier: a16z
+    enabled: true
+
+  - name: "Deel"
+    tier: a16z
+    enabled: true
+
+  - name: "Descript"
+    tier: a16z
+    enabled: true
+
+  - name: "Devoted Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Dialpad"
+    tier: a16z
+    enabled: true
+
+  - name: "Diode Computers"
+    tier: a16z
+    enabled: true
+
+  - name: "Doppel"
+    tier: a16z
+    enabled: true
+
+  - name: "Dyno Therapeutics"
+    tier: a16z
+    enabled: true
+
+  - name: "ELEGEN"
+    tier: a16z
+    enabled: true
+
+  - name: "Earli"
+    tier: a16z
+    enabled: true
+
+  - name: "Earnin"
+    tier: a16z
+    enabled: true
+
+  - name: "EigenLayer"
+    tier: a16z
+    enabled: true
+
+  - name: "ElevenLabs"
+    tier: a16z
+    enabled: true
+
+  - name: "EliseAI"
+    tier: a16z
+    enabled: true
+
+  - name: "EngFlow"
+    tier: a16z
+    enabled: true
+
+  - name: "Envoy"
+    tier: a16z
+    enabled: true
+
+  - name: "Eve"
+    tier: a16z
+    enabled: true
+
+  - name: "Everlaw"
+    tier: a16z
+    enabled: true
+
+  - name: "Exowatt"
+    tier: a16z
+    enabled: true
+
+  - name: "Fal"
+    tier: a16z
+    enabled: true
+
+  - name: "Figma"
+    tier: a16z
+    enabled: true
+
+  - name: "Filmhub"
+    tier: a16z
+    enabled: true
+
+  - name: "Fivetran"
+    tier: a16z
+    enabled: true
+
+  - name: "Flexport"
+    tier: a16z
+    enabled: true
+
+  - name: "Flock Homes"
+    tier: a16z
+    enabled: true
+
+  - name: "Flock Safety"
+    tier: a16z
+    enabled: true
+
+  - name: "Flow"
+    tier: a16z
+    enabled: true
+
+  - name: "Formation Bio"
+    tier: a16z
+    enabled: true
+
+  - name: "Fortuna Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Forward Networks"
+    tier: a16z
+    enabled: true
+
+  - name: "Foursquare"
+    tier: a16z
+    enabled: true
+
+  - name: "Freenome"
+    tier: a16z
+    enabled: true
+
+  - name: "Fudo"
+    tier: a16z
+    enabled: true
+
+  - name: "Function Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Further AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Galadyne"
+    tier: a16z
+    enabled: true
+
+  - name: "Gamma"
+    tier: a16z
+    enabled: true
+
+  - name: "Glimpse"
+    tier: a16z
+    enabled: true
+
+  - name: "GoodData"
+    tier: a16z
+    enabled: true
+
+  - name: "Graphite"
+    tier: a16z
+    enabled: true
+
+  - name: "Greenlight"
+    tier: a16z
+    enabled: true
+
+  - name: "Grepr"
+    tier: a16z
+    enabled: true
+
+  - name: "Gym Class"
+    tier: a16z
+    enabled: true
+
+  - name: "Hadrian"
+    tier: a16z
+    enabled: true
+
+  - name: "Halliday"
+    tier: a16z
+    enabled: true
+
+  - name: "HappyRobot"
+    tier: a16z
+    enabled: true
+
+  - name: "Harvey"
+    tier: a16z
+    enabled: true
+
+  - name: "Headway"
+    tier: a16z
+    enabled: true
+
+  - name: "Hebbia AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Hedra"
+    tier: a16z
+    enabled: true
+
+  - name: "Hercules"
+    tier: a16z
+    enabled: true
+
+  - name: "Heron Power"
+    tier: a16z
+    enabled: true
+
+  - name: "Hex Technologies"
+    tier: a16z
+    enabled: true
+
+  - name: "Hippocratic AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Honor"
+    tier: a16z
+    enabled: true
+
+  - name: "IYK"
+    tier: a16z
+    enabled: true
+
+  - name: "Ideogram"
+    tier: a16z
+    enabled: true
+
+  - name: "Illumio"
+    tier: a16z
+    enabled: true
+
+  - name: "Imply"
+    tier: a16z
+    enabled: true
+
+  - name: "Improbable"
+    tier: a16z
+    enabled: true
+
+  - name: "Inceptive"
+    tier: a16z
+    enabled: true
+
+  - name: "Incredible Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Inductive Bio"
+    tier: a16z
+    enabled: true
+
+  - name: "Inferact"
+    tier: a16z
+    enabled: true
+
+  - name: "Infinite Machine"
+    tier: a16z
+    enabled: true
+
+  - name: "Infinitus Systems"
+    tier: a16z
+    enabled: true
+
+  - name: "Inngest"
+    tier: a16z
+    enabled: true
+
+  - name: "Insitro"
+    tier: a16z
+    enabled: true
+
+  - name: "Instabase"
+    tier: a16z
+    enabled: true
+
+  - name: "Instacart"
+    tier: a16z
+    enabled: true
+
+  - name: "Intro"
+    tier: a16z
+    enabled: true
+
+  - name: "Jeeves"
+    tier: a16z
+    enabled: true
+
+  - name: "Kaedim"
+    tier: a16z
+    enabled: true
+
+  - name: "Kairos"
+    tier: a16z
+    enabled: true
+
+  - name: "Kaizen Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Kalshi"
+    tier: a16z
+    enabled: true
+
+  - name: "Kavak"
+    tier: a16z
+    enabled: true
+
+  - name: "Kindred"
+    tier: a16z
+    enabled: true
+
+  - name: "KoBold Metals"
+    tier: a16z
+    enabled: true
+
+  - name: "Kodex"
+    tier: a16z
+    enabled: true
+
+  - name: "Komodo Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Kong"
+    tier: a16z
+    enabled: true
+
+  - name: "LTSE"
+    tier: a16z
+    enabled: true
+
+  - name: "Labelbox"
+    tier: a16z
+    enabled: true
+
+  - name: "LayerZero Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Lido"
+    tier: a16z
+    enabled: true
+
+  - name: "Lightspark"
+    tier: a16z
+    enabled: true
+
+  - name: "Lime"
+    tier: a16z
+    enabled: true
+
+  - name: "Lio"
+    tier: a16z
+    enabled: true
+
+  - name: "Loft"
+    tier: a16z
+    enabled: true
+
+  - name: "Lookout"
+    tier: a16z
+    enabled: true
+
+  - name: "Luma AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Lumos"
+    tier: a16z
+    enabled: true
+
+  - name: "Magic Leap"
+    tier: a16z
+    enabled: true
+
+  - name: "Mariana Minerals"
+    tier: a16z
+    enabled: true
+
+  - name: "Material Security"
+    tier: a16z
+    enabled: true
+
+  - name: "Maven"
+    tier: a16z
+    enabled: true
+
+  - name: "Maze Therapeutics"
+    tier: a16z
+    enabled: true
+
+  - name: "Medium.com"
+    tier: a16z
+    enabled: true
+
+  - name: "Mem Protocol"
+    tier: a16z
+    enabled: true
+
+  - name: "Mercury"
+    tier: a16z
+    enabled: true
+
+  - name: "Method"
+    tier: a16z
+    enabled: true
+
+  - name: "Method Security"
+    tier: a16z
+    enabled: true
+
+  - name: "Metronome"
+    tier: a16z
+    enabled: true
+
+  - name: "Midstream Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Mind Robotics"
+    tier: a16z
+    enabled: true
+
+  - name: "Mintlify"
+    tier: a16z
+    enabled: true
+
+  - name: "Mirage"
+    tier: a16z
+    enabled: true
+
+  - name: "Mistral AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Mixpanel"
+    tier: a16z
+    enabled: true
+
+  - name: "ModernFi"
+    tier: a16z
+    enabled: true
+
+  - name: "Moov Financial"
+    tier: a16z
+    enabled: true
+
+  - name: "MotherDuck"
+    tier: a16z
+    enabled: true
+
+  - name: "Mux"
+    tier: a16z
+    enabled: true
+
+  - name: "Mysten Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "NEAR Protocol"
+    tier: a16z
+    enabled: true
+
+  - name: "Nansen"
+    tier: a16z
+    enabled: true
+
+  - name: "Nash"
+    tier: a16z
+    enabled: true
+
+  - name: "Navan"
+    tier: a16z
+    enabled: true
+
+  - name: "Neighbor"
+    tier: a16z
+    enabled: true
+
+  - name: "Netlify"
+    tier: a16z
+    enabled: true
+
+  - name: "Nexthop AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Nomic"
+    tier: a16z
+    enabled: true
+
+  - name: "Northwood Space"
+    tier: a16z
+    enabled: true
+
+  - name: "Oboe"
+    tier: a16z
+    enabled: true
+
+  - name: "Octant"
+    tier: a16z
+    enabled: true
+
+  - name: "Odyssey"
+    tier: a16z
+    enabled: true
+
+  - name: "OfferUp"
+    tier: a16z
+    enabled: true
+
+  - name: "Omada Health"
+    tier: a16z
+    enabled: true
+
+  - name: "OpenAI"
+    tier: a16z
+    enabled: true
+
+  - name: "OpenGov"
+    tier: a16z
+    enabled: true
+
+  - name: "OpenRouter"
+    tier: a16z
+    enabled: true
+
+  - name: "OpenSea"
+    tier: a16z
+    enabled: true
+
+  - name: "Overtime"
+    tier: a16z
+    enabled: true
+
+  - name: "Overwolf"
+    tier: a16z
+    enabled: true
+
+  - name: "Palmstreet"
+    tier: a16z
+    enabled: true
+
+  - name: "Partiful"
+    tier: a16z
+    enabled: true
+
+  - name: "Patch"
+    tier: a16z
+    enabled: true
+
+  - name: "Pave"
+    tier: a16z
+    enabled: true
+
+  - name: "Pearl Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Periodic Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Phantom"
+    tier: a16z
+    enabled: true
+
+  - name: "Phylo"
+    tier: a16z
+    enabled: true
+
+  - name: "Pindrop Security"
+    tier: a16z
+    enabled: true
+
+  - name: "Pinecone"
+    tier: a16z
+    enabled: true
+
+  - name: "Plaid"
+    tier: a16z
+    enabled: true
+
+  - name: "PlanetScale"
+    tier: a16z
+    enabled: true
+
+  - name: "Podium Automation"
+    tier: a16z
+    enabled: true
+
+  - name: "Point"
+    tier: a16z
+    enabled: true
+
+  - name: "Polychain Capital"
+    tier: a16z
+    enabled: true
+
+  - name: "Pomelo Care"
+    tier: a16z
+    enabled: true
+
+  - name: "Post"
+    tier: a16z
+    enabled: true
+
+  - name: "Promise"
+    tier: a16z
+    enabled: true
+
+  - name: "Proof of Play"
+    tier: a16z
+    enabled: true
+
+  - name: "Pylon"
+    tier: a16z
+    enabled: true
+
+  - name: "Quora"
+    tier: a16z
+    enabled: true
+
+  - name: "Radiant"
+    tier: a16z
+    enabled: true
+
+  - name: "Rappi"
+    tier: a16z
+    enabled: true
+
+  - name: "Rasa"
+    tier: a16z
+    enabled: true
+
+  - name: "Raspberry AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Reducto"
+    tier: a16z
+    enabled: true
+
+  - name: "Reface"
+    tier: a16z
+    enabled: true
+
+  - name: "Reforge"
+    tier: a16z
+    enabled: true
+
+  - name: "Regrello"
+    tier: a16z
+    enabled: true
+
+  - name: "Relace"
+    tier: a16z
+    enabled: true
+
+  - name: "Replit"
+    tier: a16z
+    enabled: true
+
+  - name: "Resend"
+    tier: a16z
+    enabled: true
+
+  - name: "Revolut"
+    tier: a16z
+    enabled: true
+
+  - name: "Rezo Therapeutics"
+    tier: a16z
+    enabled: true
+
+  - name: "RigUp"
+    tier: a16z
+    enabled: true
+
+  - name: "Rigetti Computing"
+    tier: a16z
+    enabled: true
+
+  - name: "Rillet"
+    tier: a16z
+    enabled: true
+
+  - name: "Rive"
+    tier: a16z
+    enabled: true
+
+  - name: "Roebling"
+    tier: a16z
+    enabled: true
+
+  - name: "Rune Technologies"
+    tier: a16z
+    enabled: true
+
+  - name: "Runway"
+    tier: a16z
+    enabled: true
+
+  - name: "Salient"
+    tier: a16z
+    enabled: true
+
+  - name: "Sandbox VR"
+    tier: a16z
+    enabled: true
+
+  - name: "Sardine"
+    tier: a16z
+    enabled: true
+
+  - name: "Saronic Technologies"
+    tier: a16z
+    enabled: true
+
+  - name: "Senra Systems"
+    tier: a16z
+    enabled: true
+
+  - name: "SentiLink"
+    tier: a16z
+    enabled: true
+
+  - name: "Sequence"
+    tier: a16z
+    enabled: true
+
+  - name: "Series Entertainment"
+    tier: a16z
+    enabled: true
+
+  - name: "Sesame"
+    tier: a16z
+    enabled: true
+
+  - name: "Setpoint.io"
+    tier: a16z
+    enabled: true
+
+  - name: "Sharp Performance"
+    tier: a16z
+    enabled: true
+
+  - name: "Shef"
+    tier: a16z
+    enabled: true
+
+  - name: "Shield AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Sky Mavis"
+    tier: a16z
+    enabled: true
+
+  - name: "Skydio"
+    tier: a16z
+    enabled: true
+
+  - name: "Sleeper"
+    tier: a16z
+    enabled: true
+
+  - name: "Slingshot AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Sloyd"
+    tier: a16z
+    enabled: true
+
+  - name: "SnapLogic"
+    tier: a16z
+    enabled: true
+
+  - name: "Socket.dev"
+    tier: a16z
+    enabled: true
+
+  - name: "Sola"
+    tier: a16z
+    enabled: true
+
+  - name: "Solana Foundation"
+    tier: a16z
+    enabled: true
+
+  - name: "Spade"
+    tier: a16z
+    enabled: true
+
+  - name: "Sphere"
+    tier: a16z
+    enabled: true
+
+  - name: "SpotOn"
+    tier: a16z
+    enabled: true
+
+  - name: "Sprig"
+    tier: a16z
+    enabled: true
+
+  - name: "Sprinter Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Spruce Systems"
+    tier: a16z
+    enabled: true
+
+  - name: "Stack Overflow"
+    tier: a16z
+    enabled: true
+
+  - name: "Stainless"
+    tier: a16z
+    enabled: true
+
+  - name: "Standard Nuclear"
+    tier: a16z
+    enabled: true
+
+  - name: "Starburst"
+    tier: a16z
+    enabled: true
+
+  - name: "Stoïk"
+    tier: a16z
+    enabled: true
+
+  - name: "Stripe"
+    tier: a16z
+    enabled: true
+
+  - name: "Stuut"
+    tier: a16z
+    enabled: true
+
+  - name: "Substack"
+    tier: a16z
+    enabled: true
+
+  - name: "SuperGaming"
+    tier: a16z
+    enabled: true
+
+  - name: "Svix"
+    tier: a16z
+    enabled: true
+
+  - name: "TENEX.AI"
+    tier: a16z
+    enabled: true
+
+  - name: "Tako"
+    tier: a16z
+    enabled: true
+
+  - name: "Talkiatry"
+    tier: a16z
+    enabled: true
+
+  - name: "Talos"
+    tier: a16z
+    enabled: true
+
+  - name: "Tanium"
+    tier: a16z
+    enabled: true
+
+  - name: "Tellus"
+    tier: a16z
+    enabled: true
+
+  - name: "Temporal Technologies"
+    tier: a16z
+    enabled: true
+
+  - name: "Tennr"
+    tier: a16z
+    enabled: true
+
+  - name: "Thatch"
+    tier: a16z
+    enabled: true
+
+  - name: "The Believer Company"
+    tier: a16z
+    enabled: true
+
+  - name: "Thinking Machines Lab"
+    tier: a16z
+    enabled: true
+
+  - name: "Thyme Care"
+    tier: a16z
+    enabled: true
+
+  - name: "Titan"
+    tier: a16z
+    enabled: true
+
+  - name: "Toka - Cyber Builders"
+    tier: a16z
+    enabled: true
+
+  - name: "Toma"
+    tier: a16z
+    enabled: true
+
+  - name: "Topkey"
+    tier: a16z
+    enabled: true
+
+  - name: "TruckSmarter"
+    tier: a16z
+    enabled: true
+
+  - name: "Truemed"
+    tier: a16z
+    enabled: true
+
+  - name: "Truffle Security"
+    tier: a16z
+    enabled: true
+
+  - name: "Trunk"
+    tier: a16z
+    enabled: true
+
+  - name: "Turquoise Health"
+    tier: a16z
+    enabled: true
+
+  - name: "Udio"
+    tier: a16z
+    enabled: true
+
+  - name: "Ultima Genomics"
+    tier: a16z
+    enabled: true
+
+  - name: "Unconventional AI"
+    tier: a16z
+    enabled: true
+
+  - name: "UniSwap"
+    tier: a16z
+    enabled: true
+
+  - name: "UnitedMasters"
+    tier: a16z
+    enabled: true
+
+  - name: "Valon Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Vantage"
+    tier: a16z
+    enabled: true
+
+  - name: "VeeFriends"
+    tier: a16z
+    enabled: true
+
+  - name: "Very Good Security"
+    tier: a16z
+    enabled: true
+
+  - name: "Viggle"
+    tier: a16z
+    enabled: true
+
+  - name: "Voldex"
+    tier: a16z
+    enabled: true
+
+  - name: "Walrus Foundation"
+    tier: a16z
+    enabled: true
+
+  - name: "Waymark"
+    tier: a16z
+    enabled: true
+
+  - name: "Waymo"
+    tier: a16z
+    enabled: true
+
+  - name: "Whatnot"
+    tier: a16z
+    enabled: true
+
+  - name: "Wingspan"
+    tier: a16z
+    enabled: true
+
+  - name: "Wiz"
+    tier: a16z
+    enabled: true
+
+  - name: "Wonderschool"
+    tier: a16z
+    enabled: true
+
+  - name: "WorkBoard"
+    tier: a16z
+    enabled: true
+
+  - name: "World Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "Worldcoin"
+    tier: a16z
+    enabled: true
+
+  - name: "Wrapbook"
+    tier: a16z
+    enabled: true
+
+  - name: "Yubico"
+    tier: a16z
+    enabled: true
+
+  - name: "Yuno"
+    tier: a16z
+    enabled: true
+
+  - name: "Zipline"
+    tier: a16z
+    enabled: true
+
+  - name: "Zuma"
+    tier: a16z
+    enabled: true
+
+  - name: "Zus Health"
+    tier: a16z
+    enabled: true
+
+  - name: "dbt Labs"
+    tier: a16z
+    enabled: true
+
+  - name: "hyperexponential"
+    tier: a16z
+    enabled: true
+
+  - name: "k-ID"
+    tier: a16z
+    enabled: true
+
+  - name: "knownwell"
+    tier: a16z
+    enabled: true
+
+  - name: "krea.ai"
+    tier: a16z
+    enabled: true
+
+  - name: "xAI"
+    tier: a16z
     enabled: true
 
   # ============================================================
-  # TIER 2 — SPEEDRUN TALENT NETWORK
-  # Companies that hire through the a16z speedrun talent network.
-  # These are populated as companies onboard to the network.
-  #
-  # To add a company here:
-  #   1. Get the company's ATS careers URL (Greenhouse, Ashby, or Lever)
-  #   2. Add an entry with tier: speedrun
-  #   3. If Greenhouse, add the api: field for structured JSON access
-  #   4. Set notes with company stage and any relevant context
-  #
-  # Example:
-  #   - name: Acme Corp
-  #     careers_url: https://jobs.ashbyhq.com/acme
-  #     tier: speedrun
-  #     notes: "Series A. AI-native CRM. Hiring founding engineers."
-  #     enabled: true
+  # TIER 2 — SPEEDRUN NETWORK (181 companies)
+  # Scraped from speedrun.a16z.com/companies on 2026-04-10.
+  # These companies participate in the speedrun talent network.
   # ============================================================
 
-  # Placeholder — speedrun network companies will be added here as they
-  # join the talent network. The /speedrun talent-network command can
-  # auto-populate this section from the network roster.
-
-  # - name: Example Startup
-  #   careers_url: https://jobs.ashbyhq.com/example
-  #   tier: speedrun
-  #   notes: "Seed stage. AI + vertical SaaS."
-  #   enabled: true
-
-  # ============================================================
-  # TIER 3 — OTHER TOP-TIER VC PORTFOLIOS
-  # Well-known companies from Sequoia, Founders Fund, Benchmark,
-  # Greylock, Index, Accel, and other top-tier VCs.
-  # ============================================================
-
-  # -- AI Labs & Frontier Models --
-
-  - name: OpenAI
-    careers_url: https://openai.com/careers
-    scan_method: websearch
-    scan_query: 'site:openai.com/careers "Engineer" OR "Solutions" OR "AI" OR "Research"'
-    tier: other_vc
-    notes: "Frontier AI lab. Massive hiring across eng, research, and applied."
+  - name: "2weeks"
+    tier: speedrun
     enabled: true
 
-  - name: Anthropic
-    careers_url: https://job-boards.greenhouse.io/anthropic
-    api: https://boards-api.greenhouse.io/v1/boards/anthropic/jobs
-    tier: other_vc
-    notes: "AI safety company. Claude models. Google-backed."
+  - name: "Adzap"
+    tier: speedrun
     enabled: true
 
-  - name: Cohere
-    careers_url: https://jobs.ashbyhq.com/cohere
-    tier: other_vc
-    notes: "Enterprise AI/LLM provider. Toronto + remote."
+  - name: "Agent Astra"
+    tier: speedrun
     enabled: true
 
-  - name: Hugging Face
-    careers_url: https://apply.workable.com/huggingface/
-    scan_method: websearch
-    scan_query: 'site:apply.workable.com/huggingface'
-    tier: other_vc
-    notes: "Paris / NYC / Remote. Open-source ML models & hub."
+  - name: "Aghanim"
+    tier: speedrun
     enabled: true
 
-  - name: Perplexity
-    careers_url: https://jobs.ashbyhq.com/perplexity
-    tier: other_vc
-    notes: "AI-native search engine. Bezos, Nvidia backed."
+  - name: "Alpaka Games"
+    tier: speedrun
     enabled: true
 
-  - name: Cursor
-    careers_url: https://jobs.ashbyhq.com/anysphere
-    tier: other_vc
-    notes: "AI-native code editor. Founders Fund, a16z. Explosive growth."
+  - name: "Ambiguous"
+    tier: speedrun
     enabled: true
 
-  # -- Security & Infrastructure --
-
-  - name: Wiz
-    careers_url: https://job-boards.greenhouse.io/waboraliz
-    api: https://boards-api.greenhouse.io/v1/boards/waboraliz/jobs
-    tier: other_vc
-    notes: "Cloud security platform. Sequoia, Index, Insight backed. Massive eng org."
+  - name: "Anchr"
+    tier: speedrun
     enabled: true
 
-  # -- Payments & Fintech --
-
-  - name: Stripe
-    careers_url: https://stripe.com/jobs
-    scan_method: websearch
-    scan_query: 'site:stripe.com/jobs "Engineer" OR "AI" OR "Solutions" OR "Architect"'
-    tier: other_vc
-    notes: "Payments infrastructure. Sequoia backed. Very large eng team."
+  - name: "AndThen"
+    tier: speedrun
     enabled: true
 
-  - name: Rippling
-    careers_url: https://job-boards.greenhouse.io/rippling
-    api: https://boards-api.greenhouse.io/v1/boards/rippling/jobs
-    tier: other_vc
-    notes: "HR + IT + Finance platform. Founders Fund, Sequoia backed."
+  - name: "Argu"
+    tier: speedrun
     enabled: true
 
-  # -- Design & Collaboration --
-
-  - name: Canva
-    careers_url: https://job-boards.greenhouse.io/canva
-    api: https://boards-api.greenhouse.io/v1/boards/canva/jobs
-    tier: other_vc
-    notes: "Design platform. Sequoia, Blackbird backed. AI features expanding."
+  - name: "Artifact"
+    tier: speedrun
     enabled: true
 
-  - name: Linear
-    careers_url: https://linear.app/careers
-    scan_method: websearch
-    scan_query: 'site:linear.app/careers OR "linear.app" "Engineer" OR "Product" site:jobs.ashbyhq.com'
-    tier: other_vc
-    notes: "Project management for software teams. Sequoia, Accel backed."
+  - name: "Atorie"
+    tier: speedrun
     enabled: true
 
-  # -- Social & Community --
-
-  - name: Reddit
-    careers_url: https://job-boards.greenhouse.io/reddit
-    api: https://boards-api.greenhouse.io/v1/boards/reddit/jobs
-    tier: other_vc
-    notes: "Social platform. Sequoia backed. ML/personalization heavy."
+  - name: "Atrios"
+    tier: speedrun
     enabled: true
 
-  - name: Discord
-    careers_url: https://job-boards.greenhouse.io/discord
-    api: https://boards-api.greenhouse.io/v1/boards/discord/jobs
-    tier: other_vc
-    notes: "Communication platform. Benchmark, Greylock backed."
+  - name: "Autonomous Investing"
+    tier: speedrun
+    enabled: true
+
+  - name: "AvatarOS"
+    tier: speedrun
+    enabled: true
+
+  - name: "Avenir AI"
+    tier: speedrun
+    enabled: true
+
+  - name: "Axon"
+    tier: speedrun
+    enabled: true
+
+  - name: "Azimov"
+    tier: speedrun
+    enabled: true
+
+  - name: "BotBot"
+    tier: speedrun
+    enabled: true
+
+  - name: "Braid"
+    tier: speedrun
+    enabled: true
+
+  - name: "Brief"
+    tier: speedrun
+    enabled: true
+
+  - name: "COHORT"
+    tier: speedrun
+    enabled: true
+
+  - name: "Canto Reality"
+    tier: speedrun
+    enabled: true
+
+  - name: "Checkmate"
+    tier: speedrun
+    enabled: true
+
+  - name: "Cheddr"
+    tier: speedrun
+    enabled: true
+
+  - name: "Chronicler"
+    tier: speedrun
+    enabled: true
+
+  - name: "Circle Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Clementine"
+    tier: speedrun
+    enabled: true
+
+  - name: "Clouted"
+    tier: speedrun
+    enabled: true
+
+  - name: "Clubs Poker"
+    tier: speedrun
+    enabled: true
+
+  - name: "Communion"
+    tier: speedrun
+    enabled: true
+
+  - name: "Coverd"
+    tier: speedrun
+    enabled: true
+
+  - name: "Coverstar"
+    tier: speedrun
+    enabled: true
+
+  - name: "Crater Studios"
+    tier: speedrun
+    enabled: true
+
+  - name: "Creed"
+    tier: speedrun
+    enabled: true
+
+  - name: "Crema Social"
+    tier: speedrun
+    enabled: true
+
+  - name: "Dare Drop"
+    tier: speedrun
+    enabled: true
+
+  - name: "Darwin"
+    tier: speedrun
+    enabled: true
+
+  - name: "Definitely Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Dex"
+    tier: speedrun
+    enabled: true
+
+  - name: "Dispatcher"
+    tier: speedrun
+    enabled: true
+
+  - name: "Double Dusk"
+    tier: speedrun
+    enabled: true
+
+  - name: "DoubleFifth"
+    tier: speedrun
+    enabled: true
+
+  - name: "Doublespeed"
+    tier: speedrun
+    enabled: true
+
+  - name: "Dream Voyage"
+    tier: speedrun
+    enabled: true
+
+  - name: "Drill Creative, Inc."
+    tier: speedrun
+    enabled: true
+
+  - name: "Echo Chunk"
+    tier: speedrun
+    enabled: true
+
+  - name: "Edgar"
+    tier: speedrun
+    enabled: true
+
+  - name: "Else"
+    tier: speedrun
+    enabled: true
+
+  - name: "Elsewhere"
+    tier: speedrun
+    enabled: true
+
+  - name: "Endo Health"
+    tier: speedrun
+    enabled: true
+
+  - name: "EverCurrent"
+    tier: speedrun
+    enabled: true
+
+  - name: "Ex-Human"
+    tier: speedrun
+    enabled: true
+
+  - name: "Exia Labs"
+    tier: speedrun
+    enabled: true
+
+  - name: "Ezra AI Labs"
+    tier: speedrun
+    enabled: true
+
+  - name: "FLORA"
+    tier: speedrun
+    enabled: true
+
+  - name: "Fearn"
+    tier: speedrun
+    enabled: true
+
+  - name: "Figment"
+    tier: speedrun
+    enabled: true
+
+  - name: "First Day Entertainment"
+    tier: speedrun
+    enabled: true
+
+  - name: "First Voyage"
+    tier: speedrun
+    enabled: true
+
+  - name: "Flat2VR Studios"
+    tier: speedrun
+    enabled: true
+
+  - name: "GG Folks"
+    tier: speedrun
+    enabled: true
+
+  - name: "Gamebeast"
+    tier: speedrun
+    enabled: true
+
+  - name: "General Magic"
+    tier: speedrun
+    enabled: true
+
+  - name: "Genway AI"
+    tier: speedrun
+    enabled: true
+
+  - name: "Ghosted"
+    tier: speedrun
+    enabled: true
+
+  - name: "Glyf"
+    tier: speedrun
+    enabled: true
+
+  - name: "Greathorn Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Gridsnap"
+    tier: speedrun
+    enabled: true
+
+  - name: "Hooper"
+    tier: speedrun
+    enabled: true
+
+  - name: "Househunt"
+    tier: speedrun
+    enabled: true
+
+  - name: "Human Computer"
+    tier: speedrun
+    enabled: true
+
+  - name: "Incite Interactive"
+    tier: speedrun
+    enabled: true
+
+  - name: "Intangible"
+    tier: speedrun
+    enabled: true
+
+  - name: "Jigsaw"
+    tier: speedrun
+    enabled: true
+
+  - name: "Jooba"
+    tier: speedrun
+    enabled: true
+
+  - name: "Kanu AI"
+    tier: speedrun
+    enabled: true
+
+  - name: "Keewano"
+    tier: speedrun
+    enabled: true
+
+  - name: "Kintow"
+    tier: speedrun
+    enabled: true
+
+  - name: "Kitbash"
+    tier: speedrun
+    enabled: true
+
+  - name: "LFG"
+    tier: speedrun
+    enabled: true
+
+  - name: "LIVE AWARE"
+    tier: speedrun
+    enabled: true
+
+  - name: "Layerpath"
+    tier: speedrun
+    enabled: true
+
+  - name: "Legion"
+    tier: speedrun
+    enabled: true
+
+  - name: "Lekondo"
+    tier: speedrun
+    enabled: true
+
+  - name: "Level Headed Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Lil Snack"
+    tier: speedrun
+    enabled: true
+
+  - name: "Limy AI"
+    tier: speedrun
+    enabled: true
+
+  - name: "Little Umbrella"
+    tier: speedrun
+    enabled: true
+
+  - name: "Loan Labs"
+    tier: speedrun
+    enabled: true
+
+  - name: "Logical Health"
+    tier: speedrun
+    enabled: true
+
+  - name: "Luvu"
+    tier: speedrun
+    enabled: true
+
+  - name: "Magic Circle"
+    tier: speedrun
+    enabled: true
+
+  - name: "Maniac"
+    tier: speedrun
+    enabled: true
+
+  - name: "Manifest"
+    tier: speedrun
+    enabled: true
+
+  - name: "Mara"
+    tier: speedrun
+    enabled: true
+
+  - name: "Margin"
+    tier: speedrun
+    enabled: true
+
+  - name: "Marlo"
+    tier: speedrun
+    enabled: true
+
+  - name: "Matchday"
+    tier: speedrun
+    enabled: true
+
+  - name: "Messengage.ai"
+    tier: speedrun
+    enabled: true
+
+  - name: "Metal"
+    tier: speedrun
+    enabled: true
+
+  - name: "Metro Labs"
+    tier: speedrun
+    enabled: true
+
+  - name: "Mini Studio"
+    tier: speedrun
+    enabled: true
+
+  - name: "Moescape"
+    tier: speedrun
+    enabled: true
+
+  - name: "Moku"
+    tier: speedrun
+    enabled: true
+
+  - name: "Moona Health"
+    tier: speedrun
+    enabled: true
+
+  - name: "Nativ"
+    tier: speedrun
+    enabled: true
+
+  - name: "Neon Commerce"
+    tier: speedrun
+    enabled: true
+
+  - name: "Neon Wild"
+    tier: speedrun
+    enabled: true
+
+  - name: "Nexad"
+    tier: speedrun
+    enabled: true
+
+  - name: "Nexxa.ai"
+    tier: speedrun
+    enabled: true
+
+  - name: "Nilo Technologies"
+    tier: speedrun
+    enabled: true
+
+  - name: "NoMi"
+    tier: speedrun
+    enabled: true
+
+  - name: "Ocoder"
+    tier: speedrun
+    enabled: true
+
+  - name: "Oleum"
+    tier: speedrun
+    enabled: true
+
+  - name: "Original Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Outcome"
+    tier: speedrun
+    enabled: true
+
+  - name: "Parhelion"
+    tier: speedrun
+    enabled: true
+
+  - name: "Pelago"
+    tier: speedrun
+    enabled: true
+
+  - name: "Pencil.dev"
+    tier: speedrun
+    enabled: true
+
+  - name: "Plots"
+    tier: speedrun
+    enabled: true
+
+  - name: "Plutus Labs"
+    tier: speedrun
+    enabled: true
+
+  - name: "Prepp"
+    tier: speedrun
+    enabled: true
+
+  - name: "Presia"
+    tier: speedrun
+    enabled: true
+
+  - name: "Qloud Games (Loftia)"
+    tier: speedrun
+    enabled: true
+
+  - name: "Quago"
+    tier: speedrun
+    enabled: true
+
+  - name: "RUNREAL"
+    tier: speedrun
+    enabled: true
+
+  - name: "Rascal Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Ray Browser"
+    tier: speedrun
+    enabled: true
+
+  - name: "Refactor Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Rehearsals"
+    tier: speedrun
+    enabled: true
+
+  - name: "Rivet"
+    tier: speedrun
+    enabled: true
+
+  - name: "Rork"
+    tier: speedrun
+    enabled: true
+
+  - name: "Rosebud"
+    tier: speedrun
+    enabled: true
+
+  - name: "Runware"
+    tier: speedrun
+    enabled: true
+
+  - name: "Sans Strings Studio"
+    tier: speedrun
+    enabled: true
+
+  - name: "Schemata"
+    tier: speedrun
+    enabled: true
+
+  - name: "Sekai"
+    tier: speedrun
+    enabled: true
+
+  - name: "Shockwave"
+    tier: speedrun
+    enabled: true
+
+  - name: "Sitch"
+    tier: speedrun
+    enabled: true
+
+  - name: "Sonatic"
+    tier: speedrun
+    enabled: true
+
+  - name: "SoulLink"
+    tier: speedrun
+    enabled: true
+
+  - name: "Soundmap"
+    tier: speedrun
+    enabled: true
+
+  - name: "Sourcerer"
+    tier: speedrun
+    enabled: true
+
+  - name: "Spark Space"
+    tier: speedrun
+    enabled: true
+
+  - name: "Spekter Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Story Engine Inc."
+    tier: speedrun
+    enabled: true
+
+  - name: "Sunflower"
+    tier: speedrun
+    enabled: true
+
+  - name: "SweatPals"
+    tier: speedrun
+    enabled: true
+
+  - name: "TaleMonster Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Talofa Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Talus Robotics"
+    tier: speedrun
+    enabled: true
+
+  - name: "TapTap Live"
+    tier: speedrun
+    enabled: true
+
+  - name: "Taya"
+    tier: speedrun
+    enabled: true
+
+  - name: "The Possible Company"
+    tier: speedrun
+    enabled: true
+
+  - name: "Torbie"
+    tier: speedrun
+    enabled: true
+
+  - name: "Tractive"
+    tier: speedrun
+    enabled: true
+
+  - name: "Trass Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "URSA Mining"
+    tier: speedrun
+    enabled: true
+
+  - name: "Unbound Technologies"
+    tier: speedrun
+    enabled: true
+
+  - name: "Unleashed Games"
+    tier: speedrun
+    enabled: true
+
+  - name: "Uthana"
+    tier: speedrun
+    enabled: true
+
+  - name: "VRL"
+    tier: speedrun
+    enabled: true
+
+  - name: "Valor"
+    tier: speedrun
+    enabled: true
+
+  - name: "Variant"
+    tier: speedrun
+    enabled: true
+
+  - name: "Vega"
+    tier: speedrun
+    enabled: true
+
+  - name: "Voidpet"
+    tier: speedrun
+    enabled: true
+
+  - name: "Waveful"
+    tier: speedrun
+    enabled: true
+
+  - name: "Windwalk"
+    tier: speedrun
+    enabled: true
+
+  - name: "YKB"
+    tier: speedrun
+    enabled: true
+
+  - name: "Zero Billion"
+    tier: speedrun
+    enabled: true
+
+  - name: "Zibra AI"
+    tier: speedrun
+    enabled: true
+
+  - name: "Zingroll"
+    tier: speedrun
+    enabled: true
+
+  - name: "bins"
+    tier: speedrun
+    enabled: true
+
+  - name: "nunu.ai"
+    tier: speedrun
+    enabled: true
+
+  - name: "trophi.ai"
+    tier: speedrun
+    enabled: true
+
+  - name: "videogame.ai"
+    tier: speedrun
     enabled: true
