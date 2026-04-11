@@ -10,4 +10,4 @@ database_id = "79b29861-92d0-4afa-a3a2-74abfa9d0752"
 [[d1_databases]]
 binding = "SIGNALS_DB"
 database_name = "speedrun-signals"
-database_id = "PLACEHOLDER_CREATE_VIA_WRANGLER"  # wrangler d1 create speedrun-signals
+database_id = "4ef949da-5a04-48d1-bcda-ef635018dfc9"
