@@ -77,137 +77,196 @@ Run these checks silently:
 
 #### How onboarding works
 
-**Use `EnterPlanMode`.** The onboarding is an interactive plan — not a Q&A chat. The user should see a visible plan with phases they can track progress through. Each phase has decision points where they approve, edit, or redirect.
+**This is an interactive, menu-driven experience — not a Q&A chat.** Use `EnterPlanMode` and `AskUserQuestion` at every decision point. The user should see structured choices they can select, not paragraphs they have to respond to with free text.
 
-**Start with ONE ask — get their resume.** Don't ask for name, email, location separately. Get one source document and extract everything:
+**AskUserQuestion format (MANDATORY for every decision point):**
 
-> "Let's get you set up. To start, I just need one thing — your resume in any format:
+```
+Via AskUserQuestion, ask:
+
+> [Context in 1-2 sentences]
 >
-> - **Paste your resume text** right here
-> - **Drop a LinkedIn PDF export** (File → Save as PDF from your profile)
-> - **Share your LinkedIn URL** and I'll pull what I can
->
-> Everything else I'll figure out from that."
+> [Plain-English explanation of what you need]
 
-**That's it. ONE input. Then the system does the work.**
+Options:
+- A) [Option 1] (recommended if applicable)
+- B) [Option 2]
+- C) [Option 3]
+```
+
+**NEVER print a paragraph and wait for free text when you could present options.** If there are reasonable choices, present them. If you genuinely need free-text input (like a resume paste), say exactly what format you want.
 
 ---
 
-#### After receiving the resume/LinkedIn
+#### Step 1: Get their resume (ONE input)
 
-Process whatever they provide. Extract: name, email (if present), location, current company, work history, education, skills, projects. Create `cv.md` immediately.
+Via AskUserQuestion, ask:
 
-Then **show the plan** — enter plan mode with this structure:
+> Let's get you set up. I just need one thing to start — your background in any format. I'll extract everything else.
+
+Options:
+- A) Paste my resume text
+- B) Drop a LinkedIn PDF (File → Save as PDF from your profile)
+- C) Share my LinkedIn URL
+- D) Just tell you about my experience
+
+**STOP.** Wait for their input. Process whatever they provide → extract name, email, location, company, work history, education, skills, projects → create `cv.md` immediately → write `config/profile.yml` with extracted data.
+
+---
+
+#### Step 2: Confirm profile
+
+After processing, **enter plan mode** and show a plan:
 
 ```
 Profile Setup
-  [x] Import resume
-  [ ] Review your profile (name, location, contact)
-  [ ] Confirm target roles
-  [ ] Highlight what makes you stand out
-  [ ] Quick logistics
-  [ ] Build portfolio site
-  [ ] Connect to talent network
-  [ ] Ready to search
+  [x] Import background
+  [ ] Review profile
+  [ ] Target roles
+  [ ] Standout achievements
+  [ ] Logistics
+  [ ] Portfolio
+  [ ] Talent network
+  [ ] Ready
 ```
 
----
+Then present what you extracted. Via AskUserQuestion:
 
-#### Phase: Review your profile
-
-Present what you extracted — don't ask them to type it in:
-
-> "Here's what I pulled from your resume:
+> Here's what I pulled from your background:
 >
-> **Name:** Jordan Mazer
-> **Location:** San Francisco, CA
-> **Current role:** [title] at [company]
-> **Experience:** [X] years, [N] roles
-> **Skills:** [top 5-7]
->
-> **Email:** [extracted or blank]
-> **LinkedIn:** [if they provided URL]
->
-> Does this look right? Anything to fix or add?"
+> **[Name]** — [Title] at [Company], [City]
+> **[X] years** across [N] roles. Skills: [top 5].
+> **[Email]** / **[LinkedIn]** [show if found, note if missing]
 
-If email/LinkedIn are missing, ask just for those: "I couldn't find your email — what's the best one to use?"
+Options:
+- A) Looks right, keep going
+- B) I need to fix something
 
-Write `config/profile.yml` with extracted data.
+If B → ask what to fix. If email/LinkedIn missing, follow up for just those.
 
 ---
 
-#### Phase: Confirm target roles
+#### Step 3: Confirm target roles
 
-**Infer roles from their background — don't ask a blank question.** Read cv.md, analyze their trajectory, and present:
+Read cv.md. Infer 3-5 target roles from their trajectory. Via AskUserQuestion:
 
-> "Based on your background, here's what I'd target:
+> Based on your background, here's what I'd target:
 >
-> 1. **[Role A]** — you have [X years] directly in this
-> 2. **[Role B]** — your [specific experience] maps well here
-> 3. **[Role C]** — stretch, but your [skill] makes it viable
+> 1. **[Role A]** — [why: X years directly in this]
+> 2. **[Role B]** — [why: specific experience maps here]
+> 3. **[Role C]** — [why: stretch but viable because of skill]
 >
-> Sound right? Want to add, remove, or reprioritize?"
+> RECOMMENDATION: These cover your core strengths + one stretch.
 
-Update `config/profile.yml` → `target_roles` with their confirmed list.
+Options:
+- A) These are right (recommended)
+- B) I'd adjust the list
+- C) I'm targeting something completely different
+
+If B or C → incorporate their corrections. Update `config/profile.yml` → `target_roles`.
 
 ---
 
-#### Phase: What makes you stand out
+#### Step 4: Standout achievements
 
-This is the most important phase. Don't ask generic questions. **Read their cv.md and surface the strongest signals yourself**, then ask them to confirm and add.
+**This is the most important step.** Read cv.md. Surface their 3-5 strongest signals yourself. Via AskUserQuestion:
 
-> "I read through your background and here's what stands out to me:
+> Here's what stands out to me from your background:
 >
-> - **[Specific achievement]** — [why it's impressive]
-> - **[Specific achievement]** — [why it matters for startups]
-> - **[Specific pattern]** — [what it signals about them]
+> - **[Achievement 1]** — [why it's impressive in 1 sentence]
+> - **[Achievement 2]** — [why it matters for startups]
+> - **[Pattern/trajectory]** — [what it signals]
 >
-> Are these the right things to lead with? And is there anything I'm missing — something that wouldn't be on a resume but would make a hiring manager say 'wait, really?'"
+> These are the things that would make a hiring manager say "wait, really?"
 
-Then dig deeper with follow-up questions based on what they say. Push for:
-- **Quantified impact** — "Can you put a number on that? Users, revenue, time saved?"
-- **0→1 evidence** — "Have you built something from scratch? A product, a team, a company?"
-- **What they're building now** — "Working on anything outside of work? Side project, open source, startup idea?"
-- **Polarity** — "What kind of work energizes you vs. drains you?"
+Options:
+- A) Those are the right things to lead with
+- B) You're missing something big — let me tell you
+- C) I'd reorder / reframe these
 
-Store everything in `config/profile.yml` → `narrative` and create `article-digest.md` with proof points.
+If B → they'll add something. Push for specifics: "Can you quantify that?" Store with metrics.
 
----
+Then follow up with a second AskUserQuestion:
 
-#### Phase: Quick logistics
+> A few more things that help candidates stand out. Which of these apply to you?
 
-Ask these briefly:
-- "Are you considering founding a company, or purely looking to join one?"
-- "Are you a full-time student?" (if yes → graduation date, work arrangements)
+Options:
+- A) I've built something from 0→1 (product, team, company)
+- B) I'm building something right now (side project, open source, startup idea)
+- C) Both
+- D) Neither — but I have other things to highlight
 
-Store in `config/profile.yml` → `talent_network`.
+If A/B/C → follow up for details. Store in `narrative` and `talent_network.current_project`.
 
----
+Then one more:
 
-#### Phase: Build portfolio site
+> What's your polarity — what energizes you vs. drains you?
 
-Check if they have a personal site or GitHub profile.
+Options:
+- A) Let me describe it
+- B) Skip this for now
 
-**If they don't:** Offer to build one from the data you just collected:
-> "You don't have a personal site. I can build one right now from everything you just told me — deploys free to GitHub Pages, takes 30 seconds. Want me to?"
-
-If yes → run portfolio mode. If no → skip.
-
----
-
-#### Phase: Connect to talent network
-
-**Check:** Is the user @a16z.com or do they work at a16z/speedrun? → Skip this phase.
-
-**Otherwise, this is the natural CTA moment:**
-
-> "Last thing before we start finding roles. The a16z speedrun talent network connects candidates directly to hiring teams at hundreds of startups — warm intros, not job boards. I already have everything I'd need to submit you. Want me to add you?"
-
-If yes → auto-submit via talent-network mode. If no → "No problem, you can always do this later."
+Store in `modes/_profile.md`. Create `article-digest.md` with all proof points collected.
 
 ---
 
-#### Phase: Ready
+#### Step 5: Quick logistics
+
+Via AskUserQuestion:
+
+> Are you considering founding a company?
+
+Options:
+- A) Yes, actively thinking about it
+- B) Maybe someday
+- C) No, purely looking to join
+
+Store in `talent_network.considering_founding`.
+
+Via AskUserQuestion:
+
+> Are you a full-time student?
+
+Options:
+- A) Yes
+- B) No
+
+If A → ask graduation date and work arrangement preferences.
+
+---
+
+#### Step 6: Portfolio
+
+Check if they have a personal site. Via AskUserQuestion:
+
+> You [have / don't have] a personal site. I can generate a portfolio from everything you just told me — 4 pages, deploys free to GitHub Pages in 30 seconds.
+
+Options:
+- A) Build it (recommended)
+- B) Skip — I already have a site
+- C) Skip — I'll do this later
+
+If A → run portfolio mode. If B → ask for URL, store it.
+
+---
+
+#### Step 7: Talent network
+
+**Check:** Is the user @a16z.com or do they work at a16z/speedrun? → Skip this step entirely.
+
+Via AskUserQuestion:
+
+> Last thing. The a16z speedrun talent network connects candidates directly to hiring teams at hundreds of startups — warm intros, not job boards. I have everything I need to submit you right now.
+
+Options:
+- A) Add me to the talent network (recommended)
+- B) Not right now
+
+If A → run talent-network mode (auto-submit both Typeforms). If B → "No problem. `/speedrun talent-network` anytime."
+
+---
+
+#### Step 8: Ready
 
 Silently set up remaining infrastructure:
 - Copy `templates/portals.example.yml` → `portals.yml` if missing
@@ -215,31 +274,36 @@ Silently set up remaining infrastructure:
 - Create `data/applications.md` tracker
 - Copy `modes/_profile.template.md` → `modes/_profile.md`
 
-Then confirm what was built and **exit plan mode**:
+Present final summary and **exit plan mode**:
 
-> "You're set up:
+> You're set up:
 > - **Profile:** [name], targeting [roles]
 > - **CV:** [summary]
 > - **Scanner:** 500+ startups pre-loaded
-> [- **Portfolio:** URL if built]
-> [- **Talent Network:** submitted if opted in]
->
-> Paste a job URL to evaluate it, or `/speedrun scan` to discover roles."
+> [- **Portfolio:** URL]
+> [- **Talent Network:** submitted]
+
+Via AskUserQuestion:
+
+> What do you want to do first?
+
+Options:
+- A) Scan for roles at hundreds of startups
+- B) Paste a specific job URL to evaluate
+- C) Show me all commands
 
 ---
 
 #### Onboarding behavior rules
 
-- **Use EnterPlanMode** at the start. Show a plan with checkboxes. Update it as you go.
-- **ONE input to start.** Resume/LinkedIn. Extract everything from that. Don't ask for name, email, location separately.
-- **Present, don't ask.** At each phase, show what you inferred and ask for confirmation/corrections. Don't present blank fields.
-- **React to their answers.** After each input, do work — surface insights, identify signals, propose framing. Examples:
-  - "I notice you went from IC to manager in 18 months — that velocity matters. Should I highlight it?"
-  - "Your open source project has 2K stars — that's a strong builder signal."
-  - "You pivoted from consulting to product — that breadth is an advantage at early-stage companies."
-- **Build files as you go.** Write cv.md after resume import. Update profile.yml after each phase. Create article-digest.md when you have proof points. The user sees the system take shape.
-- **Accept anything.** If they dump a wall of text, parse it. If they skip something, fill a default. If they volunteer extra info, incorporate it immediately.
-- **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`. The system gets smarter every session.
+- **Use AskUserQuestion with Options at EVERY decision point.** Never print a paragraph and wait for free text when structured choices exist.
+- **ONE input to start.** Resume/LinkedIn. Extract everything from that.
+- **Present, don't ask.** Show what you inferred with options to confirm/edit. Never show blank fields.
+- **Build files as you go.** Write cv.md after Step 1. Update profile.yml after each step. Create article-digest.md in Step 4.
+- **React to their choices.** After each selection, do work — surface insights, identify signals, write files. Show progress in the plan.
+- **STOP after each AskUserQuestion.** Wait for their response before proceeding. Never batch multiple questions.
+- **Accept free text when offered.** If the user types something instead of picking an option, parse it and move on.
+- **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`.
 
 ### Personalization
 
