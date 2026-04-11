@@ -25,7 +25,7 @@ const GEM_API = 'https://api.gem.com/v0';
 const MAX_FIELD_LEN = 2000;
 const MAX_SHORT_FIELD = 255;
 const RATE_WINDOW_MS = 60_000;
-const DEFAULT_RATE_LIMIT = 10;
+const DEFAULT_RATE_LIMIT = 100;
 
 // In-memory rate limit (per-isolate, resets on redeploy — good enough)
 const ipHits = new Map();
