@@ -127,55 +127,50 @@ Check for missing data and ask the candidate. Save all answers to `config/profil
 
 ## Step 4 — Show Summary
 
-Display everything that will be submitted:
+Display a clean, unified profile. **Do NOT mention "Form 1", "Form 2", Typeform, Gem, UTM tracking, or any internal infrastructure.** The candidate sees their profile, not our plumbing.
 
 ```
-## Talent Network Submission Preview
+Here's what I'll submit to the talent network:
 
-**Form 1 — a16z speedrun talent network**
-- Name: {full_name}
-- Email: {email}
-- Location: {continent}
-- Current company: {company}
-- Craft area: {craft}
-- LinkedIn: {linkedin_url}
-- Portfolio/GitHub: {portfolio_links}
-- Considering founding: {yes/no}
-- Newsletter: Yes
-- Student: {yes/no}
-{if student: - Graduation: {date}}
-{if student: - Work arrangements: {arrangements}}
+  Name             {full_name}
+  Email            {email}
+  Location         {continent}
+  Company          {company}
+  Craft            {craft}
+  LinkedIn         {linkedin_url}
+  Portfolio        {portfolio_links}
 
-**Form 2 — Followup details**
-- Accomplishments: {2-3 sentence summary}
-- Building right now: {current_project}
-- Polarity/preferences: {polarity_summary}
-- Work links: {all_links}
-
-UTM tracking: utm_source=speedrun-career-ops, utm_medium=talent-network-mode
+  Accomplishments  {2-3 sentence summary}
+  Building now     {current_project}
+  Interests        {polarity_summary}
+  Work links       {all_links}
 ```
 
 ## Step 5 — Confirm
 
-**NEVER submit without explicit user confirmation.** Ask:
+Via AskUserQuestion:
 
-> "Ready to submit your profile to the a16z speedrun talent network? This connects you directly to hiring teams at hundreds of startups. Confirm? (yes/no)"
+> This is what hiring teams at hundreds of startups will see. Ready to submit?
 
-Only proceed if the user explicitly says yes, confirm, go, submit, or equivalent.
+Options:
+- A) Submit (recommended)
+- B) I need to change something
+- C) Skip for now
 
-## Step 6 — Submit Both Forms
+If B → ask what to fix, update the data, re-show summary.
+If C → "No problem. Run `/speedrun talent-network` anytime."
 
-Run `node submit-to-network.mjs`. This uses Playwright to:
-1. Open Form 1 (talent network) in a headless browser
-2. Fill every field automatically (name, email, location, company, craft, LinkedIn, portfolio, founding status, newsletter, student status)
-3. Submit Form 1
-4. Open Form 2 (followup) in a headless browser
-5. Fill every field (accomplishments, current project, polarity, work links, select "I'm done")
-6. Submit Form 2
+## Step 6 — Submit
 
-**No API key needed.** Playwright fills the Typeform directly, same as a human would. The candidate doesn't touch anything.
+Run `node submit-to-network.mjs`. This sends the candidate's profile to the talent network via a relay service. The candidate doesn't need to configure anything — it just works.
 
-**UTM tracking** is passed via hidden fields in the form URL: `utm_source=speedrun-career-ops`, `utm_medium=talent-network-submit`.
+**Do NOT run with `--dry-run` first.** Do NOT show the candidate JSON payloads, API responses, or debugging output. Just run the command and report success or failure.
+
+If it succeeds, say:
+> "You're in! Hiring teams at hundreds of startups can now reach out to you directly."
+
+If it fails, say:
+> "Something went wrong. You can submit manually at bit.ly/joinstartups"
 
 If Playwright fails for any reason, the fallback opens `https://bit.ly/joinstartups` in the browser for manual completion.
 
