@@ -56,6 +56,12 @@ function sanitize(str, maxLen) {
   return String(str).slice(0, maxLen).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
 }
 
+async function hashEmail(email) {
+  const data = new TextEncoder().encode(email.toLowerCase().trim());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const ALLOWED_ORIGINS = [
   'http://localhost',
   'https://localhost',
@@ -279,9 +285,45 @@ export default {
       }
     }
 
+    // --- Step 4: Store expanded signals in SIGNALS_DB (if present) ---
+    let signalsStored = false;
+    let signalsError = null;
+    if (data.expanded_signals && env.SIGNALS_DB) {
+      try {
+        const sig = data.expanded_signals;
+        // Hash email for deterministic primary key
+        const emailHash = await hashEmail(email);
+        await env.SIGNALS_DB.prepare(
+          `INSERT OR REPLACE INTO candidate_signals
+           (id, email, full_name, motivation, current_project_detail, company_rankings,
+            stage_preference, deal_breakers, work_style, template_chosen, submitted_at, raw_payload)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)`
+        ).bind(
+          emailHash,
+          email,
+          name,
+          sanitize(sig.motivation, MAX_FIELD_LEN),
+          sanitize(sig.current_project_detail, MAX_FIELD_LEN),
+          sig.company_rankings ? JSON.stringify(sig.company_rankings) : null,
+          sanitize(sig.stage_preference, MAX_SHORT_FIELD),
+          sig.deal_breakers ? JSON.stringify(sig.deal_breakers) : null,
+          sanitize(sig.work_style, MAX_SHORT_FIELD),
+          sanitize(sig.template_chosen, MAX_SHORT_FIELD),
+          JSON.stringify(data),
+        ).run();
+        signalsStored = true;
+      } catch (err) {
+        // Non-fatal — don't block Gem submission on D1 signal failure
+        signalsError = err.message || 'Unknown D1 signals error';
+        console.error(`SIGNALS_DB write failed: ${signalsError}`);
+      }
+    }
+
     return corsResponse(Response.json({
       success: true,
       existing: isExisting,
+      signals_stored: signalsStored,
+      ...(signalsError && { signals_error: signalsError }),
       message: isExisting
         ? 'Already in the talent network (no data overwritten)'
         : 'Added to the talent network',

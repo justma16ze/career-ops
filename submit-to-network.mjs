@@ -12,14 +12,93 @@
  *   node submit-to-network.mjs --dry-run    # print payloads without opening browser
  */
 
-import { readFileSync, existsSync, realpathSync } from 'fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync, realpathSync, mkdirSync, renameSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+import { homedir } from 'os';
+import { createHash } from 'crypto';
 import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = __dirname;
+
+// ── Retry Queue ───────────────────────────────────────────────────
+
+const TALENT_DIR = join(homedir(), '.speedrun-talent');
+const RETRY_QUEUE_FILE = join(TALENT_DIR, 'retry-queue.jsonl');
+
+function ensureTalentDir() {
+  if (!existsSync(TALENT_DIR)) {
+    mkdirSync(TALENT_DIR, { recursive: true });
+  }
+}
+
+function enqueueRetry(payload) {
+  ensureTalentDir();
+  const entry = { payload, queued_at: new Date().toISOString(), attempts: 0 };
+  appendFileSync(RETRY_QUEUE_FILE, JSON.stringify(entry) + '\n', 'utf-8');
+}
+
+function loadRetryQueue() {
+  if (!existsSync(RETRY_QUEUE_FILE)) return [];
+  const content = readFileSync(RETRY_QUEUE_FILE, 'utf-8').trim();
+  if (!content) return [];
+  return content.split('\n').map(line => {
+    try { return JSON.parse(line); } catch { return null; }
+  }).filter(Boolean);
+}
+
+function writeRetryQueue(items) {
+  ensureTalentDir();
+  if (items.length === 0) {
+    // Remove the file when empty
+    if (existsSync(RETRY_QUEUE_FILE)) {
+      try { renameSync(RETRY_QUEUE_FILE, RETRY_QUEUE_FILE + '.bak'); } catch {}
+    }
+    return;
+  }
+  writeFileSync(RETRY_QUEUE_FILE, items.map(i => JSON.stringify(i)).join('\n') + '\n', 'utf-8');
+}
+
+async function submitPayload(payload, relayUrl, relayKey) {
+  const res = await fetch(relayUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${relayKey}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const result = await res.json();
+  return result;
+}
+
+async function drainRetryQueue(relayUrl, relayKey) {
+  const queue = loadRetryQueue();
+  if (queue.length === 0) return { retried: 0, succeeded: 0, remaining: 0 };
+
+  const remaining = [];
+  let succeeded = 0;
+
+  for (const entry of queue) {
+    entry.attempts = (entry.attempts || 0) + 1;
+    try {
+      const result = await submitPayload(entry.payload, relayUrl, relayKey);
+      if (result.success) {
+        succeeded++;
+      } else {
+        // Keep in queue if under 5 attempts
+        if (entry.attempts < 5) remaining.push(entry);
+      }
+    } catch {
+      if (entry.attempts < 5) remaining.push(entry);
+    }
+  }
+
+  writeRetryQueue(remaining);
+  return { retried: queue.length, succeeded, remaining: remaining.length };
+}
 
 // ── ANSI helpers ───────────────────────────────────────────────────
 
@@ -464,6 +543,50 @@ function combinePortfolioLinks(profile) {
   return links.join('\n');
 }
 
+// ── Expanded Signals ──────────────────────────────────────────────
+
+function buildExpandedSignals(profile) {
+  const narrative = profile?.narrative || {};
+  const preferences = profile?.preferences || {};
+  const portfolioConfig = profile?.portfolio || {};
+
+  const signals = {};
+
+  // narrative fields
+  if (narrative.motivation) {
+    signals.motivation = String(narrative.motivation).slice(0, 2000);
+  }
+  if (narrative.current_project_detail) {
+    signals.current_project_detail = String(narrative.current_project_detail).slice(0, 2000);
+  }
+
+  // preferences fields
+  if (preferences.company_rankings) {
+    signals.company_rankings = Array.isArray(preferences.company_rankings)
+      ? preferences.company_rankings
+      : [preferences.company_rankings];
+  }
+  if (preferences.stage_preference) {
+    signals.stage_preference = String(preferences.stage_preference).slice(0, 255);
+  }
+  if (preferences.deal_breakers) {
+    signals.deal_breakers = Array.isArray(preferences.deal_breakers)
+      ? preferences.deal_breakers
+      : [preferences.deal_breakers];
+  }
+  if (preferences.work_style) {
+    signals.work_style = String(preferences.work_style).slice(0, 255);
+  }
+
+  // portfolio template (detect from portfolio config or dist)
+  if (portfolioConfig.template) {
+    signals.template_chosen = String(portfolioConfig.template).slice(0, 50);
+  }
+
+  // Only return if we have at least one signal
+  return Object.keys(signals).length > 0 ? signals : null;
+}
+
 // ── Validation ─────────────────────────────────────────────────────
 
 function validate(profile, cvText) {
@@ -632,9 +755,14 @@ async function main() {
   // 4. Print summary
   printSummary(form1Data, form2Data);
 
+  // 4b. Build expanded signals (new profile fields for D1)
+  const expandedSignals = buildExpandedSignals(profile);
+
   if (dryRun) {
     console.log('\n' + bold('-- Dry Run: Payload --'));
-    console.log(JSON.stringify({ ...form1Data, ...form2Data }, null, 2));
+    const dryPayload = { ...form1Data, ...form2Data };
+    if (expandedSignals) dryPayload.expanded_signals = expandedSignals;
+    console.log(JSON.stringify(dryPayload, null, 2));
     console.log('\n' + green('Dry run complete. No submissions made.'));
     process.exit(0);
   }
@@ -642,6 +770,15 @@ async function main() {
   // 5. Submit via relay service
   const RELAY_URL = process.env.SPEEDRUN_RELAY_URL || 'https://speedrun-submit.jmazer.workers.dev/submit';
   const RELAY_KEY = process.env.SPEEDRUN_RELAY_KEY || 'kPx6kzcYoRGOG02Ec26Y5bA2KS7kcGANlqxSV1aQ';
+
+  // 5a. Drain retry queue first (previous failed submissions)
+  const retryResult = await drainRetryQueue(RELAY_URL, RELAY_KEY);
+  if (retryResult.retried > 0) {
+    console.log(dim(`Retry queue: ${retryResult.succeeded}/${retryResult.retried} queued submissions succeeded`));
+    if (retryResult.remaining > 0) {
+      console.log(dim(`  ${retryResult.remaining} still queued (will retry next run)`));
+    }
+  }
 
   console.log('\n' + dim('Submitting to talent network...'));
 
@@ -666,29 +803,30 @@ async function main() {
     utm_medium: 'talent-network-submit',
   };
 
-  try {
-    const res = await fetch(RELAY_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RELAY_KEY}`,
-      },
-      body: JSON.stringify(payload),
-    });
+  // Attach expanded signals if present
+  if (expandedSignals) {
+    payload.expanded_signals = expandedSignals;
+  }
 
-    const result = await res.json();
+  try {
+    const result = await submitPayload(payload, RELAY_URL, RELAY_KEY);
 
     if (result.success) {
       console.log(green(bold('\nDone! Profile submitted to the a16z speedrun talent network.')));
       console.log(dim('Hiring teams at hundreds of startups can now reach out directly.'));
+      if (result.signals_stored) {
+        console.log(dim('Expanded profile signals stored for enhanced matching.'));
+      }
     } else {
-      console.log(red('\nSubmission had an issue. You can submit manually at bit.ly/joinstartups'));
+      console.log(red('\nSubmission had an issue. Queuing for retry...'));
+      enqueueRetry(payload);
+      console.log(dim('Payload saved to retry queue. Will retry on next run.'));
     }
   } catch (err) {
     console.log(red(`Could not reach submission service: ${err.message}`));
-    console.log(dim('Falling back to browser...'));
-    try { execSync(`open "https://bit.ly/joinstartups"`); } catch {}
-    console.log('Complete the form manually at bit.ly/joinstartups');
+    console.log(dim('Queuing payload for retry on next run...'));
+    enqueueRetry(payload);
+    console.log(dim(`Saved to ${RETRY_QUEUE_FILE}`));
   }
 
   process.exit(0);
@@ -703,4 +841,4 @@ if (process.argv[1] && realpathSync(process.argv[1]) === __filename) {
   });
 }
 
-export { mapContinent, extractCurrentCompany, inferCraftArea, synthesizeAccomplishments, derivePolarity, collectWorkLinks, validate, buildForm1Data, buildForm2Data, CONTINENT_MAP, CRAFT_CHOICES, CRAFT_SIGNALS };
+export { mapContinent, extractCurrentCompany, inferCraftArea, synthesizeAccomplishments, derivePolarity, collectWorkLinks, validate, buildForm1Data, buildForm2Data, buildExpandedSignals, enqueueRetry, loadRetryQueue, writeRetryQueue, drainRetryQueue, submitPayload, CONTINENT_MAP, CRAFT_CHOICES, CRAFT_SIGNALS, RETRY_QUEUE_FILE };

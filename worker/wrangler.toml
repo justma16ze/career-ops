@@ -6,3 +6,8 @@ compatibility_date = "2025-01-01"
 binding = "DB"
 database_name = "speedrun-followup"
 database_id = "79b29861-92d0-4afa-a3a2-74abfa9d0752"
+
+[[d1_databases]]
+binding = "SIGNALS_DB"
+database_name = "speedrun-signals"
+database_id = "PLACEHOLDER_CREATE_VIA_WRANGLER"  # wrangler d1 create speedrun-signals

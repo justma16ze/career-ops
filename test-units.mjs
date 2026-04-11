@@ -19,6 +19,12 @@ import {
   detectApi, parseGreenhouse, parseAshby, parseLever, buildTitleFilter,
 } from './scan.mjs';
 
+import { getTemplate, listTemplates } from './templates/registry.mjs';
+import {
+  parseSections, parseExperience, parseEducation, parseSkills,
+  parseProjects, groupByCompany, renderInlineMarkdown, esc,
+} from './generate-portfolio.mjs';
+
 let passed = 0;
 let failed = 0;
 
@@ -358,6 +364,140 @@ truthy(form1.craft_area !== null, 'form1 infers craft area');
 const form2 = buildForm2Data(mockProfile, cvWithMetrics, null, null);
 truthy(form2.accomplishments.length > 0, 'form2 synthesizes accomplishments');
 truthy(form2.email === 'test@example.com', 'form2 includes email');
+
+// ── Template registry ──────────────────────────────────────────
+
+console.log('\n12. Template registry — listTemplates');
+
+const allTemplates = await listTemplates();
+eq(allTemplates.length, 8, 'registry discovers 8 templates');
+truthy(allTemplates.includes('ink'), 'includes ink');
+truthy(allTemplates.includes('terminal'), 'includes terminal');
+truthy(allTemplates.includes('volt'), 'includes volt');
+truthy(allTemplates.includes('folio'), 'includes folio');
+truthy(allTemplates.includes('grid'), 'includes grid');
+truthy(allTemplates.includes('statement'), 'includes statement');
+truthy(allTemplates.includes('caps'), 'includes caps');
+truthy(allTemplates.includes('bare'), 'includes bare');
+
+console.log('\n13. Template registry — getTemplate error');
+
+let invalidTemplateError = null;
+try {
+  await getTemplate('nonexistent-template');
+} catch (err) {
+  invalidTemplateError = err;
+}
+truthy(invalidTemplateError !== null, 'invalid template name throws error');
+truthy(invalidTemplateError.message.includes('nonexistent-template'), 'error mentions invalid name');
+truthy(invalidTemplateError.message.includes('ink'), 'error lists valid templates');
+
+console.log('\n14. Template registry — default template is ink');
+
+const defaultTemplate = await getTemplate('ink');
+eq(defaultTemplate.name, 'ink', 'default template name is ink');
+
+// ── Template smoke tests ──────────────────────────────────────
+
+// Build sample data for all template tests
+const sampleData = {
+  name: 'Test User',
+  headline: 'Building infrastructure for small teams',
+  location: 'San Francisco, CA',
+  email: 'test@example.com',
+  linkedin: 'https://linkedin.com/in/testuser',
+  github: 'https://github.com/testuser',
+  summaryText: 'Experienced engineer with 10 years in distributed systems.',
+  summaryShort: 'Experienced engineer with 10 years in distributed systems.',
+  exitStory: 'Leaving BigCo after 4 years to build something new.',
+  currentProject: 'building an open-source deploy orchestrator',
+  superpowers: ['systems design', 'team building'],
+  proofPoints: [
+    { name: 'API requests/day', hero_metric: '340M', description: 'API requests/day served' },
+    { name: 'Deploy improvement', hero_metric: '12x', description: 'deployment frequency' },
+  ],
+  targetRoles: ['Founding Engineer', 'Staff Engineer'],
+  locationFlex: 'Open to remote',
+  experience: [
+    { company: 'BigCo', location: 'SF', role: 'Senior Engineer', dateRange: '2020 - 2024', bullets: ['Built payment infra', 'Led team of 5'] },
+    { company: 'StartupCo', location: 'NYC', role: 'Engineer', dateRange: '2018 - 2020', bullets: ['Full-stack development'] },
+  ],
+  education: ['MIT — B.S. Computer Science'],
+  skills: ['TypeScript', 'Go', 'Python', 'Kubernetes', 'PostgreSQL'],
+  projects: [
+    { name: 'Meridian', description: 'Open-source deploy orchestrator', heroMetric: '2.4K stars', url: 'https://github.com/test/meridian' },
+    { name: 'Cache Framework', description: 'Distributed cache invalidation', heroMetric: '99.97% consistency', url: '' },
+  ],
+  experienceGroups: [
+    { company: 'BigCo', location: 'SF', roles: [{ role: 'Senior Engineer', dateRange: '2020 - 2024', bullets: ['Built payment infra', 'Led team of 5'] }] },
+    { company: 'StartupCo', location: 'NYC', roles: [{ role: 'Engineer', dateRange: '2018 - 2020', bullets: ['Full-stack development'] }] },
+  ],
+  esc,
+  renderInlineMarkdown,
+};
+
+const TEMPLATE_NAMES = ['ink', 'terminal', 'volt', 'folio', 'grid', 'statement', 'caps', 'bare'];
+
+for (const tmplName of TEMPLATE_NAMES) {
+  console.log(`\n15-${tmplName}. Template smoke test: ${tmplName}`);
+
+  const tmpl = await getTemplate(tmplName);
+
+  // Validate exports
+  eq(tmpl.name, tmplName, `${tmplName}: name matches`);
+  truthy(Array.isArray(tmpl.fonts), `${tmplName}: fonts is array`);
+  truthy(typeof tmpl.css === 'function', `${tmplName}: css is function`);
+  truthy(typeof tmpl.pages === 'function', `${tmplName}: pages is function`);
+
+  // CSS is non-empty string
+  const cssResult = tmpl.css();
+  truthy(typeof cssResult === 'string' && cssResult.length > 100, `${tmplName}: css() returns substantial CSS`);
+
+  // Generate pages
+  const pages = tmpl.pages(sampleData);
+  truthy(typeof pages === 'object', `${tmplName}: pages() returns object`);
+  truthy('index.html' in pages, `${tmplName}: generates index.html`);
+  truthy('about.html' in pages, `${tmplName}: generates about.html`);
+  truthy('work.html' in pages, `${tmplName}: generates work.html`);
+  truthy('experience.html' in pages, `${tmplName}: generates experience.html`);
+
+  // Check each page for required elements
+  for (const [pageName, html] of Object.entries(pages)) {
+    // Font links (bare has no fonts, so skip font check for bare)
+    if (tmplName !== 'bare') {
+      for (const fontUrl of tmpl.fonts) {
+        truthy(html.includes(fontUrl), `${tmplName}/${pageName}: includes font link`);
+      }
+    }
+
+    // "made by speedrun" footer
+    truthy(
+      html.includes('made by') && html.includes('speedrun'),
+      `${tmplName}/${pageName}: has "made by speedrun" footer`
+    );
+    truthy(
+      html.includes('https://github.com/a16z/speedrun-career-ops'),
+      `${tmplName}/${pageName}: footer links to GitHub repo`
+    );
+
+    // Nav with Home/Work/Experience/About
+    truthy(html.includes('<nav'), `${tmplName}/${pageName}: has nav element`);
+
+    // Semantic HTML elements
+    truthy(html.includes('<nav'), `${tmplName}/${pageName}: uses semantic nav`);
+    truthy(html.includes('<footer'), `${tmplName}/${pageName}: uses semantic footer`);
+
+    // Check for main element (except grid which has special structure)
+    truthy(html.includes('<main') || html.includes('<div class="content"'), `${tmplName}/${pageName}: uses semantic main or content div`);
+
+    // No pill-shaped elements (border-radius: 9999px)
+    falsy(html.includes('9999px'), `${tmplName}/${pageName}: no pill-shaped elements`);
+    falsy(html.includes('border-radius: 9999'), `${tmplName}/${pageName}: no pill border-radius`);
+
+    // Print stylesheet
+    truthy(html.includes('@media print'), `${tmplName}/${pageName}: has print stylesheet`);
+  }
+}
 
 // ── SUMMARY ─────────────────────────────────────────────────────────
 

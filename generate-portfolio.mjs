@@ -3,18 +3,19 @@
 /**
  * generate-portfolio.mjs — Static portfolio site generator
  *
- * Reads candidate data files and generates a polished single-page portfolio
- * website as dist/index.html with all CSS inlined. No external dependencies
- * beyond js-yaml (already in package.json).
+ * Reads candidate data files and generates a multi-page portfolio
+ * website with all CSS inlined. Supports 8 templates.
+ * No external dependencies beyond js-yaml (already in package.json).
  *
  * Usage:
- *   node generate-portfolio.mjs [--output=dist/index.html] [--theme=dark|light]
+ *   node generate-portfolio.mjs [--output=dist] [--template=ink] [--theme=dark|light]
  */
 
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'js-yaml';
+import { getTemplate, listTemplates } from './templates/registry.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -23,12 +24,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const args = { output: 'dist/index.html', theme: 'light' };
+  const args = { output: 'dist', theme: 'light', template: 'ink' };
   for (const arg of argv.slice(2)) {
     if (arg.startsWith('--output=')) args.output = arg.split('=').slice(1).join('=');
     else if (arg.startsWith('--theme=')) args.theme = arg.split('=')[1].toLowerCase();
+    else if (arg.startsWith('--template=')) args.template = arg.split('=')[1].toLowerCase();
     else if (arg === '--help' || arg === '-h') {
-      console.log('Usage: node generate-portfolio.mjs [--output=dist/index.html] [--theme=dark|light]');
+      console.log('Usage: node generate-portfolio.mjs [--output=dist] [--template=ink] [--theme=dark|light]');
       process.exit(0);
     }
   }
@@ -378,10 +380,10 @@ function esc(str) {
 }
 
 // ---------------------------------------------------------------------------
-// Multi-page HTML generation
+// Data extraction — builds template data object from profile + parsed CV
 // ---------------------------------------------------------------------------
 
-function generatePages({ profile, sections, articleDigest }) {
+function extractTemplateData({ profile, sections, articleDigest }) {
   const c = profile.candidate || {};
   const n = profile.narrative || {};
   const name = c.full_name || 'Portfolio';
@@ -402,111 +404,15 @@ function generatePages({ profile, sections, articleDigest }) {
   const experience = parseExperience(sections.get('work experience') || sections.get('experience') || '');
   const education = parseEducation(sections.get('education') || '');
   const skills = parseSkills(sections.get('skills') || '');
-  const techSkills = skills.filter(s => !superpowers.some(sp => sp.toLowerCase() === s.toLowerCase()));
   const projects = parseProjects(sections.get('projects') || '', articleDigest, proofPoints);
-  const linkedinUrl = linkedin.startsWith('http') ? linkedin : `https://${linkedin}`;
-  const githubUrl = github.startsWith('http') ? github : `https://${github}`;
-
-  const css = `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 17px; -webkit-font-smoothing: antialiased; }
-body { font-family: Georgia, 'Times New Roman', serif; color: #222; background: #fdfdfd; line-height: 1.7; max-width: 36rem; margin: 0 auto; padding: 3rem 1.5rem 2.5rem; }
-h1 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
-h2 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1rem; font-weight: 600; margin: 2rem 0 0.5rem; }
-h2:first-child { margin-top: 0; }
-h3 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.2rem; }
-h3:first-child { margin-top: 0; }
-h3 a { color: #222; text-decoration: underline; text-decoration-color: #ccc; text-underline-offset: 2px; }
-h3 a:hover { text-decoration-color: #222; }
-a { color: #222; } a:hover { color: #555; }
-p { margin-bottom: 0.6rem; } p:last-child { margin-bottom: 0; }
-nav { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.85rem; margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap; }
-nav .site-name { font-weight: 600; font-size: 0.9rem; color: #222; text-decoration: none; margin-right: auto; }
-nav a { color: #888; text-decoration: none; } nav a:hover { color: #222; }
-.nav-active { color: #222; font-weight: 500; }
-.subtitle { font-style: italic; color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
-.meta { color: #999; font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-.page-links { font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-top: 0.3rem; }
-.page-links a { margin-right: 1rem; color: #555; text-decoration: underline; text-decoration-color: #ddd; text-underline-offset: 2px; }
-.page-links a:hover { color: #222; text-decoration-color: #222; }
-.project { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid #f0f0f0; }
-.project:last-child { border-bottom: none; padding-bottom: 0; }
-.metric { font-size: 0.85rem; color: #888; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-bottom: 0.3rem; }
-.job { margin-bottom: 2rem; } .job:last-child { margin-bottom: 0; }
-.sub-role { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid #f5f5f5; }
-.sub-role:first-child { margin-top: 0.25rem; padding-top: 0; border-top: none; }
-.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; }
-.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-.job-header strong { font-size: 0.9rem; }
-.date { color: #999; font-size: 0.8rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; white-space: nowrap; }
-.role { color: #555; font-size: 0.85rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin-bottom: 0.25rem; }
-ul { margin: 0.3rem 0 0 1.25rem; } li { font-size: 0.9rem; color: #444; margin-bottom: 0.15rem; line-height: 1.6; }
-.detail { font-size: 0.9rem; color: #555; } .detail strong { color: #333; }
-footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.75rem; color: #ccc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-@media print { nav, footer { display: none; } body { padding: 1rem 0; max-width: none; } }
-@media (max-width: 480px) { body { padding: 1.5rem 1rem; } nav { gap: 0.75rem; } .job-header { flex-direction: column; } }`;
-
-  const navItems = [
-    { href: 'index.html', label: 'Home' },
-    ...(projects.length > 0 ? [{ href: 'work.html', label: 'Work' }] : []),
-    ...(experience.length > 0 ? [{ href: 'experience.html', label: 'Experience' }] : []),
-    { href: 'about.html', label: 'About' },
-  ];
-
-  function pg(title, active, body) {
-    const t = title === name ? title : `${title} — ${name}`;
-    const nv = navItems.map(ni => ni.href === active ? `<span class="nav-active">${esc(ni.label)}</span>` : `<a href="${ni.href}">${esc(ni.label)}</a>`).join(' ');
-    return `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${esc(t)}</title>\n<meta name="description" content="${esc(summaryShort)}">\n<meta property="og:title" content="${esc(t)}">\n<meta property="og:description" content="${esc(summaryShort)}">\n<meta property="og:type" content="website">\n<style>${css}</style>\n</head>\n<body>\n<nav><a href="index.html" class="site-name">${esc(name)}</a> ${nv}</nav>\n${body}\n<footer>&copy; ${new Date().getFullYear()} ${esc(name)}</footer>\n</body>\n</html>`;
-  }
-
-  const links = [];
-  if (linkedin) links.push(`<a href="${esc(linkedinUrl)}">LinkedIn</a>`);
-  if (github) links.push(`<a href="${esc(githubUrl)}">GitHub</a>`);
-  if (email) links.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
-
-  // HOME
-  let hb = [];
-  if (summaryText) hb.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
-  if (exitStory) hb.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
-  if (currentProject) hb.push(`<p>Right now I'm ${renderInlineMarkdown(currentProject.charAt(0).toLowerCase() + currentProject.slice(1))}</p>`);
-  const home = `<header><h1>${esc(name)}</h1>${headline ? `<p class="subtitle">${esc(headline)}</p>` : ''}${location ? `<p class="meta">${esc(location)}</p>` : ''}${links.length > 0 ? `<p class="page-links">${links.join(' ')}</p>` : ''}</header>${hb.join('\n')}${superpowers.length > 0 ? `<p class="detail">${superpowers.join(' / ')}</p>` : ''}`;
-
-  // WORK
-  const work = projects.length > 0 ? `<h1>Work</h1><p>Selected projects and things I've built.</p>${projects.map(p => `<div class="project"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>${p.heroMetric ? `<p class="metric">${esc(p.heroMetric)}</p>` : ''}${p.description ? `<p>${p.description}</p>` : ''}</div>`).join('\n')}` : '<h1>Work</h1><p>Nothing here yet.</p>';
-
-  // EXPERIENCE — group consecutive entries by company
-  const grouped = groupByCompany(experience);
-  const exp = `<h1>Experience</h1>${grouped.map(g => {
-    if (g.roles.length === 1) {
-      const r = g.roles[0];
-      return `<div class="job"><div class="job-header"><strong>${esc(g.company)}</strong>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.role ? `<div class="role">${esc(r.role)}</div>` : ''}${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`;
-    }
-    // Multi-role company: show company once, then each role as a sub-entry
-    const firstDate = g.roles[0].dateRange || '';
-    const lastDate = g.roles[g.roles.length - 1].dateRange || '';
-    const startYear = lastDate.match(/\d{4}/)?.[0] || '';
-    const endPart = firstDate.match(/[-–]\s*(.+)$/)?.[1] || '';
-    const spanDate = startYear && endPart ? `${startYear} - ${endPart}` : firstDate;
-    return `<div class="job"><div class="job-header"><strong>${esc(g.company)}</strong><span class="date">${esc(spanDate)}</span></div>${g.roles.map(r => `<div class="sub-role"><div class="sub-role-header"><div class="role">${esc(r.role)}</div>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('')}</div>`;
-  }).join('\n')}${education.length > 0 ? `<h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}` : ''}`;
-
-  // ABOUT
-  let ab = ['<h1>About</h1>'];
-  if (summaryText) ab.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
-  if (exitStory) ab.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
-  if (superpowers.length > 0) ab.push(`<p>What I do best: ${superpowers.join(', ').replace(/, ([^,]*)$/, ', and $1')}.</p>`);
-  if (currentProject) ab.push(`<h2>Now</h2><p>${renderInlineMarkdown(currentProject)}</p>`);
-  const lp = [];
-  if (targetRoles.length > 0) lp.push(`Interested in: ${targetRoles.join(', ')}.`);
-  if (locationFlex) lp.push(locationFlex + '.');
-  if (lp.length > 0) ab.push(`<h2>Looking for</h2><p>${lp.join(' ')}</p>`);
-  if (techSkills.length > 0) ab.push(`<h2>Tools</h2><p class="detail">${techSkills.map(s => esc(s)).join(', ')}</p>`);
-  if (links.length > 0) ab.push(`<h2>Contact</h2><p class="page-links">${links.join(' ')}</p>`);
+  const experienceGroups = groupByCompany(experience);
 
   return {
-    'index.html': pg(name, 'index.html', home),
-    ...(projects.length > 0 ? { 'work.html': pg('Work', 'work.html', work) } : {}),
-    ...(experience.length > 0 ? { 'experience.html': pg('Experience', 'experience.html', exp) } : {}),
-    'about.html': pg('About', 'about.html', ab.join('\n')),
+    name, headline, location, email, linkedin, github,
+    summaryText, summaryShort, exitStory, currentProject,
+    superpowers, proofPoints, targetRoles, locationFlex,
+    experience, education, skills, projects, experienceGroups,
+    esc, renderInlineMarkdown,
   };
 }
 
@@ -516,14 +422,32 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; font-s
 
 async function main() {
   const args = parseArgs(process.argv);
-  const outputDir = resolve(__dirname, 'dist');
-  console.log('Portfolio generator (multi-page)');
+  const outputDir = resolve(__dirname, args.output);
+  const templateName = args.template;
+
+  console.log('Portfolio generator (multi-page, template system)');
+  console.log(`  Template: ${templateName}`);
   console.log(`  Output: ${outputDir}/\n`);
+
+  // Load template (validates name, throws with list of valid names if invalid)
+  let template;
+  try {
+    template = await getTemplate(templateName);
+  } catch (err) {
+    console.error(`ERROR: ${err.message}`);
+    const available = await listTemplates();
+    console.error(`Available templates: ${available.join(', ')}`);
+    process.exit(1);
+  }
+
   const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
   const sections = parseSections(cvRaw);
   console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
   console.log(`  article-digest.md: ${articleDigest ? 'found' : 'not found (skipping)'}\n`);
-  const pages = generatePages({ profile, sections, articleDigest });
+
+  const data = extractTemplateData({ profile, sections, articleDigest });
+  const pages = template.pages(data);
+
   await mkdir(outputDir, { recursive: true });
   let total = 0;
   for (const [f, html] of Object.entries(pages)) {
@@ -533,7 +457,15 @@ async function main() {
     console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
   }
   console.log(`\n  ${Object.keys(pages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
+  console.log(`  Template: ${templateName}`);
   console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
 }
+
+// Export data extraction utilities for use in templates and tests
+export {
+  parseSections, parseExperience, parseEducation, parseSkills,
+  parseProjects, groupByCompany, renderInlineMarkdown, esc,
+  extractTemplateData,
+};
 
 main().catch(e => { console.error('Failed:', e.message); process.exit(1); });

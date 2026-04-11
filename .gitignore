@@ -42,3 +42,4 @@ portcos-*.yml
 .claude/memory/
 career-dashboard
 package-lock.json
+.gstack/

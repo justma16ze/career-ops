@@ -147,7 +147,7 @@ Profile Setup
   [ ] Review profile
   [ ] Target roles
   [ ] Standout achievements
-  [ ] Logistics
+  [ ] Logistics & preferences
   [ ] Portfolio
   [ ] Talent network
   [ ] Ready
@@ -221,6 +221,22 @@ Options:
 
 If A/B/C → follow up for details. Store in `narrative` and `talent_network.current_project`.
 
+**If they mentioned building something (B or C above)**, ask for the rich version:
+
+> Tell me more about what you're building — what's the problem, what have you shipped so far, what's the hardest part?
+
+Store the detailed answer in `narrative.current_project_detail` (this powers the Projects section of their portfolio AND shows hiring teams builder energy). The short version stays in `talent_network.current_project`.
+
+Then:
+
+> What's driving this search? What made you decide "now is the time"?
+
+Options:
+- A) Let me tell you
+- B) Skip — I'd rather not say
+
+If A → store in `narrative.motivation`. This shapes the About page of their portfolio AND helps calibrate which roles feel right. Frame it to the candidate: "This helps me write your About page and match you to the right roles."
+
 Then one more:
 
 > What's your polarity — what energizes you vs. drains you?
@@ -233,7 +249,7 @@ Store in `modes/_profile.md`. Create `article-digest.md` with all proof points c
 
 ---
 
-#### Step 5: Quick logistics
+#### Step 5: Logistics & preferences
 
 Via AskUserQuestion:
 
@@ -255,6 +271,44 @@ Options:
 - B) No
 
 If A → ask graduation date and work arrangement preferences.
+
+Then capture search preferences. These personalize their scan results AND help calibrate role recommendations.
+
+Via AskUserQuestion:
+
+> What stage of company are you drawn to? This helps me filter scan results to the right type.
+
+Options:
+- A) Pre-seed / Seed — earliest stage, building from zero
+- B) Series A — found product-market fit, scaling the team
+- C) Series B — scaling the org, adding leadership layers
+- D) Growth / Late stage — established company, big problems
+- E) No preference — I'll evaluate case by case
+
+Store in `preferences.stage_preference`.
+
+Via AskUserQuestion:
+
+> Of the companies in the a16z network, are there any that excite you most? I can prioritize those in your scan results.
+
+Options:
+- A) Yes, let me name a few
+- B) I don't know enough yet — surprise me
+- C) Skip this for now
+
+If A → ask them to list companies with brief reasons why. Store as array of `{name, reason}` in `preferences.company_rankings`. This personalizes their search AND reveals preference signals.
+
+Via AskUserQuestion:
+
+> Any deal-breakers I should know about? Things that would make you immediately pass on a role — so I don't waste your time surfacing them.
+
+Options:
+- A) Yes — here are my hard no's
+- B) Nothing specific, I'm pretty open
+
+If A → store as array in `preferences.deal_breakers`. These auto-filter scan results and evaluation warnings.
+
+**DESIGN PRINCIPLE for all preference questions:** Every question must have a clear value-to-candidate reason. The product feels like it's FOR the candidate (job search + portfolio), not FOR a16z (talent intake). Frame each question in terms of how it helps THEIR search.
 
 ---
 
@@ -520,3 +574,10 @@ Write one TSV file per evaluation to `batch/tracker-additions/{num}-{company-slu
 | `Rejected` | Rejected by company |
 | `Discarded` | Discarded by candidate or offer closed |
 | `SKIP` | Doesn't fit, don't apply |
+
+## Design System
+Always read DESIGN.md before making any visual or UI decisions for portfolio generation.
+All font choices, colors, spacing, and aesthetic direction for each template are defined there.
+Do not deviate from template specs without explicit user approval.
+When generating portfolios, the candidate picks a template name (ink, terminal, volt, folio, grid, statement, caps, bare) and the generator applies that template's complete design.
+In QA mode, flag any generated portfolio that doesn't match its DESIGN.md template spec.

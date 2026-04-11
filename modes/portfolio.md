@@ -8,18 +8,35 @@ Generate a polished static HTML portfolio website from the user's career-ops dat
 2. Read `config/profile.yml` for name, email, LinkedIn, GitHub, portfolio URL, headline, superpowers, proof points
 3. Read `article-digest.md` for detailed proof points and case studies (optional — skip gracefully if missing)
 4. Scan `reports/` for top evaluation highlights (optional — use highest-scored reports as case study material)
-5. Generate `dist/index.html` with all content inlined (see HTML Generation below)
-6. Check if `gh` CLI is installed: `which gh`
-7. **If gh exists:**
+5. **Template selection** — present the candidate with template options and let them pick:
+
+   | Template | Vibe |
+   |----------|------|
+   | `ink` | Warm editorial — magazine feature energy |
+   | `terminal` | Dark + technical — late-night shipping session |
+   | `volt` | Bold + modern — product launch page energy |
+   | `folio` | Warm + personal — the site a thoughtful person would make by hand |
+   | `grid` | Data-forward — Bloomberg terminal meets personal site |
+   | `statement` | Thesis-driven — one bold claim, then the proof |
+   | `caps` | Bold confidence — all-caps headlines, high impact |
+   | `bare` | Ultra-minimal — just the words, nothing else |
+
+   Read `DESIGN.md` for full template specs (fonts, colors, layout, mood). The selected template name gets passed to the generator: `node generate-portfolio.mjs --template={name}`.
+
+   If the candidate can't decide, recommend `ink` for non-technical roles and `terminal` for engineering/builder roles.
+
+6. Generate portfolio using the selected template: `node generate-portfolio.mjs --template={name}`
+7. Check if `gh` CLI is installed: `which gh`
+8. **If gh exists:**
    a. Check if portfolio repo exists: `gh repo view portfolio 2>/dev/null`
    b. If not, create it: `gh repo create portfolio --public --confirm`
    c. Deploy: `npx gh-pages -d dist`
    d. Derive the GitHub Pages URL: `https://{username}.github.io/portfolio`
-8. **If gh is NOT installed:**
+9. **If gh is NOT installed:**
    a. Save HTML and inform the user: "Your portfolio is ready at `dist/index.html`"
    b. Suggest manual deployment options: GitHub Pages, Netlify Drop, Vercel, Cloudflare Pages
-9. After successful deploy: update `config/profile.yml` → `candidate.portfolio_url` with the live GitHub Pages URL
-10. Report the live URL back to the user
+10. After successful deploy: update `config/profile.yml` → `candidate.portfolio_url` with the live GitHub Pages URL
+11. Report the live URL back to the user
 
 ## HTML Generation
 
