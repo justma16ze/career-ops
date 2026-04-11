@@ -71,183 +71,175 @@ Run these checks silently:
 2. Does `cv.md` exist?
 3. If `config/profile.yml` exists, does it contain example placeholder data? (Check: does `full_name` equal `"Jane Smith"` or does `email` equal `"jane@example.com"`?)
 
-**If ANY check fails, BLOCK the requested mode and enter onboarding.** Say:
-
-> "Before we can do anything, I need to get to know you. Let's set up your profile — it takes about 5 minutes and I'll walk you through it."
-
-Then **enter plan mode** and run the guided onboarding below. Ask ONE question at a time. Wait for the user's response before moving on. Do not dump a wall of questions.
+**If ANY check fails, BLOCK the requested mode and enter onboarding.**
 
 ---
 
-#### Onboarding Phase 1: Who are you?
+#### How onboarding works
 
-Ask these one at a time, waiting for each answer:
+**Use `EnterPlanMode`.** The onboarding is an interactive plan — not a Q&A chat. The user should see a visible plan with phases they can track progress through. Each phase has decision points where they approve, edit, or redirect.
 
-**Q1:** "What's your full name?"
+**Start with ONE ask — get their resume.** Don't ask for name, email, location separately. Get one source document and extract everything:
 
-**Q2:** "What's your email address?"
-
-**Q3:** "Where are you based?" (city, country)
-
-**Q4:** "Can you paste your LinkedIn URL?"
-
-After Q4: copy `config/profile.example.yml` → `config/profile.yml` and fill in the answers so far.
-
----
-
-#### Onboarding Phase 2: Your background
-
-**Q5:** "Now I need your experience. You can either:
-- **Paste your resume/CV** and I'll convert it
-- **Paste your LinkedIn URL** and I'll pull the key info
-- **Just tell me** about your experience and I'll write it up
-
-Which works best?"
-
-Process whatever they provide → create `cv.md` with clean markdown sections (Summary, Experience, Projects, Education, Skills).
-
-After creating cv.md, show them a brief summary of what you captured:
-> "Here's what I got: [X years experience], most recently at [Company] as [Role]. [N] projects, skills in [top 3-5]. Does that look right, or should I adjust anything?"
-
-Wait for confirmation or corrections.
-
----
-
-#### Onboarding Phase 3: What are you looking for?
-
-**Before asking Q6:** Read the `cv.md` you just created. Analyze the user's experience — their most recent roles, seniority level, domain expertise, and career trajectory. Infer 3-5 likely target roles.
-
-**Q6:** Present inferred roles as suggestions, not a blank question:
-> "Based on your experience, you'd probably be a strong fit for [X, Y, Z]. Does that sound right, or are you targeting something different?"
-
-If they confirm → use those roles. If they correct → use their version. Either way, don't make them start from scratch.
-
-**Q7:** "What kind of companies excite you? Any deal-breakers?" (e.g., stage, size, remote policy, industries to avoid)
-
-**Q8:** "What's your salary target range? And what's your walk-away number?"
-
-Fill in `config/profile.yml` → `target_roles`, `compensation`, and store deal-breakers in `modes/_profile.md`.
-
----
-
-#### Onboarding Phase 4: What makes you stand out?
-
-This phase is critical — it captures the data that makes a candidate memorable to hiring teams. Dig deeper than generic questions. These map directly to what the speedrun talent evaluation looks for.
-
-**Q9:** "What's the most impressive thing you've built, shipped, or accomplished? I'm looking for the thing that makes people say 'wait, you did that?'"
-
-Push for specifics. If they give something vague, follow up: "Can you quantify that? Users, revenue, scale, speed — anything concrete." Store the answer with metrics.
-
-**Q10:** "What have you built from zero to one? Something that didn't exist before you made it — a product, a team, a system, a company."
-
-This is a key signal for startup roles. If they haven't done 0→1, that's fine — ask what their closest equivalent is.
-
-**Q11:** "What's the hardest technical or professional challenge you've overcome? The one where most people would have given up."
-
-This reveals grit and problem-solving depth. Store as a proof point.
-
-**Q12:** "Are you building anything right now? Side project, open source, a startup idea, anything."
-
-Store in `talent_network.current_project`. If they ARE building something, follow up briefly: "Tell me more — what problem does it solve?"
-
-**Q13:** "What do you want to work on, and what do you want to stay away from? Think of it as your polarity — what energizes you vs. what drains you."
-
-This maps directly to Form 2's "polarity" field. Store in `modes/_profile.md`.
-
-Store all answers in `config/profile.yml` → `narrative` (headline, superpowers, proof_points, exit_story) and `talent_network`. Also create `article-digest.md` from any proof points/projects they mentioned.
-
----
-
-#### Onboarding Phase 5: Quick logistics
-
-**Q14:** "Are you considering founding a company, or purely looking to join one?" → store in `talent_network.considering_founding`
-
-**Q15:** "Are you a full-time student?" → if yes, ask graduation date and work arrangement preferences → store in `talent_network`
-
----
-
-#### Onboarding Phase 6: Portfolio
-
-Check if the user has a personal site or GitHub portfolio.
-
-**If they have a portfolio URL or active GitHub:** Great, store it and move on.
-
-**If they don't:** Offer to build one:
-> "You don't have a personal site yet. I can generate one from everything you just told me — it takes about 30 seconds and deploys free to GitHub Pages. Want me to build it?"
-
-If yes → run the portfolio mode (`modes/portfolio.md`). This gives them a tangible artifact immediately and builds goodwill before the CTA.
-
-If no → that's fine, skip it.
-
----
-
-#### Onboarding Phase 7: Talent Network CTA
-
-**This is the natural moment to present the talent network.** The candidate just spent 10 minutes telling you about themselves. You have their name, email, LinkedIn, background, accomplishments, what they're building, and what they want. The data is fresh. Joining the network is the logical next step before job hunting.
-
-**Check:** Is the user an a16z/speedrun team member? (email @a16z.com, or profile mentions a16z/speedrun) → If yes, skip this phase entirely.
-
-**Otherwise, present the CTA:**
-
-> "One more thing before we start finding roles. The a16z speedrun talent network connects candidates directly to hiring teams at hundreds of startups — not job boards, actual warm intros. I already have everything I'd need to submit you: your name, background, what you've built, what you're looking for. Want me to add you? It takes one click."
-
-If yes → run the talent-network mode (`modes/talent-network.md`) to auto-submit both Typeforms.
-If no → "No problem. You can always run `/speedrun talent-network` later."
-
-Either way, write the response to `~/.speedrun-talent/cta-history.jsonl`.
-
----
-
-#### Onboarding Phase 8: Setup & ready
-
-Do these silently (don't ask the user):
-- Copy `templates/portals.example.yml` → `portals.yml` if missing
-- Customize `title_filter.positive` in `portals.yml` based on their target roles from Q6
-- Copy `modes/_profile.template.md` → `modes/_profile.md` if missing
-- Create `data/applications.md` tracker if missing
-
-Then confirm:
-
-> "You're all set! Here's what I built for you:
-> - **Profile:** [name], [location], targeting [roles]
-> - **CV:** [X years experience], [top skills]
-> - **Scanner:** Pre-loaded with 500+ startup career pages from a16z and other VC portfolios
-> ${portfolio was built ? '- **Portfolio:** [URL]' : ''}
-> ${joined talent network ? '- **Talent Network:** Submitted — hiring teams can reach out directly' : ''}
+> "Let's get you set up. To start, I just need one thing — your resume in any format:
 >
-> What do you want to do first?
-> - **Paste a job URL** to evaluate it
-> - `/speedrun scan` to discover roles at hundreds of startups
-> - `/speedrun` to see all commands"
+> - **Paste your resume text** right here
+> - **Drop a LinkedIn PDF export** (File → Save as PDF from your profile)
+> - **Share your LinkedIn URL** and I'll pull what I can
+>
+> Everything else I'll figure out from that."
 
-**Exit plan mode** and proceed to whatever the user originally requested (or wait for their next command).
+**That's it. ONE input. Then the system does the work.**
 
 ---
 
-#### Onboarding rules
+#### After receiving the resume/LinkedIn
 
-- **Use plan mode.** The onboarding should feel like a collaborative planning session, not a form. Show a plan with phases, mark them as you go, let the user see progress.
+Process whatever they provide. Extract: name, email (if present), location, current company, work history, education, skills, projects. Create `cv.md` immediately.
 
-- **Suggest, don't just ask.** After each answer, do work with it — infer things, surface insights, propose something. Examples:
-  - After they paste their CV: "I notice you led the migration from monolith to microservices and shipped an agentic workflow system. Those are the two strongest signals in your background — should I lead with those?"
-  - After they describe their target roles: "Given your 0→1 experience, you'd probably be competitive at Series A/B companies hiring their first senior eng. Want me to weight the scanner toward early-stage?"
-  - After they mention a side project: "That's a solid proof point. I'd put this in the top section of your portfolio — it shows you build on your own time, not just at work."
+Then **show the plan** — enter plan mode with this structure:
 
-- **Build as you go.** Don't wait until the end to write files. After Phase 2 (CV), immediately write `cv.md` and show what you captured. After Phase 3 (roles), update `config/profile.yml` and show the inferred archetypes. After Phase 4 (standout), create `article-digest.md` with their proof points. The user should see the system taking shape in real time.
+```
+Profile Setup
+  [x] Import resume
+  [ ] Review your profile (name, location, contact)
+  [ ] Confirm target roles
+  [ ] Highlight what makes you stand out
+  [ ] Quick logistics
+  [ ] Build portfolio site
+  [ ] Connect to talent network
+  [ ] Ready to search
+```
 
-- **Surface things they might not think to mention.** Read between the lines:
-  - If their CV shows a career progression from IC to lead, ask: "You went from engineer to leading a team of 3 in two years. That growth trajectory matters — should I highlight it?"
-  - If they mention a project with users, ask: "How many users? What was the growth like? Numbers make this 10x more compelling."
-  - If they have gaps or pivots in their resume, ask about them positively: "You switched from finance to engineering — that cross-domain perspective is actually a strength at startups. Want me to frame it that way?"
+---
 
-- **ONE question at a time.** Never ask multiple questions in a single message. But pair each question with an observation or suggestion.
+#### Phase: Review your profile
 
-- **Accept any format.** If they paste a wall of text instead of answering a specific question, extract what you can and move on. Don't make them repeat themselves.
+Present what you extracted — don't ask them to type it in:
 
-- **Fill gaps silently.** If they skip a question or say "I'll do that later", fill in a reasonable default and move on. You can always improve later.
+> "Here's what I pulled from your resume:
+>
+> **Name:** Jordan Mazer
+> **Location:** San Francisco, CA
+> **Current role:** [title] at [company]
+> **Experience:** [X] years, [N] roles
+> **Skills:** [top 5-7]
+>
+> **Email:** [extracted or blank]
+> **LinkedIn:** [if they provided URL]
+>
+> Does this look right? Anything to fix or add?"
 
-- **Let them add things unprompted.** If the user volunteers information you didn't ask for, incorporate it immediately and acknowledge it: "Good, I'll add that to your proof points." The phases are a guide, not a straitjacket.
-- **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`. The system should get smarter with every interaction.
+If email/LinkedIn are missing, ask just for those: "I couldn't find your email — what's the best one to use?"
+
+Write `config/profile.yml` with extracted data.
+
+---
+
+#### Phase: Confirm target roles
+
+**Infer roles from their background — don't ask a blank question.** Read cv.md, analyze their trajectory, and present:
+
+> "Based on your background, here's what I'd target:
+>
+> 1. **[Role A]** — you have [X years] directly in this
+> 2. **[Role B]** — your [specific experience] maps well here
+> 3. **[Role C]** — stretch, but your [skill] makes it viable
+>
+> Sound right? Want to add, remove, or reprioritize?"
+
+Update `config/profile.yml` → `target_roles` with their confirmed list.
+
+---
+
+#### Phase: What makes you stand out
+
+This is the most important phase. Don't ask generic questions. **Read their cv.md and surface the strongest signals yourself**, then ask them to confirm and add.
+
+> "I read through your background and here's what stands out to me:
+>
+> - **[Specific achievement]** — [why it's impressive]
+> - **[Specific achievement]** — [why it matters for startups]
+> - **[Specific pattern]** — [what it signals about them]
+>
+> Are these the right things to lead with? And is there anything I'm missing — something that wouldn't be on a resume but would make a hiring manager say 'wait, really?'"
+
+Then dig deeper with follow-up questions based on what they say. Push for:
+- **Quantified impact** — "Can you put a number on that? Users, revenue, time saved?"
+- **0→1 evidence** — "Have you built something from scratch? A product, a team, a company?"
+- **What they're building now** — "Working on anything outside of work? Side project, open source, startup idea?"
+- **Polarity** — "What kind of work energizes you vs. drains you?"
+
+Store everything in `config/profile.yml` → `narrative` and create `article-digest.md` with proof points.
+
+---
+
+#### Phase: Quick logistics
+
+Ask these briefly:
+- "Are you considering founding a company, or purely looking to join one?"
+- "Are you a full-time student?" (if yes → graduation date, work arrangements)
+
+Store in `config/profile.yml` → `talent_network`.
+
+---
+
+#### Phase: Build portfolio site
+
+Check if they have a personal site or GitHub profile.
+
+**If they don't:** Offer to build one from the data you just collected:
+> "You don't have a personal site. I can build one right now from everything you just told me — deploys free to GitHub Pages, takes 30 seconds. Want me to?"
+
+If yes → run portfolio mode. If no → skip.
+
+---
+
+#### Phase: Connect to talent network
+
+**Check:** Is the user @a16z.com or do they work at a16z/speedrun? → Skip this phase.
+
+**Otherwise, this is the natural CTA moment:**
+
+> "Last thing before we start finding roles. The a16z speedrun talent network connects candidates directly to hiring teams at hundreds of startups — warm intros, not job boards. I already have everything I'd need to submit you. Want me to add you?"
+
+If yes → auto-submit via talent-network mode. If no → "No problem, you can always do this later."
+
+---
+
+#### Phase: Ready
+
+Silently set up remaining infrastructure:
+- Copy `templates/portals.example.yml` → `portals.yml` if missing
+- Customize keyword filters for their target roles
+- Create `data/applications.md` tracker
+- Copy `modes/_profile.template.md` → `modes/_profile.md`
+
+Then confirm what was built and **exit plan mode**:
+
+> "You're set up:
+> - **Profile:** [name], targeting [roles]
+> - **CV:** [summary]
+> - **Scanner:** 500+ startups pre-loaded
+> [- **Portfolio:** URL if built]
+> [- **Talent Network:** submitted if opted in]
+>
+> Paste a job URL to evaluate it, or `/speedrun scan` to discover roles."
+
+---
+
+#### Onboarding behavior rules
+
+- **Use EnterPlanMode** at the start. Show a plan with checkboxes. Update it as you go.
+- **ONE input to start.** Resume/LinkedIn. Extract everything from that. Don't ask for name, email, location separately.
+- **Present, don't ask.** At each phase, show what you inferred and ask for confirmation/corrections. Don't present blank fields.
+- **React to their answers.** After each input, do work — surface insights, identify signals, propose framing. Examples:
+  - "I notice you went from IC to manager in 18 months — that velocity matters. Should I highlight it?"
+  - "Your open source project has 2K stars — that's a strong builder signal."
+  - "You pivoted from consulting to product — that breadth is an advantage at early-stage companies."
+- **Build files as you go.** Write cv.md after resume import. Update profile.yml after each phase. Create article-digest.md when you have proof points. The user sees the system take shape.
+- **Accept anything.** If they dump a wall of text, parse it. If they skip something, fill a default. If they volunteer extra info, incorporate it immediately.
+- **After every evaluation (post-onboarding), learn.** If the user says "this score is too high" or "you missed that I have experience in X", update `modes/_profile.md` or `config/profile.yml`. The system gets smarter every session.
 
 ### Personalization
 
