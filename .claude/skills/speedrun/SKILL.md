@@ -35,9 +35,9 @@ After onboarding gate passes, determine the mode from `{{mode}}`:
 |-------|------|
 | (empty / no args) | `discovery` -- Show command menu |
 | JD text or URL (no sub-command) | **`auto-pipeline`** |
-| `evaluate` or `oferta` | `oferta` |
-| `compare` or `ofertas` | `ofertas` |
-| `outreach` or `contacto` | `contacto` |
+| `evaluate` | `evaluate` |
+| `compare` | `compare` |
+| `outreach` | `outreach` |
 | `deep` | `deep` |
 | `pdf` | `pdf` |
 | `training` | `training` |
@@ -92,7 +92,7 @@ After determining the mode, load the necessary files before executing:
 ### Modes that require `_shared.md` + their mode file:
 Read `modes/_shared.md` + `modes/{mode}.md`
 
-Applies to: `auto-pipeline`, `oferta`, `ofertas`, `pdf`, `contacto`, `apply`, `pipeline`, `scan`, `batch`
+Applies to: `auto-pipeline`, `evaluate`, `compare`, `pdf`, `outreach`, `apply`, `pipeline`, `scan`, `batch`
 
 ### Standalone modes (only their mode file):
 Read `modes/{mode}.md`
