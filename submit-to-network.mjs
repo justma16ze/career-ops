@@ -761,74 +761,159 @@ async function main() {
   // 4. Print summary
   printSummary(form1Data, form2Data);
 
-  // 5. Read API token
-  const secrets = loadYaml('config/secrets.yml');
-  const apiToken = secrets?.typeform_api_token || process.env.TYPEFORM_API_TOKEN;
-
   if (dryRun) {
-    console.log('\n' + bold('-- Dry Run: Form 1 API Payload --'));
-    console.log(JSON.stringify(buildForm1ApiPayload(form1Data), null, 2));
-    console.log('\n' + bold('-- Dry Run: Form 2 API Payload --'));
-    console.log(JSON.stringify(buildForm2ApiPayload(form2Data), null, 2));
-
-    console.log('\n' + bold('-- Dry Run: Pre-filled URLs --'));
-    console.log(`Form 1: ${buildForm1Url(form1Data)}`);
-    console.log(`Form 2: ${buildForm2Url(form2Data)}`);
+    console.log('\n' + bold('-- Dry Run: Form 1 Data --'));
+    console.log(JSON.stringify(form1Data, null, 2));
+    console.log('\n' + bold('-- Dry Run: Form 2 Data --'));
+    console.log(JSON.stringify(form2Data, null, 2));
     console.log('\n' + green('Dry run complete. No submissions made.'));
     process.exit(0);
   }
 
-  // 6. Submit
-  if (apiToken) {
-    // API submission path
-    console.log('\n' + dim('Submitting via Typeform API...'));
+  // 5. Submit via Playwright (no API key needed)
+  console.log('\n' + dim('Submitting via Playwright (headless browser)...'));
 
-    try {
-      console.log(dim('  Submitting Form 1 (talent network)...'));
-      await submitToTypeform(FORM_1_ID, buildForm1ApiPayload(form1Data), apiToken);
-      console.log(green('  Form 1 submitted successfully.'));
-    } catch (err) {
-      console.log(red(`  Form 1 failed: ${err.message}`));
-      console.log(dim('  Falling back to browser...'));
-      const url = buildForm1Url(form1Data);
-      console.log(`  Opening: ${url}`);
-      execSync(`open "${url}"`);
+  let chromium;
+  try {
+    chromium = (await import('playwright')).chromium;
+  } catch {
+    console.log(red('Playwright not installed. Run: npx playwright install chromium'));
+    process.exit(1);
+  }
+
+  const browser = await chromium.launch({ headless: true });
+
+  try {
+    // --- Form 1: talent network signup ---
+    console.log(dim('  Filling Form 1 (talent network)...'));
+    const form1Url = `https://form.typeform.com/to/${FORM_1_ID}#utm_source=speedrun-career-ops&utm_medium=talent-network-submit`;
+    const page1 = await browser.newPage();
+    await page1.goto(form1Url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page1.waitForTimeout(2000); // let Typeform hydrate
+
+    // Typeform presents one question at a time. We need to fill each and press Enter/click Next.
+    // Helper to fill a text field and advance
+    async function fillAndNext(page, text) {
+      await page.waitForTimeout(500);
+      const input = page.locator('input[type="text"], input[type="email"], input[type="url"], input[type="tel"], textarea').last();
+      await input.fill(text);
+      await page.waitForTimeout(300);
+      // Press Enter or click the OK/Next button
+      const okBtn = page.locator('button[data-qa="ok-button-visible"], button[aria-label="OK"], [data-qa="submit-button"], button:has-text("OK")').first();
+      if (await okBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await okBtn.click();
+      } else {
+        await page.keyboard.press('Enter');
+      }
+      await page.waitForTimeout(1000);
     }
 
-    try {
-      console.log(dim('  Submitting Form 2 (followup)...'));
-      await submitToTypeform(FORM_2_ID, buildForm2ApiPayload(form2Data), apiToken);
-      console.log(green('  Form 2 submitted successfully.'));
-    } catch (err) {
-      console.log(red(`  Form 2 failed: ${err.message}`));
-      console.log(dim('  Falling back to browser...'));
-      const url = buildForm2Url(form2Data);
-      console.log(`  Opening: ${url}`);
-      execSync(`open "${url}"`);
+    // Helper to select a choice option by label text
+    async function selectChoice(page, labelText) {
+      await page.waitForTimeout(500);
+      const option = page.locator(`[role="option"], [data-qa="choice"], button, div`).filter({ hasText: labelText }).first();
+      if (await option.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await option.click();
+        await page.waitForTimeout(1000);
+      }
     }
+
+    // Helper to click yes/no
+    async function selectYesNo(page, isYes) {
+      await page.waitForTimeout(500);
+      const label = isYes ? 'Yes' : 'No';
+      const btn = page.locator(`[role="option"], [data-qa="choice"], button`).filter({ hasText: label }).first();
+      if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await btn.click();
+        await page.waitForTimeout(1000);
+      }
+    }
+
+    // Start button if present
+    const startBtn = page1.locator('button[data-qa="start-button"], button:has-text("Start")').first();
+    if (await startBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await startBtn.click();
+      await page1.waitForTimeout(1500);
+    }
+
+    // Q1: Full name
+    await fillAndNext(page1, form1Data.name);
+    // Q2: Email
+    await fillAndNext(page1, form1Data.email);
+    // Q3: Location (multiple choice)
+    if (form1Data.continent) await selectChoice(page1, form1Data.continent);
+    // Q4: Current company
+    await fillAndNext(page1, form1Data.current_company);
+    // Q5: Craft area (multiple choice)
+    if (form1Data.craft_area) await selectChoice(page1, form1Data.craft_area);
+    // Q6: LinkedIn URL
+    await fillAndNext(page1, form1Data.linkedin);
+    // Q7: Portfolio/GitHub links
+    await fillAndNext(page1, form1Data.portfolio_links);
+    // Q8: Considering founding? (yes/no)
+    await selectYesNo(page1, form1Data.considering_founding);
+    // Q9: Newsletter (yes/no)
+    await selectYesNo(page1, form1Data.newsletter);
+    // Q10: Student? (yes/no)
+    await selectYesNo(page1, form1Data.is_student);
+
+    // Final submit
+    await page1.waitForTimeout(1000);
+    const submitBtn1 = page1.locator('button[data-qa="submit-button"], button:has-text("Submit"), button[type="submit"]').first();
+    if (await submitBtn1.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await submitBtn1.click();
+      await page1.waitForTimeout(3000);
+    }
+
+    console.log(green('  Form 1 submitted.'));
+    await page1.close();
+
+    // --- Form 2: followup ---
+    console.log(dim('  Filling Form 2 (followup)...'));
+    const form2Url = `https://form.typeform.com/to/${FORM_2_ID}#email=${encodeURIComponent(form2Data.email)}`;
+    const page2 = await browser.newPage();
+    await page2.goto(form2Url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page2.waitForTimeout(2000);
+
+    // Start button if present
+    const startBtn2 = page2.locator('button[data-qa="start-button"], button:has-text("Start")').first();
+    if (await startBtn2.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await startBtn2.click();
+      await page2.waitForTimeout(1500);
+    }
+
+    // Q1: Accomplishments
+    await fillAndNext(page2, form2Data.accomplishments);
+    // Q2: Building right now
+    await fillAndNext(page2, form2Data.current_project);
+    // Q3: Polarity
+    await fillAndNext(page2, form2Data.polarity);
+    // Q4: Work links
+    await fillAndNext(page2, form2Data.work_links);
+    // Q5: Done or share video? Select "I'm done"
+    await selectChoice(page2, "I'm done");
+
+    // Final submit
+    await page2.waitForTimeout(1000);
+    const submitBtn2 = page2.locator('button[data-qa="submit-button"], button:has-text("Submit"), button[type="submit"]').first();
+    if (await submitBtn2.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await submitBtn2.click();
+      await page2.waitForTimeout(3000);
+    }
+
+    console.log(green('  Form 2 submitted.'));
+    await page2.close();
 
     console.log('\n' + green(bold('Done! Profile submitted to the a16z speedrun talent network.')));
-  } else {
-    // Browser fallback — no API token
-    console.log('\n' + dim('No Typeform API token found. Opening forms in browser...'));
-    console.log(dim('(Set typeform_api_token in config/secrets.yml for fully automated submission)'));
+    console.log(dim('Hiring teams at hundreds of startups can now reach out directly.'));
 
-    const url1 = buildForm1Url(form1Data);
-    const url2 = buildForm2Url(form2Data);
-
-    console.log(`\n  Form 1: ${url1}`);
-    console.log(`  Form 2: ${url2}`);
-
-    try {
-      execSync(`open "${url1}"`);
-      // Small delay so the browser has time to register the first tab
-      execSync(`sleep 1 && open "${url2}"`);
-      console.log('\n' + green('Forms opened in Chrome. Review the pre-filled data and click Submit.'));
-    } catch (err) {
-      console.log(red(`Could not open browser: ${err.message}`));
-      console.log('Open the URLs above manually.');
-      process.exit(1);
-    }
+  } catch (err) {
+    console.log(red(`Submission error: ${err.message}`));
+    console.log(dim('Falling back to browser — opening the signup form...'));
+    execSync(`open "https://bit.ly/joinstartups"`);
+    console.log('Complete the form manually at bit.ly/joinstartups');
+  } finally {
+    await browser.close();
   }
 
   process.exit(0);
