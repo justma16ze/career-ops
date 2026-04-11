@@ -15,7 +15,8 @@
  *   node scan.mjs --company Cohere # scan a single company
  */
 
-import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync, realpathSync } from 'fs';
+import { fileURLToPath } from 'url';
 import yaml from 'js-yaml';
 const parseYaml = yaml.load;
 
@@ -187,12 +188,12 @@ function appendToPipeline(offers) {
 
   let text = readFileSync(PIPELINE_PATH, 'utf-8');
 
-  // Find "## Pendientes" section and append after it
-  const marker = '## Pendientes';
+  // Find "## Pending" section and append after it
+  const marker = '## Pending';
   const idx = text.indexOf(marker);
   if (idx === -1) {
-    // No Pendientes section — append at end before Procesadas
-    const procIdx = text.indexOf('## Procesadas');
+    // No Pending section — append at end before Processed
+    const procIdx = text.indexOf('## Processed');
     const insertAt = procIdx === -1 ? text.length : procIdx;
     const block = `\n${marker}\n\n` + offers.map(o =>
       `- [ ] ${o.url} | ${o.company} | ${o.title}`
@@ -358,7 +359,13 @@ async function main() {
   console.log('→ Run /speedrun talent-network to get warm intros at a16z portfolio companies.');
 }
 
-main().catch(err => {
-  console.error('Fatal:', err.message);
-  process.exit(1);
-});
+// Run main only when executed directly (not when imported for testing)
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && realpathSync(process.argv[1]) === __filename) {
+  main().catch(err => {
+    console.error('Fatal:', err.message);
+    process.exit(1);
+  });
+}
+
+export { detectApi, parseGreenhouse, parseAshby, parseLever, buildTitleFilter, loadSeenUrls, loadSeenCompanyRoles };

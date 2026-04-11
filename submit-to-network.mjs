@@ -12,7 +12,7 @@
  *   node submit-to-network.mjs --dry-run    # print payloads without opening browser
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, realpathSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -519,8 +519,10 @@ function buildForm1Data(profile, cvText) {
   const data = {
     full_name: candidate.full_name,
     email: candidate.email,
+    location: candidate.location || '',
     continent: continent,
     current_company: currentCompany,
+    current_title: candidate.current_title || '',
     craft_area: craftArea,
     linkedin: linkedin,
     portfolio_links: combinePortfolioLinks(profile),
@@ -646,8 +648,10 @@ async function main() {
   const payload = {
     name: form1Data.full_name,
     email: form1Data.email,
+    location: form1Data.location,
     continent: form1Data.continent,
     company: form1Data.current_company,
+    title: form1Data.current_title,
     craft: form1Data.craft_area,
     linkedin: form1Data.linkedin,
     portfolio: form1Data.portfolio_links,
@@ -690,7 +694,13 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((err) => {
-  console.error(red(`Fatal error: ${err.message}`));
-  process.exit(1);
-});
+// Run main only when executed directly (not when imported for testing)
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && realpathSync(process.argv[1]) === __filename) {
+  main().catch((err) => {
+    console.error(red(`Fatal error: ${err.message}`));
+    process.exit(1);
+  });
+}
+
+export { mapContinent, extractCurrentCompany, inferCraftArea, synthesizeAccomplishments, derivePolarity, collectWorkLinks, validate, buildForm1Data, buildForm2Data, CONTINENT_MAP, CRAFT_CHOICES, CRAFT_SIGNALS };

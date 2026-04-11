@@ -45,9 +45,9 @@ AI-powered job search automation built on Claude Code, focused on roles at ventu
 | If the user... | Mode |
 |----------------|------|
 | Pastes JD or URL | auto-pipeline (evaluate + report + PDF + tracker) |
-| Asks to evaluate offer | `oferta` |
-| Asks to compare offers | `ofertas` |
-| Wants LinkedIn outreach | `contacto` |
+| Asks to evaluate offer | `evaluate` |
+| Asks to compare offers | `compare` |
+| Wants LinkedIn outreach | `outreach` |
 | Asks for company research | `deep` |
 | Preps for interview at specific company | `interview-prep` |
 | Wants to generate CV/PDF | `pdf` |
@@ -65,6 +65,29 @@ AI-powered job search automation built on Claude Code, focused on roles at ventu
 ### First Run — Onboarding (MANDATORY GATE)
 
 **Before doing ANYTHING else — before ANY mode, including portfolio, scan, or discovery — check if the user is set up.**
+
+#### Step 0: Dependencies (silent, automatic)
+
+Before checking profile data, silently verify that all tools are working. Fix anything missing — do NOT ask the user to install things manually. You are the installer.
+
+Run these checks and auto-fix:
+
+1. **Node modules**: If `node_modules/` doesn't exist, run `npm install`.
+2. **Playwright Chromium**: Run `node -e "import('playwright').then(p => require('fs').existsSync(p.chromium.executablePath()) ? process.exit(0) : process.exit(1))"`. If it fails, run `npx playwright install chromium`.
+3. **Go** (for dashboard TUI): Run `which go`. If missing, detect the platform and package manager (`brew`, `apt`, `dnf`, `pacman`, `winget`, `choco`, etc.) and install Go. If no package manager is found, download the binary from the Go website for the correct OS/arch. Then run `cd dashboard && go build -o ../career-dashboard .` to build the dashboard.
+4. **GitHub CLI** (for portfolio deploy): Run `which gh`. If missing, install via the available package manager. This is optional — if install fails, skip it and note that portfolio deploy to GitHub Pages won't work.
+5. **Directories**: Ensure `data/`, `output/`, `reports/`, `jds/`, `batch/logs/`, `batch/tracker-additions/` exist. Create any that are missing.
+
+**Rules for dependency installation:**
+- NEVER ask the user which package manager to use. Detect it.
+- NEVER print raw install commands and tell the user to run them. Run them yourself.
+- If an install fails, try an alternative method. Only skip a dependency after exhausting options.
+- Keep output minimal. One line per dependency: "Installing Go..." → "Go installed." or "Go: already installed."
+- Optional dependencies (Go, gh) should not block onboarding if they fail. Core dependencies (Node modules, Playwright) should.
+
+---
+
+#### Step 0.5: Profile checks
 
 Run these checks silently:
 1. Does `config/profile.yml` exist? (NOT just `config/profile.example.yml`)
@@ -380,42 +403,15 @@ After the evaluation report, say:
 
 ## Auto-Submit to Talent Network
 
-When a candidate opts in, submit to both Typeforms using the Typeform Responses API. All data comes from career-ops files — the candidate fills out nothing.
+When a candidate opts in, run `node submit-to-network.mjs`. It reads local files (`cv.md`, `config/profile.yml`, `article-digest.md`, `modes/_profile.md`), builds a candidate profile, and submits it to the Gem API via a Cloudflare Worker relay at `speedrun-submit.jmazer.workers.dev/submit`.
 
-### Form 1: a16z speedrun talent network (uPI8kFOI)
+**Data flow:** `submit-to-network.mjs` → Cloudflare Worker (`worker/submit-relay.js`) → Gem API → talent network project
 
-| Typeform Field | Field ID | Source |
-|---|---|---|
-| Full name | `rkHeeArW7PDU` | `config/profile.yml` → `candidate.full_name` |
-| Email | `HKVthMkkRLQk` | `config/profile.yml` → `candidate.email` |
-| Location (continent) | `3ZTk5sqctphv` | `config/profile.yml` → `candidate.location` (map city → continent) |
-| Current company | `mV4hg87t8S4f` | `cv.md` → most recent employer |
-| Craft area | `VEyQKH7UYskQ` | `cv.md` + `config/profile.yml` → infer from skills/role |
-| LinkedIn URL | `wBX4vKFEmLqE` | `config/profile.yml` → `candidate.linkedin` |
-| Portfolio/GitHub links | `ic8VO3B87e70` | `config/profile.yml` → `candidate.portfolio_url` + `candidate.github` |
-| Considering founding? | `3yqoZ2Mxs5g3` | `config/profile.yml` → `talent_network.considering_founding` |
-| Newsletter signup | `RhyuBygr1NLQ` | Default: yes |
-| Full-time student? | `yQlRIF6VyqDl` | `config/profile.yml` → `talent_network.is_student` |
-| Graduation date | `FWr3P9clodBZ` | `config/profile.yml` → `talent_network.graduation_date` |
-| Working arrangements | `ezV8eTAcNT33` | `config/profile.yml` → `talent_network.work_arrangements` |
+**What gets sent:** Name, email, LinkedIn, location, title, company, craft area, portfolio links, accomplishments, current project, work preferences, founding/student status. UTM attribution: `utm_source=speedrun-career-ops`.
 
-**Hidden fields:**
-- `utm_source`: `speedrun-career-ops`
-- `utm_medium`: `cta-{top|mid|base}-tier`
+**Dry run:** `node submit-to-network.mjs --dry-run` prints the payload without submitting.
 
-### Form 2: a16z speedrun talent network - followup (b20t87QG)
-
-| Typeform Field | Field ID | Source |
-|---|---|---|
-| Accomplishments | `gUYw7B0aIIGD` | Synthesize from `cv.md` + `article-digest.md` proof points |
-| Building right now | `DAFKLNfGSs6n` | `config/profile.yml` → `narrative.current_project` (ask during onboarding if missing) |
-| Polarity | `Q4sPPUqqUakP` | Derive from `modes/_profile.md` targets + `portals.yml` filters |
-| Work links | `RbrYXjlY81d1` | Portfolio URL + GitHub + any project URLs from `article-digest.md` |
-
-**Hidden fields:**
-- `email`: from `config/profile.yml` → `candidate.email`
-
-**Implementation:** Run `node submit-to-network.mjs`. Uses Playwright to fill and submit both Typeforms in a headless browser. No API key needed — it fills the forms the same way a human would.
+**Duplicate handling:** If the candidate already exists in Gem, the relay adds them to the project and attaches an updated note. No data is overwritten.
 
 ---
 
