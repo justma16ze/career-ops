@@ -53,39 +53,17 @@ Read `cv.md`. Execute ALL blocks:
 
 #### Step 0 — Archetype Detection
 
-Classify the offer into one of the 6 archetypes. If hybrid, indicate the 2 closest.
+Classify the offer by matching it to the candidate's target archetypes from `config/profile.yml` → `target_roles.archetypes`. If `modes/_profile.md` has a more detailed archetype table, use that.
 
-**The 6 archetypes (all equally valid):**
+**Do NOT use a hardcoded list of archetypes.** The candidate's profile defines what roles they target. Map the JD to the closest matching archetype from their profile. If hybrid, indicate the 2 closest.
 
-| Archetype | Thematic axes | What they buy |
-|-----------|---------------|---------------|
-| **AI Platform / LLMOps Engineer** | Evaluation, observability, reliability, pipelines | Someone who puts AI in production with metrics |
-| **Agentic Workflows / Automation** | HITL, tooling, orchestration, multi-agent | Someone who builds reliable agent systems |
-| **Technical AI Product Manager** | GenAI/Agents, PRDs, discovery, delivery | Someone who translates business to AI product |
-| **AI Solutions Architect** | Hyperautomation, enterprise, integrations | Someone who designs end-to-end AI architectures |
-| **AI Forward Deployed Engineer** | Client-facing, fast delivery, prototyping | Someone who delivers AI solutions to clients fast |
-| **AI Transformation Lead** | Change management, adoption, org enablement | Someone who leads AI transformation in an organization |
+If the JD doesn't match any of their archetypes, say so — "This role doesn't align with your target archetypes."
 
 **Adaptive framing:**
 
 > **Concrete metrics are read from `cv.md` + `article-digest.md` at each evaluation. NEVER hardcode numbers here.**
 
-| If the role is... | Emphasize about the candidate... | Proof point sources |
-|-------------------|----------------------------------|---------------------|
-| Platform / LLMOps | Production systems builder, observability, evals, closed-loop | article-digest.md + cv.md |
-| Agentic / Automation | Multi-agent orchestration, HITL, reliability, cost | article-digest.md + cv.md |
-| Technical AI PM | Product discovery, PRDs, metrics, stakeholder mgmt | cv.md + article-digest.md |
-| Solutions Architect | System design, integrations, enterprise-ready | article-digest.md + cv.md |
-| Forward Deployed Engineer | Fast delivery, client-facing, prototype to prod | cv.md + article-digest.md |
-| AI Transformation Lead | Change management, team enablement, adoption | cv.md + article-digest.md |
-
-**Cross-cutting advantage**: Frame profile as **"Technical builder"** who adapts framing to the role:
-- For PM: "builder who reduces uncertainty with prototypes then productionizes with discipline"
-- For FDE: "builder who delivers fast with observability and metrics from day 1"
-- For SA: "builder who designs end-to-end systems with real-world integration experience"
-- For LLMOps: "builder who puts AI in production with closed-loop quality systems — read metrics from article-digest.md"
-
-Turn "builder" into a professional signal, not "hobby maker". The framing changes, the truth stays the same.
+Read the candidate's archetypes from `config/profile.yml` and `modes/_profile.md`. For each evaluation, emphasize the proof points and experience that match what THIS specific JD asks for. Derive the framing from the candidate's actual background and the JD's requirements — not from a static mapping table.
 
 #### Block A — Role Summary
 
@@ -95,13 +73,7 @@ Table with: Detected archetype, Domain, Function, Seniority, Remote, Team size, 
 
 Read `cv.md`. Table mapping each JD requirement to exact CV lines or i18n.ts keys.
 
-**Adapted to the archetype:**
-- FDE → prioritize fast delivery and client-facing
-- SA → prioritize system design and integrations
-- PM → prioritize product discovery and metrics
-- LLMOps → prioritize evals, observability, pipelines
-- Agentic → prioritize multi-agent, HITL, orchestration
-- Transformation → prioritize change management, adoption, scaling
+**Adapted to the archetype:** Prioritize the proof points and experience that match the detected archetype for THIS role, based on the candidate's profile — not a hardcoded mapping.
 
 **Gaps** section with mitigation strategy for each one:
 1. Is it a hard blocker or nice-to-have?

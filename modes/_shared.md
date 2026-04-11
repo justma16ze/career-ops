@@ -44,18 +44,22 @@ The evaluation uses 6 blocks (A-F) with a global score of 1-5:
 
 ## Archetype Detection
 
-Classify every offer into one of these types (or hybrid of 2):
+**Do NOT use a hardcoded list of archetypes.** Derive archetypes from `config/profile.yml` → `target_roles.archetypes` and the candidate's actual background in `cv.md`.
 
-| Archetype | Key signals in JD |
-|-----------|-------------------|
-| AI Platform / LLMOps | "observability", "evals", "pipelines", "monitoring", "reliability" |
-| Agentic / Automation | "agent", "HITL", "orchestration", "workflow", "multi-agent" |
-| Technical AI PM | "PRD", "roadmap", "discovery", "stakeholder", "product manager" |
-| AI Solutions Architect | "architecture", "enterprise", "integration", "design", "systems" |
-| AI Forward Deployed | "client-facing", "deploy", "prototype", "fast delivery", "field" |
-| AI Transformation | "change management", "adoption", "enablement", "transformation" |
+### How to classify an offer:
 
-After detecting archetype, read `modes/_profile.md` for the user's specific framing and proof points for that archetype.
+1. Read the candidate's archetypes from `config/profile.yml` → `target_roles.archetypes`. These are the roles the candidate is actually targeting.
+2. Read the JD and identify its core function, domain, and seniority.
+3. Map the JD to the **candidate's archetypes** — which of their target roles does this JD best match? Use `fit: primary` as the best match, `secondary` as a good match, `adjacent` as a stretch.
+4. If the JD doesn't map to any of the candidate's archetypes, say so — "This role doesn't align with your target archetypes. It's a [description of what it actually is]."
+
+### If `target_roles.archetypes` is missing or empty:
+
+Fall back to inferring archetypes from `cv.md` — look at the candidate's most recent roles, dominant skills, and career trajectory. Propose 2-3 archetypes and use those for the evaluation.
+
+**Never force-classify a role into a category that doesn't exist in the candidate's profile.** A People/Talent candidate should see their JDs classified as "Head of People", "VP Talent", "People Ops" — not "AI Platform" or "Forward Deployed."
+
+After detecting the archetype match, read `modes/_profile.md` for the user's specific framing and proof points for that archetype.
 
 ## Global Rules
 
