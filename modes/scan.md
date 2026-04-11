@@ -48,11 +48,54 @@ The `search_queries` with `site:` filters cover portals broadly (all Ashby, all 
 
 Levels are additive — all are executed, results are merged and deduplicated.
 
+## CRITICAL: Derive keywords from the candidate's profile
+
+**Before executing any scan, read `config/profile.yml` → `target_roles` and dynamically generate the title filter keywords and search queries.** Do NOT rely on the static keywords in `portals.yml` — those are defaults that may not match the candidate's actual targets.
+
+### Step 0 — Build dynamic keyword config
+
+1. Read `config/profile.yml` → `target_roles.primary` and `target_roles.archetypes`
+2. For each target role and archetype, generate positive title keywords using this mapping:
+
+| Archetype / Role contains | Positive keywords to add |
+|---------------------------|--------------------------|
+| Engineer, Engineering, SWE, SDE | "Engineer", "Developer", "SWE", "Software" |
+| AI, ML, Machine Learning | "AI", "ML", "Machine Learning", "LLM", "NLP", "GenAI" |
+| Founding, 0 to 1, First | "Founding Engineer", "Founding", "First Engineer", "0 to 1" |
+| Product Manager, PM, Product | "Product Manager", "PM", "Product Lead", "Product Owner" |
+| Design, UX, UI | "Designer", "UX", "UI", "Design" |
+| Data, Analytics | "Data Engineer", "Data Scientist", "Analytics", "BI" |
+| DevOps, SRE, Infrastructure | "DevOps", "SRE", "Infrastructure", "Platform" |
+| Solutions, Architect | "Solutions Architect", "Solutions Engineer", "SA" |
+| People, Talent, HR, Recruiting | "People", "Talent", "HR", "Recruiting", "People Ops", "Head of People", "Chief People Officer", "CHRO", "VP People", "Talent Acquisition", "TA", "Head of Talent" |
+| Operations, Ops, Chief of Staff | "Operations", "Ops", "Chief of Staff", "COO", "Business Operations" |
+| Sales, BizDev, GTM | "Sales", "Business Development", "Account Executive", "GTM", "Revenue" |
+| Marketing, Growth | "Marketing", "Growth", "Demand Gen", "CMO", "Content" |
+| Forward Deployed, FDE | "Forward Deployed", "FDE", "Deployed Engineer", "Field Engineer" |
+| Staff, Senior, Lead, Principal | Add these as seniority_boost keywords |
+
+3. Also extract the level from each archetype (Senior, Staff, Lead, etc.) and add to `seniority_boost`.
+4. Generate WebSearch queries by combining the derived keywords with `site:` filters for major boards (Ashby, Greenhouse, Lever, Wellfound).
+
+**Example:** If `target_roles.primary` contains "Head of People" and "VP Talent":
+- Positive keywords: "People", "Talent", "HR", "Head of People", "VP People", "VP Talent", "Chief People Officer", "People Ops", "Talent Acquisition"
+- Search queries: `site:jobs.ashbyhq.com "Head of People" OR "VP Talent" OR "People Ops"`, etc.
+- Seniority boost: "Head", "VP", "Director", "Senior"
+
+**The `portals.yml` file provides the company list and board URLs. The keywords come from the profile.**
+
+If `portals.yml` has a `title_filter.positive` section, **merge** the dynamic keywords with the static ones (dynamic takes priority, static fills gaps). If the user manually customized their portals.yml keywords, respect those too — append, don't replace.
+
+For `title_filter.negative`, keep the static list from `portals.yml` as-is (those are tech stacks and roles to exclude, which don't change per profile).
+
+---
+
 ## Workflow
 
-1. **Read configuration**: `portals.yml`
-2. **Read history**: `data/scan-history.tsv` → previously seen URLs
-3. **Read dedup sources**: `data/applications.md` + `data/pipeline.md`
+1. **Read profile**: `config/profile.yml` → derive keywords (Step 0 above)
+2. **Read configuration**: `portals.yml` → company list + merge keyword filters
+3. **Read history**: `data/scan-history.tsv` → previously seen URLs
+4. **Read dedup sources**: `data/applications.md` + `data/pipeline.md`
 
 4. **Level 1 — Playwright scan** (parallel in batches of 3-5):
    For each company in `tracked_companies` with `enabled: true` and `careers_url` defined:
