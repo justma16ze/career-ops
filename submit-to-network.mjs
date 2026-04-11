@@ -34,29 +34,6 @@ const cyan = (s) => isTTY ? `\x1b[36m${s}\x1b[0m` : s;
 
 const FORM_1_ID = 'uPI8kFOI';
 const FORM_2_ID = 'b20t87QG';
-const TYPEFORM_BASE = 'https://form.typeform.com/to';
-
-const FORM_1_FIELDS = {
-  full_name:            'rkHeeArW7PDU',
-  email:                'HKVthMkkRLQk',
-  continent:            '3ZTk5sqctphv',
-  current_company:      'mV4hg87t8S4f',
-  craft_area:           'VEyQKH7UYskQ',
-  linkedin:             'wBX4vKFEmLqE',
-  portfolio_links:      'ic8VO3B87e70',
-  considering_founding: '3yqoZ2Mxs5g3',
-  newsletter:           'RhyuBygr1NLQ',
-  is_student:           'yQlRIF6VyqDl',
-  graduation_date:      'FWr3P9clodBZ',
-  work_arrangements:    'ezV8eTAcNT33',
-};
-
-const FORM_2_FIELDS = {
-  accomplishments:   'gUYw7B0aIIGD',
-  current_project:   'DAFKLNfGSs6n',
-  polarity:          'Q4sPPUqqUakP',
-  work_links:        'RbrYXjlY81d1',
-};
 
 const CONTINENT_MAP = {
   // North America
@@ -487,23 +464,6 @@ function combinePortfolioLinks(profile) {
   return links.join('\n');
 }
 
-// ── URL Builder ────────────────────────────────────────────────────
-
-function buildPrefillUrl(formId, params, hiddenFields) {
-  const base = `${TYPEFORM_BASE}/${formId}`;
-  const hashParts = [];
-
-  // Hidden fields go in the URL hash
-  for (const [key, value] of Object.entries(hiddenFields)) {
-    if (value !== undefined && value !== null) {
-      hashParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-    }
-  }
-
-  const hash = hashParts.length > 0 ? '#' + hashParts.join('&') : '';
-  return base + hash;
-}
-
 // ── Validation ─────────────────────────────────────────────────────
 
 function validate(profile, cvText) {
@@ -595,92 +555,6 @@ function buildForm2Data(profile, cvText, articleDigest, profileMd) {
   };
 }
 
-// ── Typeform API Payloads ──────────────────────────────────────────
-
-function buildForm1ApiPayload(data) {
-  const answers = [
-    { field: { id: FORM_1_FIELDS.full_name, type: 'short_text' }, type: 'text', text: data.full_name },
-    { field: { id: FORM_1_FIELDS.email, type: 'email' }, type: 'email', email: data.email },
-    { field: { id: FORM_1_FIELDS.current_company, type: 'short_text' }, type: 'text', text: data.current_company },
-    { field: { id: FORM_1_FIELDS.linkedin, type: 'url' }, type: 'url', url: data.linkedin },
-    { field: { id: FORM_1_FIELDS.portfolio_links, type: 'long_text' }, type: 'text', text: data.portfolio_links },
-    { field: { id: FORM_1_FIELDS.considering_founding, type: 'yes_no' }, type: 'boolean', boolean: !!data.considering_founding },
-    { field: { id: FORM_1_FIELDS.newsletter, type: 'yes_no' }, type: 'boolean', boolean: !!data.newsletter },
-    { field: { id: FORM_1_FIELDS.is_student, type: 'yes_no' }, type: 'boolean', boolean: !!data.is_student },
-  ];
-
-  if (data.continent) {
-    answers.push({ field: { id: FORM_1_FIELDS.continent, type: 'multiple_choice' }, type: 'choice', choice: { label: data.continent } });
-  }
-  if (data.craft_area) {
-    answers.push({ field: { id: FORM_1_FIELDS.craft_area, type: 'multiple_choice' }, type: 'choice', choice: { label: data.craft_area } });
-  }
-  if (data.graduation_date) {
-    answers.push({ field: { id: FORM_1_FIELDS.graduation_date, type: 'date' }, type: 'date', date: data.graduation_date });
-  }
-  if (data.work_arrangements) {
-    answers.push({ field: { id: FORM_1_FIELDS.work_arrangements, type: 'multiple_choice' }, type: 'choice', choice: { label: data.work_arrangements } });
-  }
-
-  return {
-    answers,
-    hidden: {
-      utm_source: 'speedrun-career-ops',
-      utm_medium: 'talent-network-submit',
-    },
-  };
-}
-
-function buildForm2ApiPayload(data) {
-  return {
-    answers: [
-      { field: { id: FORM_2_FIELDS.accomplishments, type: 'long_text' }, type: 'text', text: data.accomplishments },
-      { field: { id: FORM_2_FIELDS.current_project, type: 'long_text' }, type: 'text', text: data.current_project },
-      { field: { id: FORM_2_FIELDS.polarity, type: 'long_text' }, type: 'text', text: data.polarity },
-      { field: { id: FORM_2_FIELDS.work_links, type: 'long_text' }, type: 'text', text: data.work_links },
-    ],
-    hidden: {
-      email: data.email,
-    },
-  };
-}
-
-// ── Pre-filled URL Builder ─────────────────────────────────────────
-
-function buildForm1Url(data) {
-  return buildPrefillUrl(FORM_1_ID, {}, {
-    utm_source: 'speedrun-career-ops',
-    utm_medium: 'talent-network-submit',
-  });
-}
-
-function buildForm2Url(data) {
-  return buildPrefillUrl(FORM_2_ID, {}, {
-    email: data.email,
-  });
-}
-
-// ── API Submission ─────────────────────────────────────────────────
-
-async function submitToTypeform(formId, payload, apiToken) {
-  const url = `https://api.typeform.com/forms/${formId}/responses`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Typeform API error (${response.status}): ${body}`);
-  }
-
-  return response;
-}
-
 // ── Display ────────────────────────────────────────────────────────
 
 function printSummary(form1Data, form2Data) {
@@ -770,150 +644,57 @@ async function main() {
     process.exit(0);
   }
 
-  // 5. Submit via Playwright (no API key needed)
-  console.log('\n' + dim('Submitting via Playwright (headless browser)...'));
+  // 5. Submit via relay service
+  const RELAY_URL = process.env.SPEEDRUN_RELAY_URL || 'https://speedrun-submit.a16z-speedrun.workers.dev/submit';
 
-  let chromium;
+  console.log('\n' + dim('Submitting to talent network...'));
+
+  const payload = {
+    name: form1Data.full_name,
+    email: form1Data.email,
+    continent: form1Data.continent,
+    company: form1Data.current_company,
+    craft: form1Data.craft_area,
+    linkedin: form1Data.linkedin,
+    portfolio: form1Data.portfolio_links,
+    founding: form1Data.considering_founding,
+    newsletter: form1Data.newsletter,
+    student: form1Data.is_student,
+    accomplishments: form2Data.accomplishments,
+    building: form2Data.current_project,
+    polarity: form2Data.polarity,
+    links: form2Data.work_links,
+    utm_source: 'speedrun-career-ops',
+    utm_medium: 'talent-network-submit',
+  };
+
   try {
-    chromium = (await import('playwright')).chromium;
-  } catch {
-    console.log(red('Playwright not installed. Run: npx playwright install chromium'));
-    process.exit(1);
-  }
+    const res = await fetch(RELAY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-  const browser = await chromium.launch({ headless: true });
+    const result = await res.json();
 
-  try {
-    // --- Form 1: talent network signup ---
-    console.log(dim('  Filling Form 1 (talent network)...'));
-    const form1Url = `https://form.typeform.com/to/${FORM_1_ID}#utm_source=speedrun-career-ops&utm_medium=talent-network-submit`;
-    const page1 = await browser.newPage();
-    await page1.goto(form1Url, { waitUntil: 'networkidle', timeout: 30000 });
-    await page1.waitForTimeout(2000); // let Typeform hydrate
-
-    // Typeform presents one question at a time. We need to fill each and press Enter/click Next.
-    // Helper to fill a text field and advance
-    async function fillAndNext(page, text) {
-      await page.waitForTimeout(500);
-      const input = page.locator('input[type="text"], input[type="email"], input[type="url"], input[type="tel"], textarea').last();
-      await input.fill(text);
-      await page.waitForTimeout(300);
-      // Press Enter or click the OK/Next button
-      const okBtn = page.locator('button[data-qa="ok-button-visible"], button[aria-label="OK"], [data-qa="submit-button"], button:has-text("OK")').first();
-      if (await okBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await okBtn.click();
-      } else {
-        await page.keyboard.press('Enter');
+    if (result.success) {
+      console.log(green(bold('\nDone! Profile submitted to the a16z speedrun talent network.')));
+      console.log(dim('Hiring teams at hundreds of startups can now reach out directly.'));
+    } else {
+      console.log(red('\nSubmission had issues:'));
+      if (result.results?.form1 && !result.results.form1.ok) {
+        console.log(red(`  Form 1: ${result.results.form1.error || 'failed'}`));
       }
-      await page.waitForTimeout(1000);
-    }
-
-    // Helper to select a choice option by label text
-    async function selectChoice(page, labelText) {
-      await page.waitForTimeout(500);
-      const option = page.locator(`[role="option"], [data-qa="choice"], button, div`).filter({ hasText: labelText }).first();
-      if (await option.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await option.click();
-        await page.waitForTimeout(1000);
+      if (result.results?.form2 && !result.results.form2.ok) {
+        console.log(red(`  Form 2: ${result.results.form2.error || 'failed'}`));
       }
+      console.log(dim('You can submit manually at bit.ly/joinstartups'));
     }
-
-    // Helper to click yes/no
-    async function selectYesNo(page, isYes) {
-      await page.waitForTimeout(500);
-      const label = isYes ? 'Yes' : 'No';
-      const btn = page.locator(`[role="option"], [data-qa="choice"], button`).filter({ hasText: label }).first();
-      if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
-        await btn.click();
-        await page.waitForTimeout(1000);
-      }
-    }
-
-    // Start button if present
-    const startBtn = page1.locator('button[data-qa="start-button"], button:has-text("Start")').first();
-    if (await startBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await startBtn.click();
-      await page1.waitForTimeout(1500);
-    }
-
-    // Q1: Full name
-    await fillAndNext(page1, form1Data.name);
-    // Q2: Email
-    await fillAndNext(page1, form1Data.email);
-    // Q3: Location (multiple choice)
-    if (form1Data.continent) await selectChoice(page1, form1Data.continent);
-    // Q4: Current company
-    await fillAndNext(page1, form1Data.current_company);
-    // Q5: Craft area (multiple choice)
-    if (form1Data.craft_area) await selectChoice(page1, form1Data.craft_area);
-    // Q6: LinkedIn URL
-    await fillAndNext(page1, form1Data.linkedin);
-    // Q7: Portfolio/GitHub links
-    await fillAndNext(page1, form1Data.portfolio_links);
-    // Q8: Considering founding? (yes/no)
-    await selectYesNo(page1, form1Data.considering_founding);
-    // Q9: Newsletter (yes/no)
-    await selectYesNo(page1, form1Data.newsletter);
-    // Q10: Student? (yes/no)
-    await selectYesNo(page1, form1Data.is_student);
-
-    // Final submit
-    await page1.waitForTimeout(1000);
-    const submitBtn1 = page1.locator('button[data-qa="submit-button"], button:has-text("Submit"), button[type="submit"]').first();
-    if (await submitBtn1.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await submitBtn1.click();
-      await page1.waitForTimeout(3000);
-    }
-
-    console.log(green('  Form 1 submitted.'));
-    await page1.close();
-
-    // --- Form 2: followup ---
-    console.log(dim('  Filling Form 2 (followup)...'));
-    const form2Url = `https://form.typeform.com/to/${FORM_2_ID}#email=${encodeURIComponent(form2Data.email)}`;
-    const page2 = await browser.newPage();
-    await page2.goto(form2Url, { waitUntil: 'networkidle', timeout: 30000 });
-    await page2.waitForTimeout(2000);
-
-    // Start button if present
-    const startBtn2 = page2.locator('button[data-qa="start-button"], button:has-text("Start")').first();
-    if (await startBtn2.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await startBtn2.click();
-      await page2.waitForTimeout(1500);
-    }
-
-    // Q1: Accomplishments
-    await fillAndNext(page2, form2Data.accomplishments);
-    // Q2: Building right now
-    await fillAndNext(page2, form2Data.current_project);
-    // Q3: Polarity
-    await fillAndNext(page2, form2Data.polarity);
-    // Q4: Work links
-    await fillAndNext(page2, form2Data.work_links);
-    // Q5: Done or share video? Select "I'm done"
-    await selectChoice(page2, "I'm done");
-
-    // Final submit
-    await page2.waitForTimeout(1000);
-    const submitBtn2 = page2.locator('button[data-qa="submit-button"], button:has-text("Submit"), button[type="submit"]').first();
-    if (await submitBtn2.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await submitBtn2.click();
-      await page2.waitForTimeout(3000);
-    }
-
-    console.log(green('  Form 2 submitted.'));
-    await page2.close();
-
-    console.log('\n' + green(bold('Done! Profile submitted to the a16z speedrun talent network.')));
-    console.log(dim('Hiring teams at hundreds of startups can now reach out directly.'));
-
   } catch (err) {
-    console.log(red(`Submission error: ${err.message}`));
-    console.log(dim('Falling back to browser — opening the signup form...'));
-    execSync(`open "https://bit.ly/joinstartups"`);
+    console.log(red(`Could not reach submission service: ${err.message}`));
+    console.log(dim('Falling back to browser...'));
+    try { execSync(`open "https://bit.ly/joinstartups"`); } catch {}
     console.log('Complete the form manually at bit.ly/joinstartups');
-  } finally {
-    await browser.close();
   }
 
   process.exit(0);
