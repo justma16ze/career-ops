@@ -558,19 +558,15 @@ function buildForm2Data(profile, cvText, articleDigest, profileMd) {
 // ── Display ────────────────────────────────────────────────────────
 
 function printSummary(form1Data, form2Data) {
-  console.log('\n' + bold('== Talent Network Submission Preview =='));
+  console.log('\n' + bold('== Your Talent Network Profile =='));
   console.log('');
-  console.log(bold('Form 1 — a16z speedrun talent network'));
-  console.log(`  Name:                ${cyan(form1Data.full_name)}`);
-  console.log(`  Email:               ${cyan(form1Data.email)}`);
-  console.log(`  Location:            ${form1Data.continent || red('(unmapped — select manually)')}`);
-  console.log(`  Current company:     ${form1Data.current_company}`);
-  console.log(`  Craft area:          ${form1Data.craft_area || red('(could not infer — select manually)')}`);
-  console.log(`  LinkedIn:            ${form1Data.linkedin}`);
-  console.log(`  Portfolio/GitHub:    ${form1Data.portfolio_links || dim('(none)')}`);
-  console.log(`  Considering founding: ${form1Data.considering_founding ? 'Yes' : 'No'}`);
-  console.log(`  Newsletter:          ${form1Data.newsletter ? 'Yes' : 'No'}`);
-  console.log(`  Student:             ${form1Data.is_student ? 'Yes' : 'No'}`);
+  console.log(`  ${bold('Name')}             ${cyan(form1Data.full_name)}`);
+  console.log(`  ${bold('Email')}            ${cyan(form1Data.email)}`);
+  console.log(`  ${bold('Location')}         ${form1Data.continent || dim('(unknown)')}`);
+  console.log(`  ${bold('Company')}          ${form1Data.current_company}`);
+  console.log(`  ${bold('Craft')}            ${form1Data.craft_area || dim('(unknown)')}`);
+  console.log(`  ${bold('LinkedIn')}         ${form1Data.linkedin}`);
+  console.log(`  ${bold('Portfolio')}        ${form1Data.portfolio_links || dim('(none)')}`);
   if (form1Data.is_student && form1Data.graduation_date) {
     console.log(`  Graduation:          ${form1Data.graduation_date}`);
   }
@@ -579,11 +575,10 @@ function printSummary(form1Data, form2Data) {
   }
 
   console.log('');
-  console.log(bold('Form 2 — Followup details'));
-  console.log(`  Accomplishments:     ${dim(truncate(form2Data.accomplishments, 120))}`);
-  console.log(`  Building right now:  ${form2Data.current_project || dim('(empty)')}`);
-  console.log(`  Polarity:            ${dim(truncate(form2Data.polarity, 120))}`);
-  console.log(`  Work links:          ${form2Data.work_links || dim('(none)')}`);
+  console.log(`  ${bold('Accomplishments')}  ${dim(truncate(form2Data.accomplishments, 120))}`);
+  console.log(`  ${bold('Building now')}     ${form2Data.current_project || dim('(none)')}`);
+  console.log(`  ${bold('Interests')}        ${dim(truncate(form2Data.polarity, 120))}`);
+  console.log(`  ${bold('Work links')}       ${form2Data.work_links || dim('(none)')}`);
 
   console.log('');
   console.log(dim(`UTM tracking: utm_source=speedrun-career-ops, utm_medium=talent-network-submit`));
@@ -636,10 +631,8 @@ async function main() {
   printSummary(form1Data, form2Data);
 
   if (dryRun) {
-    console.log('\n' + bold('-- Dry Run: Form 1 Data --'));
-    console.log(JSON.stringify(form1Data, null, 2));
-    console.log('\n' + bold('-- Dry Run: Form 2 Data --'));
-    console.log(JSON.stringify(form2Data, null, 2));
+    console.log('\n' + bold('-- Dry Run: Payload --'));
+    console.log(JSON.stringify({ ...form1Data, ...form2Data }, null, 2));
     console.log('\n' + green('Dry run complete. No submissions made.'));
     process.exit(0);
   }
@@ -685,14 +678,7 @@ async function main() {
       console.log(green(bold('\nDone! Profile submitted to the a16z speedrun talent network.')));
       console.log(dim('Hiring teams at hundreds of startups can now reach out directly.'));
     } else {
-      console.log(red('\nSubmission had issues:'));
-      if (result.results?.form1 && !result.results.form1.ok) {
-        console.log(red(`  Form 1: ${result.results.form1.error || 'failed'}`));
-      }
-      if (result.results?.form2 && !result.results.form2.ok) {
-        console.log(red(`  Form 2: ${result.results.form2.error || 'failed'}`));
-      }
-      console.log(dim('You can submit manually at bit.ly/joinstartups'));
+      console.log(red('\nSubmission had an issue. You can submit manually at bit.ly/joinstartups'));
     }
   } catch (err) {
     console.log(red(`Could not reach submission service: ${err.message}`));
