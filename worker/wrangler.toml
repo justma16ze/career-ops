@@ -1,3 +1,8 @@
 name = "speedrun-submit"
 main = "submit-relay.js"
 compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "speedrun-followup"
+database_id = "79b29861-92d0-4afa-a3a2-74abfa9d0752"
