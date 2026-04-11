@@ -2,108 +2,200 @@
  * Cloudflare Worker — Gem submission relay for speedrun talent network
  *
  * Accepts candidate profile data via POST, creates a candidate in Gem,
- * and adds them to the "Typeform Submissions" project.
+ * and adds them to the talent network project.
  *
- * Deduplication: Gem deduplicates on linked_in_handle automatically.
- * If a candidate with that LinkedIn already exists, we get a 400 with
- * the existing candidate ID — we then add THAT candidate to the project
- * instead (no data overwritten).
+ * Security:
+ *   - Requires Authorization: Bearer <RELAY_SECRET> header
+ *   - Rate limited (env: RATE_LIMIT_PER_MIN, default 10)
+ *   - Input validation on all fields (length, format)
+ *   - Project ID and user ID stored as secrets, not in code
+ *   - CORS locked to localhost + known domains
  *
  * Deploy:
  *   cd worker && wrangler deploy
  *
  * Set secrets:
  *   wrangler secret put GEM_API_KEY
- *
- * Usage:
- *   POST /submit { name, email, linkedin, ... }
+ *   wrangler secret put RELAY_SECRET
+ *   wrangler secret put GEM_PROJECT_ID
+ *   wrangler secret put GEM_USER_ID
  */
 
 const GEM_API = 'https://api.gem.com/v0';
-const PROJECT_ID = 'UHJvamVjdDoxMDM1MjE0'; // "Typeform Submissions"
-const CREATED_BY = 'dXNlcnM6NjU2NzMx';     // Jordan Mazer
+const MAX_FIELD_LEN = 2000;
+const MAX_SHORT_FIELD = 255;
+const RATE_WINDOW_MS = 60_000;
+const DEFAULT_RATE_LIMIT = 10;
+
+// In-memory rate limit (per-isolate, resets on redeploy — good enough)
+const ipHits = new Map();
+
+function checkRateLimit(ip, limit) {
+  const now = Date.now();
+  const entry = ipHits.get(ip);
+  if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
+    ipHits.set(ip, { windowStart: now, count: 1 });
+    return true;
+  }
+  entry.count++;
+  if (entry.count > limit) return false;
+  return true;
+}
+
+// Input validation
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= MAX_SHORT_FIELD;
+}
+
+function validateLinkedIn(url) {
+  return /linkedin\.com\/in\/[a-zA-Z0-9_-]+/.test(url) && url.length <= 500;
+}
+
+function sanitize(str, maxLen) {
+  if (!str) return '';
+  return String(str).slice(0, maxLen).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+}
+
+const ALLOWED_ORIGINS = [
+  'http://localhost',
+  'https://localhost',
+  'https://speedrun.a16z.com',
+];
+
+function corsHeaders(origin) {
+  const allowed = ALLOWED_ORIGINS.some(o => origin?.startsWith(o));
+  return {
+    'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
+
+function corsResponse(response, origin) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(corsHeaders(origin))) {
+    headers.set(k, v);
+  }
+  return new Response(response.body, { ...response, headers });
+}
 
 export default {
   async fetch(request, env) {
-    // CORS
+    const origin = request.headers.get('Origin') || '';
+
+    // CORS preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      });
+      return new Response(null, { headers: corsHeaders(origin) });
     }
 
     if (request.method !== 'POST') {
-      return cors(Response.json({ error: 'POST only' }, { status: 405 }));
+      return corsResponse(Response.json({ error: 'POST only' }, { status: 405 }), origin);
     }
 
     const url = new URL(request.url);
     if (url.pathname !== '/submit') {
-      return cors(Response.json({ error: 'Not found' }, { status: 404 }));
+      return corsResponse(Response.json({ error: 'Not found' }, { status: 404 }), origin);
     }
 
+    // --- Auth: require Bearer token ---
+    const authHeader = request.headers.get('Authorization') || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    if (!env.RELAY_SECRET || token !== env.RELAY_SECRET) {
+      return corsResponse(Response.json({ error: 'Unauthorized' }, { status: 401 }), origin);
+    }
+
+    // --- Rate limit ---
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const rateLimit = parseInt(env.RATE_LIMIT_PER_MIN) || DEFAULT_RATE_LIMIT;
+    if (!checkRateLimit(ip, rateLimit)) {
+      return corsResponse(Response.json({ error: 'Rate limited. Try again in a minute.' }, { status: 429 }), origin);
+    }
+
+    // --- Config from secrets ---
     const apiKey = env.GEM_API_KEY;
-    if (!apiKey) {
-      return cors(Response.json({ error: 'Server misconfigured — no GEM_API_KEY' }, { status: 500 }));
+    const projectId = env.GEM_PROJECT_ID;
+    const createdBy = env.GEM_USER_ID;
+    if (!apiKey || !projectId || !createdBy) {
+      return corsResponse(Response.json({ error: 'Server misconfigured' }, { status: 500 }), origin);
     }
 
     let data;
     try {
       data = await request.json();
     } catch {
-      return cors(Response.json({ error: 'Invalid JSON' }, { status: 400 }));
+      return corsResponse(Response.json({ error: 'Invalid JSON' }, { status: 400 }), origin);
     }
 
-    // Validate required fields
+    // --- Validate required fields ---
     if (!data.name || !data.email || !data.linkedin) {
-      return cors(Response.json({ error: 'Missing required fields: name, email, linkedin' }, { status: 400 }));
+      return corsResponse(Response.json({ error: 'Missing required fields: name, email, linkedin' }, { status: 400 }), origin);
+    }
+    if (!validateEmail(data.email)) {
+      return corsResponse(Response.json({ error: 'Invalid email format' }, { status: 400 }), origin);
+    }
+    if (!validateLinkedIn(data.linkedin)) {
+      return corsResponse(Response.json({ error: 'Invalid LinkedIn URL' }, { status: 400 }), origin);
     }
 
-    // Parse name into first/last
-    const nameParts = data.name.trim().split(/\s+/);
+    // --- Sanitize all inputs ---
+    const name = sanitize(data.name, MAX_SHORT_FIELD);
+    const nameParts = name.trim().split(/\s+/);
     const firstName = nameParts[0];
     const lastName = nameParts.slice(1).join(' ') || '';
 
-    // Extract LinkedIn handle from URL
-    let linkedInHandle = data.linkedin;
+    let linkedInHandle = sanitize(data.linkedin, 500);
     const handleMatch = linkedInHandle.match(/linkedin\.com\/in\/([^/?#]+)/);
     if (handleMatch) linkedInHandle = handleMatch[1];
 
-    // Build candidate payload
-    const candidatePayload = {
-      created_by: CREATED_BY,
-      first_name: firstName,
-      last_name: lastName,
-      emails: [{ email_address: data.email, is_primary: true }],
-      linked_in_handle: linkedInHandle,
-      title: data.title || '',
-      company: data.company || '',
-      location: data.location || '',
-      project_ids: [PROJECT_ID],
-      profile_urls: [],
-    };
+    const email = sanitize(data.email, MAX_SHORT_FIELD);
+    const company = sanitize(data.company, MAX_SHORT_FIELD);
+    const title = sanitize(data.title, MAX_SHORT_FIELD);
+    const location = sanitize(data.location, MAX_SHORT_FIELD);
+    const accomplishments = sanitize(data.accomplishments, MAX_FIELD_LEN);
+    const building = sanitize(data.building, MAX_FIELD_LEN);
+    const polarity = sanitize(data.polarity, MAX_FIELD_LEN);
+    const craft = sanitize(data.craft, MAX_SHORT_FIELD);
+    const continent = sanitize(data.continent, MAX_SHORT_FIELD);
+    const links = sanitize(data.links, MAX_FIELD_LEN);
 
-    // Add portfolio/GitHub as profile URLs
+    // Build profile URLs (validate each is a URL)
+    const profileUrls = [];
     if (data.portfolio) {
-      for (const url of data.portfolio.split('\n').filter(Boolean)) {
-        candidatePayload.profile_urls.push(url.trim());
+      for (const u of String(data.portfolio).split('\n').filter(Boolean)) {
+        const trimmed = u.trim();
+        if (/^https?:\/\/.+/.test(trimmed) && trimmed.length <= 500) {
+          profileUrls.push(trimmed);
+        }
       }
     }
 
-    // Build notes with the rich data (accomplishments, polarity, etc.)
+    // --- Build candidate payload ---
+    const candidatePayload = {
+      created_by: createdBy,
+      first_name: firstName,
+      last_name: lastName,
+      emails: [{ email_address: email, is_primary: true }],
+      linked_in_handle: linkedInHandle,
+      title,
+      company,
+      location,
+      project_ids: [projectId],
+      profile_urls: profileUrls,
+    };
+
+    // --- Build note ---
     const noteParts = [];
-    if (data.accomplishments) noteParts.push(`**Accomplishments:**\n${data.accomplishments}`);
-    if (data.building) noteParts.push(`**Currently building:**\n${data.building}`);
-    if (data.polarity) noteParts.push(`**Looking for / avoiding:**\n${data.polarity}`);
-    if (data.craft) noteParts.push(`**Craft area:** ${data.craft}`);
-    if (data.continent) noteParts.push(`**Location:** ${data.continent}`);
+    if (accomplishments) noteParts.push(`**Accomplishments:**\n${accomplishments}`);
+    if (building) noteParts.push(`**Currently building:**\n${building}`);
+    if (polarity) noteParts.push(`**Looking for / avoiding:**\n${polarity}`);
+    if (craft) noteParts.push(`**Craft area:** ${craft}`);
+    if (continent) noteParts.push(`**Location:** ${continent}`);
     if (data.founding) noteParts.push(`**Considering founding:** Yes`);
     if (data.student) noteParts.push(`**Student:** Yes`);
-    if (data.links) noteParts.push(`**Work links:**\n${data.links}`);
-    noteParts.push(`\n_Submitted via speedrun-career-ops (${data.utm_source || 'unknown'} / ${data.utm_medium || 'unknown'})_`);
+    if (links) noteParts.push(`**Work links:**\n${links}`);
+    const utmSource = sanitize(data.utm_source, 50) || 'unknown';
+    const utmMedium = sanitize(data.utm_medium, 50) || 'unknown';
+    noteParts.push(`\n_Submitted via speedrun-career-ops (${utmSource} / ${utmMedium})_`);
     const noteBody = noteParts.join('\n\n');
 
     const headers = {
@@ -128,66 +220,53 @@ export default {
       } else {
         const errorBody = await createRes.json().catch(() => ({}));
 
-        // Check if it's a duplicate (candidate already exists)
         if (errorBody.errors?.duplicate_candidate?.id) {
           candidateId = errorBody.errors.duplicate_candidate.id;
           isExisting = true;
 
-          // Add existing candidate to the project (they might not be in it yet)
+          // Add existing candidate to the project (may already be there)
           try {
-            await fetch(`${GEM_API}/projects/${PROJECT_ID}/candidates`, {
+            await fetch(`${GEM_API}/projects/${projectId}/candidates`, {
               method: 'PUT',
               headers,
               body: JSON.stringify({ candidate_ids: [candidateId] }),
             });
           } catch {
-            // May already be in project — that's fine
+            // Already in project — fine
           }
         } else {
-          return cors(Response.json({
+          return corsResponse(Response.json({
             success: false,
             error: `Gem API error (${createRes.status})`,
-            details: errorBody,
-          }, { status: 502 }));
+          }, { status: 502 }), origin);
         }
       }
     } catch (err) {
-      return cors(Response.json({
+      return corsResponse(Response.json({
         success: false,
-        error: `Failed to reach Gem API: ${err.message}`,
-      }, { status: 502 }));
+        error: `Failed to reach Gem API`,
+      }, { status: 502 }), origin);
     }
 
-    // --- Step 2: Add a note with the rich profile data ---
-    // Only add note for new candidates (don't overwrite/duplicate notes for existing ones)
+    // --- Step 2: Add note (new candidates only) ---
     if (candidateId && !isExisting) {
       try {
         await fetch(`${GEM_API}/notes`, {
           method: 'POST',
           headers,
-          body: JSON.stringify({
-            candidate_id: candidateId,
-            body: noteBody,
-          }),
+          body: JSON.stringify({ candidate_id: candidateId, body: noteBody }),
         });
       } catch {
-        // Note failure is non-fatal
+        // Non-fatal
       }
     }
 
-    return cors(Response.json({
+    return corsResponse(Response.json({
       success: true,
-      candidate_id: candidateId,
       existing: isExisting,
       message: isExisting
-        ? 'Candidate already exists in Gem — added to project (no data overwritten)'
-        : 'Candidate created and added to Typeform Submissions project',
-    }));
+        ? 'Already in the talent network (no data overwritten)'
+        : 'Added to the talent network',
+    }), origin);
   },
 };
-
-function cors(response) {
-  const headers = new Headers(response.headers);
-  headers.set('Access-Control-Allow-Origin', '*');
-  return new Response(response.body, { ...response, headers });
-}
