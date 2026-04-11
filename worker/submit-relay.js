@@ -1,48 +1,27 @@
 /**
- * Cloudflare Worker — Typeform submission relay
+ * Cloudflare Worker — Gem submission relay for speedrun talent network
  *
- * Accepts candidate profile data via POST, submits to both Typeform forms
- * using the API token stored as a Worker secret. Candidates never see the token.
+ * Accepts candidate profile data via POST, creates a candidate in Gem,
+ * and adds them to the "Typeform Submissions" project.
+ *
+ * Deduplication: Gem deduplicates on linked_in_handle automatically.
+ * If a candidate with that LinkedIn already exists, we get a 400 with
+ * the existing candidate ID — we then add THAT candidate to the project
+ * instead (no data overwritten).
  *
  * Deploy:
- *   wrangler deploy
+ *   cd worker && wrangler deploy
  *
- * Set the secret:
- *   wrangler secret put TYPEFORM_API_TOKEN
+ * Set secrets:
+ *   wrangler secret put GEM_API_KEY
  *
- * Usage from client:
- *   POST https://speedrun-submit.{your-account}.workers.dev/submit
- *   Content-Type: application/json
- *   { "name": "...", "email": "...", ... }
+ * Usage:
+ *   POST /submit { name, email, linkedin, ... }
  */
 
-const FORM_1_ID = 'uPI8kFOI';
-const FORM_2_ID = 'b20t87QG';
-const TYPEFORM_API = 'https://api.typeform.com/forms';
-
-// Field IDs for Form 1
-const F1 = {
-  name: 'rkHeeArW7PDU',
-  email: 'HKVthMkkRLQk',
-  continent: '3ZTk5sqctphv',
-  company: 'mV4hg87t8S4f',
-  craft: 'VEyQKH7UYskQ',
-  linkedin: 'wBX4vKFEmLqE',
-  portfolio: 'ic8VO3B87e70',
-  founding: '3yqoZ2Mxs5g3',
-  newsletter: 'RhyuBygr1NLQ',
-  student: 'yQlRIF6VyqDl',
-  graduation: 'FWr3P9clodBZ',
-  arrangements: 'ezV8eTAcNT33',
-};
-
-// Field IDs for Form 2
-const F2 = {
-  accomplishments: 'gUYw7B0aIIGD',
-  building: 'DAFKLNfGSs6n',
-  polarity: 'Q4sPPUqqUakP',
-  links: 'RbrYXjlY81d1',
-};
+const GEM_API = 'https://api.gem.com/v0';
+const PROJECT_ID = 'UHJvamVjdDoxMDM1MjE0'; // "Typeform Submissions"
+const CREATED_BY = 'dXNlcnM6NjU2NzMx';     // Jordan Mazer
 
 export default {
   async fetch(request, env) {
@@ -58,113 +37,157 @@ export default {
     }
 
     if (request.method !== 'POST') {
-      return Response.json({ error: 'POST only' }, { status: 405 });
+      return cors(Response.json({ error: 'POST only' }, { status: 405 }));
     }
 
     const url = new URL(request.url);
     if (url.pathname !== '/submit') {
-      return Response.json({ error: 'Not found' }, { status: 404 });
+      return cors(Response.json({ error: 'Not found' }, { status: 404 }));
     }
 
-    const token = env.TYPEFORM_API_TOKEN;
-    if (!token) {
-      return Response.json({ error: 'Server misconfigured — no API token' }, { status: 500 });
+    const apiKey = env.GEM_API_KEY;
+    if (!apiKey) {
+      return cors(Response.json({ error: 'Server misconfigured — no GEM_API_KEY' }, { status: 500 }));
     }
 
     let data;
     try {
       data = await request.json();
     } catch {
-      return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+      return cors(Response.json({ error: 'Invalid JSON' }, { status: 400 }));
     }
 
     // Validate required fields
     if (!data.name || !data.email || !data.linkedin) {
-      return Response.json({ error: 'Missing required fields: name, email, linkedin' }, { status: 400 });
+      return cors(Response.json({ error: 'Missing required fields: name, email, linkedin' }, { status: 400 }));
     }
 
-    const results = { form1: null, form2: null };
+    // Parse name into first/last
+    const nameParts = data.name.trim().split(/\s+/);
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || '';
 
-    // --- Submit Form 1 ---
+    // Extract LinkedIn handle from URL
+    let linkedInHandle = data.linkedin;
+    const handleMatch = linkedInHandle.match(/linkedin\.com\/in\/([^/?#]+)/);
+    if (handleMatch) linkedInHandle = handleMatch[1];
+
+    // Build candidate payload
+    const candidatePayload = {
+      created_by: CREATED_BY,
+      first_name: firstName,
+      last_name: lastName,
+      emails: [{ email_address: data.email, is_primary: true }],
+      linked_in_handle: linkedInHandle,
+      title: data.title || '',
+      company: data.company || '',
+      location: data.location || '',
+      project_ids: [PROJECT_ID],
+      profile_urls: [],
+    };
+
+    // Add portfolio/GitHub as profile URLs
+    if (data.portfolio) {
+      for (const url of data.portfolio.split('\n').filter(Boolean)) {
+        candidatePayload.profile_urls.push(url.trim());
+      }
+    }
+
+    // Build notes with the rich data (accomplishments, polarity, etc.)
+    const noteParts = [];
+    if (data.accomplishments) noteParts.push(`**Accomplishments:**\n${data.accomplishments}`);
+    if (data.building) noteParts.push(`**Currently building:**\n${data.building}`);
+    if (data.polarity) noteParts.push(`**Looking for / avoiding:**\n${data.polarity}`);
+    if (data.craft) noteParts.push(`**Craft area:** ${data.craft}`);
+    if (data.continent) noteParts.push(`**Location:** ${data.continent}`);
+    if (data.founding) noteParts.push(`**Considering founding:** Yes`);
+    if (data.student) noteParts.push(`**Student:** Yes`);
+    if (data.links) noteParts.push(`**Work links:**\n${data.links}`);
+    noteParts.push(`\n_Submitted via speedrun-career-ops (${data.utm_source || 'unknown'} / ${data.utm_medium || 'unknown'})_`);
+    const noteBody = noteParts.join('\n\n');
+
+    const headers = {
+      'X-Api-Key': apiKey,
+      'Content-Type': 'application/json',
+    };
+
+    let candidateId = null;
+    let isExisting = false;
+
+    // --- Step 1: Create candidate ---
     try {
-      const answers = [
-        { field: { id: F1.name, type: 'short_text' }, type: 'text', text: data.name },
-        { field: { id: F1.email, type: 'email' }, type: 'email', email: data.email },
-        { field: { id: F1.company, type: 'short_text' }, type: 'text', text: data.company || '' },
-        { field: { id: F1.linkedin, type: 'url' }, type: 'url', url: data.linkedin },
-        { field: { id: F1.portfolio, type: 'long_text' }, type: 'text', text: data.portfolio || '' },
-        { field: { id: F1.founding, type: 'yes_no' }, type: 'boolean', boolean: !!data.founding },
-        { field: { id: F1.newsletter, type: 'yes_no' }, type: 'boolean', boolean: data.newsletter !== false },
-        { field: { id: F1.student, type: 'yes_no' }, type: 'boolean', boolean: !!data.student },
-      ];
-
-      if (data.continent) {
-        answers.push({ field: { id: F1.continent, type: 'multiple_choice' }, type: 'choice', choice: { label: data.continent } });
-      }
-      if (data.craft) {
-        answers.push({ field: { id: F1.craft, type: 'multiple_choice' }, type: 'choice', choice: { label: data.craft } });
-      }
-      if (data.student && data.graduation) {
-        answers.push({ field: { id: F1.graduation, type: 'date' }, type: 'date', date: data.graduation });
-      }
-      if (data.student && data.arrangements) {
-        answers.push({ field: { id: F1.arrangements, type: 'multiple_choice' }, type: 'choice', choice: { label: data.arrangements } });
-      }
-
-      const res1 = await fetch(`${TYPEFORM_API}/${FORM_1_ID}/responses`, {
+      const createRes = await fetch(`${GEM_API}/candidates`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          answers,
-          hidden: {
-            utm_source: data.utm_source || 'speedrun-career-ops',
-            utm_medium: data.utm_medium || 'relay-submit',
-          },
-        }),
+        headers,
+        body: JSON.stringify(candidatePayload),
       });
 
-      results.form1 = { status: res1.status, ok: res1.ok };
-      if (!res1.ok) {
-        results.form1.error = await res1.text();
+      if (createRes.ok) {
+        const created = await createRes.json();
+        candidateId = created.id;
+      } else {
+        const errorBody = await createRes.json().catch(() => ({}));
+
+        // Check if it's a duplicate (candidate already exists)
+        if (errorBody.errors?.duplicate_candidate?.id) {
+          candidateId = errorBody.errors.duplicate_candidate.id;
+          isExisting = true;
+
+          // Add existing candidate to the project (they might not be in it yet)
+          try {
+            await fetch(`${GEM_API}/projects/${PROJECT_ID}/candidates`, {
+              method: 'PUT',
+              headers,
+              body: JSON.stringify({ candidate_ids: [candidateId] }),
+            });
+          } catch {
+            // May already be in project — that's fine
+          }
+        } else {
+          return cors(Response.json({
+            success: false,
+            error: `Gem API error (${createRes.status})`,
+            details: errorBody,
+          }, { status: 502 }));
+        }
       }
     } catch (err) {
-      results.form1 = { ok: false, error: err.message };
+      return cors(Response.json({
+        success: false,
+        error: `Failed to reach Gem API: ${err.message}`,
+      }, { status: 502 }));
     }
 
-    // --- Submit Form 2 ---
-    try {
-      const answers2 = [
-        { field: { id: F2.accomplishments, type: 'long_text' }, type: 'text', text: data.accomplishments || '' },
-        { field: { id: F2.building, type: 'long_text' }, type: 'text', text: data.building || '' },
-        { field: { id: F2.polarity, type: 'long_text' }, type: 'text', text: data.polarity || '' },
-        { field: { id: F2.links, type: 'long_text' }, type: 'text', text: data.links || '' },
-      ];
-
-      const res2 = await fetch(`${TYPEFORM_API}/${FORM_2_ID}/responses`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          answers: answers2,
-          hidden: { email: data.email },
-        }),
-      });
-
-      results.form2 = { status: res2.status, ok: res2.ok };
-      if (!res2.ok) {
-        results.form2.error = await res2.text();
+    // --- Step 2: Add a note with the rich profile data ---
+    // Only add note for new candidates (don't overwrite/duplicate notes for existing ones)
+    if (candidateId && !isExisting) {
+      try {
+        await fetch(`${GEM_API}/notes`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            candidate_id: candidateId,
+            body: noteBody,
+          }),
+        });
+      } catch {
+        // Note failure is non-fatal
       }
-    } catch (err) {
-      results.form2 = { ok: false, error: err.message };
     }
 
-    const allOk = results.form1?.ok && results.form2?.ok;
-
-    return Response.json(
-      { success: allOk, results },
-      {
-        status: allOk ? 200 : 207,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-      }
-    );
+    return cors(Response.json({
+      success: true,
+      candidate_id: candidateId,
+      existing: isExisting,
+      message: isExisting
+        ? 'Candidate already exists in Gem — added to project (no data overwritten)'
+        : 'Candidate created and added to Typeform Submissions project',
+    }));
   },
 };
+
+function cors(response) {
+  const headers = new Headers(response.headers);
+  headers.set('Access-Control-Allow-Origin', '*');
+  return new Response(response.body, { ...response, headers });
+}

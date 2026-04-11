@@ -645,7 +645,7 @@ async function main() {
   }
 
   // 5. Submit via relay service
-  const RELAY_URL = process.env.SPEEDRUN_RELAY_URL || 'https://speedrun-submit.a16z-speedrun.workers.dev/submit';
+  const RELAY_URL = process.env.SPEEDRUN_RELAY_URL || 'https://speedrun-submit.jmazer.workers.dev/submit';
 
   console.log('\n' + dim('Submitting to talent network...'));
 
