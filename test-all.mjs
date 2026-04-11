@@ -181,9 +181,9 @@ if (!absPathResult) {
 console.log('\n7. Mode file integrity');
 
 const expectedModes = [
-  '_shared.md', '_profile.template.md', 'oferta.md', 'pdf.md', 'scan.md',
-  'batch.md', 'apply.md', 'auto-pipeline.md', 'contacto.md', 'deep.md',
-  'ofertas.md', 'pipeline.md', 'project.md', 'tracker.md', 'training.md',
+  '_shared.md', '_profile.template.md', 'evaluate.md', 'pdf.md', 'scan.md',
+  'batch.md', 'apply.md', 'auto-pipeline.md', 'outreach.md', 'deep.md',
+  'compare.md', 'pipeline.md', 'project.md', 'tracker.md', 'training.md',
 ];
 
 for (const mode of expectedModes) {
