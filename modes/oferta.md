@@ -12,9 +12,9 @@ Classify the offer into one of the 6 archetypes (see `_shared.md`). If hybrid, i
 ## Block A — Role Summary
 
 Table with:
-- Detected archetype
-- Domain (platform/agentic/LLMOps/ML/enterprise)
-- Function (build/consult/manage/deploy)
+- Detected archetype (from the candidate's own archetype list in profile.yml — not a hardcoded category)
+- Domain (the actual domain of the role — e.g., people/talent, engineering, product, operations, finance, etc.)
+- Function (the actual function — e.g., build, lead, recruit, manage, consult, deploy, etc.)
 - Seniority
 - Remote (full/hybrid/onsite)
 - Team size (if mentioned)
@@ -24,13 +24,7 @@ Table with:
 
 Read `cv.md`. Create a table mapping each JD requirement to exact lines from the CV.
 
-**Adapted to the archetype:**
-- If FDE → prioritize proof points for fast delivery and client-facing
-- If SA → prioritize system design and integrations
-- If PM → prioritize product discovery and metrics
-- If LLMOps → prioritize evals, observability, pipelines
-- If Agentic → prioritize multi-agent, HITL, orchestration
-- If Transformation → prioritize change management, adoption, scaling
+**Adapted to the archetype:** Read the candidate's archetypes from `config/profile.yml` and `modes/_profile.md`. Prioritize the proof points, experience, and framing that match the detected archetype for THIS role. Do not use a hardcoded list of archetype-to-proof-point mappings — derive the right emphasis from the candidate's actual background and the JD's requirements.
 
 **Gaps** section with mitigation strategy for each one. For each gap:
 1. Is it a hard blocker or a nice-to-have?
@@ -73,13 +67,7 @@ The **Reflection** column captures what was learned or what would be done differ
 
 **Story Bank:** If `interview-prep/story-bank.md` exists, check if any of these stories are already there. If not, append new ones. Over time this builds a reusable bank of 5-10 master stories that can be adapted to any interview question.
 
-**Selected and framed according to archetype:**
-- FDE → emphasize delivery speed and client-facing
-- SA → emphasize architecture decisions
-- PM → emphasize discovery and trade-offs
-- LLMOps → emphasize metrics, evals, production hardening
-- Agentic → emphasize orchestration, error handling, HITL
-- Transformation → emphasize adoption, organizational change
+**Selected and framed according to archetype:** Use the candidate's detected archetype match for this role (from Step 0) to select the most relevant stories. Emphasize the skills and experiences that map to what the JD actually asks for — don't use a hardcoded mapping.
 
 Also include:
 - 1 recommended case study (which project to present and how)

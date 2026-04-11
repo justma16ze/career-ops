@@ -12,36 +12,34 @@
 
 ## Your Target Roles
 
-<!-- Replace these with YOUR target roles. Examples:
-     - Senior Backend Engineer / Staff Platform Engineer
-     - AI Product Manager / Technical PM
-     - Data Engineer / ML Engineer
-     - DevOps / SRE / Platform
-     Whatever you're optimizing for. -->
+<!-- This table is populated during onboarding based on YOUR background.
+     Each row describes a role archetype you're targeting, the key themes
+     hiring managers care about, and what they're actually buying when
+     they hire for this role. The evaluation system uses this to score
+     how well a JD matches your profile.
+     
+     Edit freely — add rows, remove rows, change the framing.
+     These should reflect YOUR career, not a template. -->
 
 | Archetype | Thematic axes | What they buy |
 |-----------|---------------|---------------|
-| **AI Platform / LLMOps Engineer** | Evaluation, observability, reliability, pipelines | Someone who puts AI in production with metrics |
-| **Agentic Workflows / Automation** | HITL, tooling, orchestration, multi-agent | Someone who builds reliable agent systems |
-| **Technical AI Product Manager** | GenAI/Agents, PRDs, discovery, delivery | Someone who translates business to AI product |
-| **AI Solutions Architect** | Hyperautomation, enterprise, integrations | Someone who designs end-to-end AI architectures |
-| **AI Forward Deployed Engineer** | Client-facing, fast delivery, prototyping | Someone who delivers AI solutions to clients fast |
-| **AI Transformation Lead** | Change management, adoption, org enablement | Someone who leads AI transformation in an org |
+| **[Your primary target role]** | [key skills, domains] | [what the hiring manager actually needs] |
+| **[Your secondary target role]** | [key skills, domains] | [what they need] |
+| **[Stretch/adjacent role]** | [transferable skills] | [why you're viable despite not being obvious] |
 
 ## Your Adaptive Framing
 
-<!-- Map YOUR projects to each archetype. Example:
-     | Platform / LLMOps | My monitoring dashboard project | article-digest.md |
-     | Agentic | My chatbot with HITL escalation | cv.md section 3 | -->
+<!-- Map YOUR projects/experience to each of YOUR target archetypes.
+     Each row says: "When the JD matches this archetype, lead with 
+     this framing and these proof points."
+     
+     Populated during onboarding. Edit freely. -->
 
 | If the role is... | Emphasize about you... | Proof point sources |
 |-------------------|------------------------|---------------------|
-| Platform / LLMOps | Production systems builder, observability, evals | article-digest.md + cv.md |
-| Agentic / Automation | Multi-agent orchestration, HITL, reliability | article-digest.md + cv.md |
-| Technical AI PM | Product discovery, PRDs, metrics | cv.md + article-digest.md |
-| Solutions Architect | System design, integrations, enterprise-ready | article-digest.md + cv.md |
-| Forward Deployed Engineer | Fast delivery, client-facing, prototype to prod | cv.md + article-digest.md |
-| AI Transformation Lead | Change management, team enablement, adoption | cv.md + article-digest.md |
+| **[Your primary archetype]** | [what to highlight] | [where the proof is: cv.md, article-digest.md] |
+| **[Your secondary archetype]** | [what to highlight] | [where the proof is] |
+| **[Stretch archetype]** | [transferable angle] | [where the proof is] |
 
 ## Your Exit Narrative
 
@@ -56,14 +54,14 @@ Use the candidate's exit story from `config/profile.yml` to frame ALL content:
 
 <!-- What's your "signature move"? What do you do that others can't? -->
 
-Frame profile as **"Technical builder with real-world proof"** that adapts framing to the role.
+<!-- Populated during onboarding from your superpowers and exit story. -->
 
 ## Your Portfolio / Demo
 
 <!-- If you have a live demo, dashboard, or public project:
      url: https://yoursite.dev/demo
      password: demo-2026
-     when_to_share: "LLMOps, AI Platform roles" -->
+     when_to_share: "relevant roles" -->
 
 If you have a live demo/dashboard (check profile.yml), offer access in applications for relevant roles.
 
