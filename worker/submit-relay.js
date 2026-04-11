@@ -6,7 +6,7 @@
  *
  * Security:
  *   - Requires Authorization: Bearer <RELAY_SECRET> header
- *   - Rate limited (env: RATE_LIMIT_PER_MIN, default 10)
+ *   - Rate limited (env: RATE_LIMIT_PER_MIN, default 100)
  *   - Input validation on all fields (length, format)
  *   - Project ID and user ID stored as secrets, not in code
  *   - CORS locked to localhost + known domains
@@ -248,16 +248,34 @@ export default {
       }, { status: 502 }), origin);
     }
 
-    // --- Step 2: Add note (new candidates only) ---
-    if (candidateId && !isExisting) {
+    // --- Step 2: Add note (all candidates) ---
+    if (candidateId) {
+      const notePrefix = isExisting ? '**Updated profile via speedrun-career-ops:**\n\n' : '';
       try {
         await fetch(`${GEM_API}/notes`, {
           method: 'POST',
           headers,
-          body: JSON.stringify({ candidate_id: candidateId, body: noteBody }),
+          body: JSON.stringify({ candidate_id: candidateId, body: notePrefix + noteBody }),
         });
       } catch {
         // Non-fatal
+      }
+    }
+
+    // --- Step 3: Store structured followup data in D1 ---
+    if (env.DB) {
+      try {
+        await env.DB.prepare(
+          `INSERT INTO submissions (email, name, linkedin, accomplishments, current_project, polarity, work_links, craft, continent, location, title, company, considering_founding, is_student, gem_candidate_id, utm_source, utm_medium, is_existing)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
+          email, name, linkedInHandle, accomplishments, building, polarity, links,
+          craft, continent, location, title, company,
+          data.founding ? 1 : 0, data.student ? 1 : 0,
+          candidateId, utmSource, utmMedium, isExisting ? 1 : 0
+        ).run();
+      } catch {
+        // Non-fatal — Gem is the primary, D1 is the backup
       }
     }
 

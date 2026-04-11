@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "AI-powered job search pipeline for the a16z speedrun talent network",
   "scripts": {
+    "postinstall": "node setup.mjs",
+    "setup": "node setup.mjs",
     "doctor": "node doctor.mjs",
     "verify": "node verify-pipeline.mjs",
     "normalize": "node normalize-statuses.mjs",
@@ -42,6 +44,7 @@
   "license": "MIT",
   "dependencies": {
     "js-yaml": "^4.1.1",
+    "pg": "^8.20.0",
     "playwright": "^1.58.1"
   }
 }

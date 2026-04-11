@@ -79,14 +79,11 @@
 
 ## Talent Network Submission
 
-When a candidate opts in, the system auto-submits to two Typeform forms:
+When a candidate opts in, `submit-to-network.mjs` sends their profile to the Gem API via a Cloudflare Worker relay (`worker/submit-relay.js`). The relay creates a candidate in Gem, adds them to the talent network project, and attaches a note with accomplishments, current project, and work preferences.
 
-| Form | ID | What it sends |
-|------|-----|--------------|
-| Form 1 (signup) | `uPI8kFOI` | Name, email, LinkedIn, location, company, craft area, portfolio, founding/student status |
-| Form 2 (followup) | `b20t87QG` | Accomplishments, current project, work preferences, portfolio links |
+**Data flow:** `submit-to-network.mjs` → Worker (`speedrun-submit.jmazer.workers.dev/submit`) → Gem API
 
-Hidden fields carry UTM attribution: `utm_source=speedrun-career-ops`, `utm_medium=cta-{tier}`
+UTM attribution: `utm_source=speedrun-career-ops`, `utm_medium=talent-network-submit`
 
 ## Portal Configuration (portals.yml)
 
@@ -98,7 +95,7 @@ Companies are organized by VC portfolio tier:
 | `speedrun` | Speedrun network | Companies hiring through the talent network |
 | `other_vc` | Other VC portfolios | Sequoia, Founders Fund, Benchmark, etc. |
 
-The scanner hits Greenhouse, Ashby, Lever, and Workable APIs directly. WebSearch discovers roles on aggregator boards (YC Jobs, Wellfound, etc.).
+The scanner hits Greenhouse, Ashby, and Lever APIs directly via `scan.mjs`.
 
 ## Signal System
 
