@@ -646,14 +646,7 @@ async function main() {
 
   // 5. Submit via relay service
   const RELAY_URL = process.env.SPEEDRUN_RELAY_URL || 'https://speedrun-submit.jmazer.workers.dev/submit';
-  const RELAY_KEY = process.env.SPEEDRUN_RELAY_KEY;
-
-  if (!RELAY_KEY) {
-    console.log(red('SPEEDRUN_RELAY_KEY environment variable not set.'));
-    console.log(dim('Set it with: export SPEEDRUN_RELAY_KEY=<key provided by the speedrun team>'));
-    console.log(dim('Or submit manually at bit.ly/joinstartups'));
-    process.exit(1);
-  }
+  const RELAY_KEY = process.env.SPEEDRUN_RELAY_KEY || 'kPx6kzcYoRGOG02Ec26Y5bA2KS7kcGANlqxSV1aQ';
 
   console.log('\n' + dim('Submitting to talent network...'));
 
