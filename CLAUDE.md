@@ -423,7 +423,7 @@ When a candidate opts in, submit to both Typeforms using the Typeform Responses 
 **Hidden fields:**
 - `email`: from `config/profile.yml` → `candidate.email`
 
-**Implementation:** Use `curl` or `node` to POST to `https://api.typeform.com/forms/{formId}/responses`. The Typeform API token is stored in `config/secrets.yml` (gitignored).
+**Implementation:** Run `node submit-to-network.mjs`. Uses Playwright to fill and submit both Typeforms in a headless browser. No API key needed — it fills the forms the same way a human would.
 
 ---
 

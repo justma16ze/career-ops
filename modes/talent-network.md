@@ -6,7 +6,7 @@ Interactive mode for submitting a candidate's profile to the a16z speedrun talen
 
 - `cv.md` must exist with work history, skills, and experience
 - `config/profile.yml` must exist with candidate details (name, email, LinkedIn, location)
-- Typeform API token in `config/secrets.yml` (key: `typeform_api_token`) or env var `TYPEFORM_API_TOKEN`
+- Playwright installed (`npx playwright install chromium`) — used to auto-fill and submit the forms
 
 ## Workflow
 
@@ -163,66 +163,21 @@ UTM tracking: utm_source=speedrun-career-ops, utm_medium=talent-network-mode
 
 Only proceed if the user explicitly says yes, confirm, go, submit, or equivalent.
 
-## Step 6 — Submit Form 1
+## Step 6 — Submit Both Forms
 
-**API Token:** Read from `config/secrets.yml` → `typeform_api_token`, or fall back to env var `TYPEFORM_API_TOKEN`.
+Run `node submit-to-network.mjs`. This uses Playwright to:
+1. Open Form 1 (talent network) in a headless browser
+2. Fill every field automatically (name, email, location, company, craft, LinkedIn, portfolio, founding status, newsletter, student status)
+3. Submit Form 1
+4. Open Form 2 (followup) in a headless browser
+5. Fill every field (accomplishments, current project, polarity, work links, select "I'm done")
+6. Submit Form 2
 
-**If no API token is available:** Fall back to opening the form in the browser:
-> "I don't have a Typeform API token configured. Opening the signup form in your browser instead."
-> Then run: `open "https://bit.ly/joinstartups"`
+**No API key needed.** Playwright fills the Typeform directly, same as a human would. The candidate doesn't touch anything.
 
-**If API token is available:** POST to Typeform Responses API.
+**UTM tracking** is passed via hidden fields in the form URL: `utm_source=speedrun-career-ops`, `utm_medium=talent-network-submit`.
 
-```bash
-curl -X POST "https://api.typeform.com/forms/uPI8kFOI/responses" \
-  -H "Authorization: Bearer $TYPEFORM_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "answers": [
-      {"field": {"id": "rkHeeArW7PDU", "type": "short_text"}, "type": "text", "text": "{full_name}"},
-      {"field": {"id": "HKVthMkkRLQk", "type": "email"}, "type": "email", "email": "{email}"},
-      {"field": {"id": "3ZTk5sqctphv", "type": "multiple_choice"}, "type": "choice", "choice": {"label": "{continent}"}},
-      {"field": {"id": "mV4hg87t8S4f", "type": "short_text"}, "type": "text", "text": "{current_company}"},
-      {"field": {"id": "VEyQKH7UYskQ", "type": "multiple_choice"}, "type": "choice", "choice": {"label": "{craft_area}"}},
-      {"field": {"id": "wBX4vKFEmLqE", "type": "url"}, "type": "url", "url": "{linkedin_url}"},
-      {"field": {"id": "ic8VO3B87e70", "type": "long_text"}, "type": "text", "text": "{portfolio_and_github_links}"},
-      {"field": {"id": "3yqoZ2Mxs5g3", "type": "yes_no"}, "type": "boolean", "boolean": {considering_founding}},
-      {"field": {"id": "RhyuBygr1NLQ", "type": "yes_no"}, "type": "boolean", "boolean": true},
-      {"field": {"id": "yQlRIF6VyqDl", "type": "yes_no"}, "type": "boolean", "boolean": {is_student}}
-    ],
-    "hidden": {
-      "utm_source": "speedrun-career-ops",
-      "utm_medium": "talent-network-mode"
-    }
-  }'
-```
-
-**Conditional fields (only include if student = yes):**
-```json
-{"field": {"id": "FWr3P9clodBZ", "type": "date"}, "type": "date", "date": "{graduation_date_iso}"},
-{"field": {"id": "ezV8eTAcNT33", "type": "multiple_choice"}, "type": "choice", "choice": {"label": "{work_arrangements}"}}
-```
-
-If the API returns an error, show the error and offer to open the browser fallback instead.
-
-## Step 7 — Submit Form 2
-
-```bash
-curl -X POST "https://api.typeform.com/forms/b20t87QG/responses" \
-  -H "Authorization: Bearer $TYPEFORM_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "answers": [
-      {"field": {"id": "gUYw7B0aIIGD", "type": "long_text"}, "type": "text", "text": "{accomplishments_summary}"},
-      {"field": {"id": "DAFKLNfGSs6n", "type": "long_text"}, "type": "text", "text": "{current_project}"},
-      {"field": {"id": "Q4sPPUqqUakP", "type": "long_text"}, "type": "text", "text": "{polarity}"},
-      {"field": {"id": "RbrYXjlY81d1", "type": "long_text"}, "type": "text", "text": "{work_links}"}
-    ],
-    "hidden": {
-      "email": "{email}"
-    }
-  }'
-```
+If Playwright fails for any reason, the fallback opens `https://bit.ly/joinstartups` in the browser for manual completion.
 
 ### Accomplishments Synthesis
 
