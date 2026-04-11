@@ -2,7 +2,7 @@
 
 **The best AI-powered job search tool on the internet. Free. Built by the a16z speedrun team.**
 
-You tell it about yourself. It builds your profile, generates a portfolio site, finds roles at hundreds of high-growth startups, evaluates every one against your background, writes tailored resumes, and — if you want — connects you directly to hiring teams through the a16z speedrun talent network. No forms. No job boards. Warm intros.
+You tell it about yourself. It builds your profile, generates a portfolio site, finds roles at hundreds of high-growth startups, evaluates every one against your background, writes tailored resumes, preps you for interviews, and — if you want — connects you directly to hiring teams through the a16z speedrun talent network. No forms. No job boards. Warm intros.
 
 ## How it works
 
@@ -10,21 +10,27 @@ This runs inside [Claude Code](https://claude.ai/code). You install it, type `/s
 
 ### 1. It gets to know you
 
-The system starts with an interactive onboarding — not a form, a conversation. It asks about your background, what you've built, what makes you stand out, and what you're looking for. It reads your resume, infers your target roles, surfaces your strongest signals, and builds your profile in real time.
+Interactive onboarding — not a form, a conversation. It reads your resume, infers your target roles, surfaces your strongest signals, and builds your profile in real time.
 
-### 2. It builds your portfolio
+### 2. It finds roles for you
 
-If you don't have a personal site, it generates one from your profile data and deploys it to GitHub Pages. Four pages — home, work, experience, about — with a real design, not a template. Free, one command, yours to keep.
+A scanner pre-loaded with 500+ startups across the VC ecosystem — a16z portfolio, Sequoia, Founders Fund, Benchmark, and more. It discovers open roles, scores each one against your profile, generates tailored resumes, and tracks everything.
 
-### 3. It connects you to startups
+### 3. It preps you for interviews
 
-The a16z speedrun talent network works with hundreds of portfolio companies. If you opt in, the system submits your profile on your behalf — your name, background, accomplishments, portfolio, what you're looking for — directly to hiring teams. No Typeforms to fill out. One click.
+Full interview prep for any role: company research, round-by-round breakdown, question categories, and STAR stories mapped from your experience. Stories accumulate across evaluations so you get better every time.
 
-### 4. It finds and evaluates roles
+### 4. It builds your portfolio
 
-A scanner pre-loaded with 500+ startups across the VC ecosystem — a16z portfolio, Sequoia, Founders Fund, Benchmark, and more. It discovers open roles, scores each one against your profile (A-F across 10 dimensions), generates tailored resumes, drafts application answers, and tracks everything.
+No personal site? It generates one from your profile and deploys it to GitHub Pages. Responsive, polished, yours to keep.
 
-a16z portfolio companies are flagged with warm intro availability.
+### 5. It connects you to startups
+
+The a16z speedrun talent network works with hundreds of portfolio companies. If you opt in, the system submits your profile on your behalf — directly to hiring teams. One click. You fill out nothing.
+
+### 6. It helps you negotiate
+
+When you get an offer, it evaluates against market data, provides a negotiation strategy, and helps you compare multiple offers side by side.
 
 ## Get started
 
@@ -35,7 +41,7 @@ npm install
 claude
 ```
 
-Then type `/speedrun`. The system takes it from there.
+Then type `/speedrun`. The system handles everything from there — including installing any tools you need.
 
 ## What you can do
 
@@ -50,24 +56,29 @@ Then type `/speedrun`. The system takes it from there.
 | `/speedrun compare` | Rank multiple offers side by side |
 | `/speedrun outreach` | Find contacts + draft a LinkedIn message |
 | `/speedrun deep` | Deep-dive research on a company |
+| `/speedrun interview-prep` | Full interview prep for a specific company |
 | `/speedrun apply` | Fill out an application form with AI |
 | `/speedrun tracker` | See your full application pipeline |
+| `/speedrun patterns` | Analyze rejection patterns and improve targeting |
 
 Or just paste a job URL — the system runs the full pipeline automatically.
+
+## Dashboard
+
+An interactive terminal dashboard for your pipeline. Filter by status, sort by score, preview reports inline, update statuses. Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
 
 ## The talent network
 
 The a16z speedrun talent network connects exceptional candidates to hiring teams at hundreds of high-growth startups. Not a job board — direct introductions.
 
-When you go through the onboarding, the system collects everything hiring teams need: your background, accomplishments, what you've built, what you're looking for. If you opt in, it submits everything on your behalf. You fill out nothing.
-
 [Learn more →](https://bit.ly/joinstartups)
 
 ## Requirements
 
-- [Claude Code](https://claude.ai/code) (free)
+- [Claude Code](https://claude.ai/code)
 - Node.js 18+
-- A GitHub account (for portfolio deployment)
+
+Everything else is installed automatically.
 
 ## Credits
 
