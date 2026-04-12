@@ -42,7 +42,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 760px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -54,7 +54,7 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; font-size: 17px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
 
 /* Navigation */
 nav { display: flex; align-items: baseline; margin-bottom: 64px; font-size: 15px; }
@@ -82,7 +82,7 @@ a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
 /* Home bio */
 .home-bio { font-size: 18px; color: #4a4a4a; line-height: 1.75; margin-bottom: 40px; max-width: 640px; }
 .home-bio p { margin-bottom: 16px; }
-.home-bio a { color: var(--accent); font-weight: 600; }
+body .home-bio a { color: var(--accent); font-weight: 600; }
 
 /* Section intro */
 .section-intro { font-size: 17px; color: var(--text-muted); line-height: 1.65; margin-bottom: 32px; }

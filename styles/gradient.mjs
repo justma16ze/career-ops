@@ -42,7 +42,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 700px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -54,7 +54,7 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 15px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 0; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 0; }
 a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #bbb; }
 a:hover { color: var(--accent-hover); text-decoration-color: var(--text); }
 

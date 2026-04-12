@@ -8,9 +8,9 @@ export function css() {
   return `:root {
   /* Backgrounds */
   --bg: #0d0d0d;
-  --bg-alt: #111;
+  --bg-alt: #181818;
   --bg-card: #151515;
-  --bg-nav: transparent;
+  --bg-nav: rgba(13,13,13,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -33,7 +33,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 800px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — dark bg: accent color for link */
   --footer-text: #aaa;

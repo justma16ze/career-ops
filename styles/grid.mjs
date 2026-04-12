@@ -43,7 +43,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 680px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -55,7 +55,7 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.5; margin: 0; padding: 0; font-size: 14px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 0 0 40px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 0 0 40px; }
 a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--text-faint); }
 a:hover { color: var(--accent-hover); text-decoration-color: var(--text); }
 
@@ -80,6 +80,9 @@ main { padding: 24px 28px 0; }
 /* Headings */
 h2 { font-family: var(--font-display); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #737373; margin: 28px 0 10px; }
 h2:first-child { margin-top: 0; }
+
+/* Hero headline */
+.hero-headline { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
 
 /* Home bio */
 .home-bio { font-size: 14px; color: #404040; line-height: 1.7; }

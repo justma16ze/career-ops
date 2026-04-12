@@ -20,7 +20,7 @@ export function css() {
   --bg: #1a2a1a;
   --bg-alt: #223322;
   --bg-card: #1e2e1e;
-  --bg-nav: transparent;
+  --bg-nav: rgba(26,42,26,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -43,7 +43,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 660px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #8a7a5a;
@@ -88,7 +88,7 @@ body::before {
 .wrap {
   position: relative;
   z-index: 1;
-  width: var(--wrap-width);
+  max-width: var(--wrap-width);
   margin: 0 auto;
   padding: 32px 40px 48px;
 }
@@ -253,7 +253,7 @@ h2 {
 }
 .entry-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 .entry-desc a { color: var(--accent); }
-.entry ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.entry ul { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .entry li {
   font-size: 14px;
   color: var(--text-muted);
@@ -262,7 +262,7 @@ h2 {
   position: relative;
 }
 .entry li::before {
-  content: '\\25B8';
+  content: '\\25B8' !important;
   position: absolute;
   left: 0;
   color: var(--text-faint);
@@ -381,7 +381,7 @@ details .detail-content { padding-top: 6px; }
   color: var(--accent);
   margin-bottom: 6px;
 }
-.service-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.service-bullets { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .service-bullets li {
   font-size: 14px;
   color: var(--text-muted);
@@ -390,7 +390,7 @@ details .detail-content { padding-top: 6px; }
   position: relative;
 }
 .service-bullets li::before {
-  content: '\\25B8';
+  content: '\\25B8' !important;
   position: absolute;
   left: 0;
   color: var(--text-faint);

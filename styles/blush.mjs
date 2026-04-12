@@ -41,7 +41,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 640px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #665540;
@@ -91,10 +91,9 @@ export function css() {
 
 @layer layout {
   .wrap {
-    width: var(--wrap-width);
+    max-width: var(--wrap-width);
     margin: 0 auto;
     padding: 3rlh 2.5rem 3rlh;
-    overflow-y: scroll;
   }
 }
 

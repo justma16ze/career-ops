@@ -32,7 +32,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 700px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #666;

@@ -19,7 +19,7 @@ export function css() {
   --bg: #0a0a0a;
   --bg-alt: #111;
   --bg-card: #141414;
-  --bg-nav: transparent;
+  --bg-nav: rgba(10,10,10,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -42,7 +42,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 660px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — dark bg: accent color for link */
   --footer-text: #aaa;
@@ -54,7 +54,7 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 14px; border-top: 2px solid var(--accent); }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 48px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 48px; }
 a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(143,170,110,0.3); }
 a:hover { color: var(--accent-hover); border-bottom-color: var(--accent-hover); }
 
@@ -112,9 +112,9 @@ h2::before { content: '// '; color: #3a3a3a; }
 .service-org { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #e0e0e0; text-transform: uppercase; letter-spacing: 1px; }
 .service-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); white-space: nowrap; letter-spacing: 1px; }
 .service-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
-.service-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.service-bullets { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .service-bullets li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
-.service-bullets li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.service-bullets li::before { content: '>' !important; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
 .service-bullets a { color: var(--accent); }
 
 /* Standard entry classes */
@@ -126,9 +126,9 @@ h2::before { content: '// '; color: #3a3a3a; }
 .entry-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
 .entry-desc { font-size: 14px; color: #a0a0a0; line-height: 1.6; }
 .entry-desc a { color: var(--accent); }
-.entry ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.entry ul { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .entry li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
-.entry li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.entry li::before { content: '>' !important; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
 
 /* DETAILS */
 details { margin-top: 6px; }

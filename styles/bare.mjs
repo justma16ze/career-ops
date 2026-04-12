@@ -39,7 +39,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 600px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -103,9 +103,14 @@ ul li { margin-bottom: 3px; line-height: 1.5; }
 
 .detail { font-size: 13px; color: var(--text-muted); }
 .skills-list { font-size: 13px; color: var(--text-muted); }
+
+/* Override layout-specific pill/tag styling — bare shows plain text */
+body .skills-list span { background: none; border: none; padding: 2px 0; font-family: var(--font-body); font-size: 13px; color: var(--text-muted); }
+body .skills-list .tag::after { content: ', '; color: var(--text-muted); }
+body .skills-list .tag:last-child::after { content: ''; }
 .skills-grid { font-size: 13px; color: var(--text-muted); }
 .strengths-list { list-style: none; padding: 0; }
-.strengths-list li { font-size: 13px; color: var(--text-muted); }
+.strengths-list li { font-size: 13px; color: var(--text-muted); padding-left: 0; }
 .strengths { font-size: 13px; color: var(--text-muted); }
 .contact-line { font-size: 13px; }
 .contact-line a { margin-right: 12px; }

@@ -9,7 +9,7 @@ export function css() {
   --bg: #fff;
   --bg-alt: #fafafa;
   --bg-card: #fff;
-  --bg-nav: transparent;
+  --bg-nav: rgba(255, 255, 255, 0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -32,7 +32,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 672px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #666;
@@ -145,6 +145,7 @@ footer a:hover { color: var(--footer-link-hover); text-decoration: underline; }
     --footer-link: #ffa7c4;
     --footer-link-hover: #ff8ab0;
     --footer-border: rgba(255,255,255,0.1);
+    --bg-nav: rgba(40, 44, 53, 0.92);
   }
   body { background: var(--bg); color: var(--text); }
   .site-name { color: #fff; }

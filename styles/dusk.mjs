@@ -33,7 +33,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 720px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #665030;
@@ -87,7 +87,7 @@ h1 { font-family: var(--font-display); font-size: 36px; font-weight: 800; color:
 
 /* ---- ENTRIES ---- */
 .entry { position: relative; padding: 12px 0 20px; }
-.entry::before { content: ''; position: absolute; left: -31px; top: 18px; width: 10px; height: 10px; background: var(--accent-secondary); border-radius: 50%; border: 2px solid var(--bg); }
+.timeline .entry::before { content: ''; position: absolute; left: -31px; top: 18px; width: 10px; height: 10px; background: var(--accent-secondary); border-radius: 50%; border: 2px solid var(--bg); }
 .entry + .entry { border-top: 1px solid var(--border-light); }
 .entry-header { margin-bottom: 4px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .entry-title { font-weight: 700; font-size: 15px; color: var(--text); }
@@ -151,7 +151,7 @@ footer a:hover { color: var(--footer-link-hover); text-decoration-color: var(--f
   .section { grid-template-columns: 1fr; gap: 4px 0; }
   .section-label { padding-top: 0; margin-bottom: 6px; }
   .timeline { margin-left: 0; padding-left: 20px; }
-  .entry::before { left: -27px; top: 18px; width: 8px; height: 8px; }
+  .timeline .entry::before { left: -27px; top: 18px; width: 8px; height: 8px; }
   .skills-grid { column-count: 2; }
   .home-bio { font-size: 14px; }
   .hero-contact { font-size: 13px; }
@@ -171,7 +171,7 @@ footer a:hover { color: var(--footer-link-hover); text-decoration-color: var(--f
   .entry-desc { font-size: 13px; }
   .entry ul { font-size: 13px; }
   .timeline { padding-left: 16px; }
-  .entry::before { left: -22px; width: 6px; height: 6px; }
+  .timeline .entry::before { left: -22px; width: 6px; height: 6px; }
   .home-bio { font-size: 13px; }
   .strengths-list li { font-size: 13px; }
   .skills-grid { column-count: 1; }

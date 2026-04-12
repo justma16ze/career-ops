@@ -9,7 +9,7 @@ export function css() {
   --bg: #050505;
   --bg-alt: #0a0a0a;
   --bg-card: #0f0f0f;
-  --bg-nav: transparent;
+  --bg-nav: rgba(5,5,5,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -32,7 +32,7 @@ export function css() {
 
   /* Spacing */
   --wrap-width: 620px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — dark bg: use readable light color for link */
   --footer-text: #aaa;
@@ -45,6 +45,7 @@ export function css() {
 body { font-family: var(--font-body); color: #888; background: var(--bg); line-height: 1.6; font-size: 14px; }
 a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
+h1 { font-family: var(--font-display); font-weight: 500; color: #ccc; letter-spacing: -0.02em; }
 h2 { font-family: var(--font-display); font-size: 13px; font-weight: 500; color: #555; margin: 40px 0 16px; text-transform: lowercase; letter-spacing: 0.05em; }
 .site-name { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: #ccc; text-decoration: none; letter-spacing: -0.02em; }
 
@@ -87,7 +88,7 @@ nav .active { color: #888; }
 .entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 .entry-desc a { color: #888; text-decoration: underline; text-decoration-color: #333; text-underline-offset: 3px; }
 .entry-desc a:hover { color: #ccc; }
-.entry ul { margin: 6px 0 0 0; padding-left: 0; font-size: 13px; color: var(--text-muted); list-style: none; }
+.entry ul { margin: 6px 0 0 0; padding-left: 0 !important; font-size: 13px; color: var(--text-muted); list-style: none !important; }
 .entry li { margin-bottom: 3px; line-height: 1.5; padding-left: 16px; text-indent: -16px; }
 .entry li::before { content: '-'; margin-right: 8px; color: #333; display: inline; }
 
@@ -117,6 +118,12 @@ details .detail-content { padding-top: 8px; }
 .contact-line { font-size: 14px; }
 .contact-line a { margin-right: 20px; color: #888; text-decoration: underline; text-decoration-color: #333; text-underline-offset: 4px; }
 .contact-line a:hover { color: #ccc; text-decoration-color: #666; }
+
+/* ---- CARDS PILL OVERRIDE ---- */
+.skills-list span { border-color: #333 !important; }
+
+/* ---- CARD BORDER OVERRIDE ---- */
+.card, .hero { border-color: #222 !important; }
 
 /* ---- FOOTER ---- */
 footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
