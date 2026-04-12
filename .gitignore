@@ -47,3 +47,5 @@ package-lock.json
 cv.md
 article-digest.md
 .playwright-mcp/
+web/
+web-worker/
