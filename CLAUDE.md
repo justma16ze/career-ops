@@ -259,15 +259,19 @@ education_detail:
 
 #### Skip path: "Just build it"
 
-After Step 2 completes, ALWAYS offer the escape hatch via AskUserQuestion:
+After Step 2 completes, offer the escape hatch via AskUserQuestion. BUT frame the full path as clearly recommended:
 
-> I have enough to build you a portfolio right now. Want more questions or should I just build it?
+> I can build you a basic portfolio right now with what I have. BUT if you give me 3 more minutes, I can write you a custom bio, find your best achievements, and match you to the perfect template from 140+ options. The difference is a generic page vs something you'd actually put on your LinkedIn.
+>
+> What do you want to do?
 
 Options:
-- A) Just build it (bare-multipage default, deploy now)
-- B) Keep going, I want to customize
+- A) Let's make it great (recommended — 3 more minutes for a much better result)
+- B) Just build it (quick and clean, you can customize later)
 
-If A: skip Steps 3-6, use `bare` style + `multipage` layout, generate immediately, deploy to GitHub Pages, then jump to Step 8 (talent network). The candidate can always come back and customize later.
+If B: skip Steps 3-6, use `bare` style + `multipage` layout, generate immediately, deploy to GitHub Pages, then jump to Step 8 (talent network). The candidate can always come back and customize later.
+
+**Framing rule:** ALWAYS recommend the full path. The skip path exists for impatient users but the product is 10x better with the full onboarding. Don't present them as equal choices.
 
 If B: continue to the forked onboarding below.
 
