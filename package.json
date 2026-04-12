@@ -1,7 +1,7 @@
 {
-  "name": "speedrun-career-ops",
+  "name": "your-personal-readme",
   "version": "0.1.0",
-  "description": "AI-powered job search pipeline for the a16z speedrun talent network",
+  "description": "168 portfolio templates. Two commands. Free. AI-powered portfolio generator built on Claude Code.",
   "scripts": {
     "postinstall": "node setup.mjs",
     "setup": "node setup.mjs",
@@ -33,8 +33,9 @@
     "test:quick": "node tests/run-all.mjs --unit --no-visual"
   },
   "keywords": [
+    "portfolio",
+    "personal-site",
     "ai",
-    "job-search",
     "claude-code",
     "career",
     "startups",
@@ -46,11 +47,11 @@
   "homepage": "https://speedrun.a16z.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/justma16ze/career-ops"
+    "url": "https://github.com/a16z-infra/your-personal-readme"
   },
   "license": "MIT",
   "bin": {
-    "speedrun-career-ops": "./cli.mjs"
+    "your-personal-readme": "./cli.mjs"
   },
   "type": "module",
   "dependencies": {

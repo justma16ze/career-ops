@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * cli.mjs — Quick-start CLI for speedrun-career-ops
+ * cli.mjs — Quick-start CLI for your-personal-readme
  *
- * Usage: npx speedrun-career-ops
+ * Usage: npx your-personal-readme
  *
  * Creates a project directory, copies necessary files, and instructs
  * the user to run 'claude' to start.
@@ -13,10 +13,34 @@ import { existsSync, mkdirSync, cpSync, writeFileSync } from 'fs';
 import { resolve, join } from 'path';
 import { execSync } from 'child_process';
 
+// Handle --help flag
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`your-personal-readme — 168 portfolio templates. Two commands. Free.
+
+Usage:
+  npx your-personal-readme          Create a new portfolio project
+  npx your-personal-readme --help   Show this help
+
+What happens:
+  1. Creates a my-portfolio/ directory in the current folder
+  2. Copies styles, layouts, and build tools into it
+  3. Installs dependencies
+
+Then:
+  cd my-portfolio
+  claude
+
+Claude walks you through onboarding and builds your portfolio.
+21 styles x 8 layouts = 168 combinations. Deploys free to GitHub Pages.
+
+made by the a16z speedrun team`);
+  process.exit(0);
+}
+
 const projectName = 'my-portfolio';
 const projectDir = resolve(process.cwd(), projectName);
 
-console.log('speedrun-career-ops\n');
+console.log('your-personal-readme\n');
 console.log('168 portfolio templates. Two commands. Free.\n');
 
 // Check Node.js version
