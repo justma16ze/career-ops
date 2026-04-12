@@ -8,6 +8,7 @@
 <meta property="og:title" content="Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -15,7 +16,7 @@
   --bg: #1a2a1a;
   --bg-alt: #223322;
   --bg-card: #1e2e1e;
-  --bg-nav: transparent;
+  --bg-nav: rgba(26,42,26,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -38,7 +39,7 @@
 
   /* Spacing */
   --wrap-width: 660px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #8a7a5a;
@@ -83,7 +84,7 @@ body::before {
 .wrap {
   position: relative;
   z-index: 1;
-  width: var(--wrap-width);
+  max-width: var(--wrap-width);
   margin: 0 auto;
   padding: 32px 40px 48px;
 }
@@ -248,7 +249,7 @@ h2 {
 }
 .entry-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 .entry-desc a { color: var(--accent); }
-.entry ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.entry ul { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .entry li {
   font-size: 14px;
   color: var(--text-muted);
@@ -257,7 +258,7 @@ h2 {
   position: relative;
 }
 .entry li::before {
-  content: '\25B8';
+  content: '\25B8' !important;
   position: absolute;
   left: 0;
   color: var(--text-faint);
@@ -376,7 +377,7 @@ details .detail-content { padding-top: 6px; }
   color: var(--accent);
   margin-bottom: 6px;
 }
-.service-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.service-bullets { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .service-bullets li {
   font-size: 14px;
   color: var(--text-muted);
@@ -385,7 +386,7 @@ details .detail-content { padding-top: 6px; }
   position: relative;
 }
 .service-bullets li::before {
-  content: '\25B8';
+  content: '\25B8' !important;
   position: absolute;
   left: 0;
   color: var(--text-faint);
@@ -490,6 +491,7 @@ nav {
   font-size: 14px; font-family: var(--font-mono);
   letter-spacing: 0.01em;
   max-width: 1000px; width: 100%; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
 }
 nav .site-name {
   font-family: var(--font-display);
@@ -500,6 +502,9 @@ nav .site-name {
 .nav-links { display: flex; gap: 20px; }
 nav a { color: var(--text-faint); text-decoration: none; }
 nav a:hover { color: var(--text); }
+
+/* Hide nav name on desktop — h1 in left column is the main name display */
+.site-name-hidden { visibility: hidden; }
 
 /* === TWO-COLUMN SPREAD === */
 .spread-container {
@@ -641,6 +646,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 @media (max-width: 660px) {
   body { height: auto; overflow: auto; }
   .spread-shell { height: auto; overflow: visible; }
+  .site-name-hidden { visibility: visible; }
   nav { padding: 16px 20px 12px; font-size: 13px; gap: 12px; }
   nav .site-name { font-size: 19px; }
   .spread-container { flex-direction: column; }
@@ -676,20 +682,8 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="spread-shell">
-<div class="nav-band"><nav><a href="index.html" class="site-name">Jordan Mazer</a></nav></div>
+<div class="nav-band"><nav><a href="index.html" class="site-name site-name-hidden">Jordan Mazer</a></nav></div>
 <div class="spread-container">
 <div class="col-left">
 <h1>Jordan Mazer</h1>
@@ -715,7 +709,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </div>
 <div class="footer-band"><footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer></div>
 </div>
-</body>
-</html>
 </body>
 </html>

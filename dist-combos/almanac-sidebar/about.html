@@ -8,6 +8,7 @@
 <meta property="og:title" content="About — Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>:root {
   /* Backgrounds */
@@ -37,7 +38,7 @@
 
   /* Spacing */
   --wrap-width: 620px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer */
   --footer-text: #665c50;
@@ -171,7 +172,7 @@ a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
 
 /* --- Two-column wrapper --- */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+.wrap { width: 100% !important; max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
 
 /* --- Left sidebar (sticky) --- */
 .sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
@@ -182,6 +183,7 @@ a:hover { color: var(--accent-hover); }
 .sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
 
 /* --- Sidebar nav --- */
+nav { display: block; background: transparent; border: none; box-shadow: none; padding: 0; margin: 0; text-transform: none; letter-spacing: normal; font-size: inherit; }
 .nav-links { list-style: none; padding: 0; margin: 0; }
 .nav-links li { margin-bottom: 12px; }
 .nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
@@ -250,7 +252,7 @@ a:hover { color: var(--accent-hover); }
 .contact-line a:hover { color: var(--accent); }
 
 /* --- Education --- */
-h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; margin-top: 48px; }
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 48px 0 16px; padding-top: 0; border-top: none; }
 
 /* --- Details toggle --- */
 details { margin-top: 6px; }
@@ -307,18 +309,6 @@ footer a:hover { color: var(--footer-link-hover); }
 }</style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>More — Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="More — Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="wrap">
 <aside class="sidebar">
   <div class="sidebar-top">
@@ -344,7 +334,5 @@ footer a:hover { color: var(--footer-link-hover); }
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </main>
 </div>
-</body>
-</html>
 </body>
 </html>

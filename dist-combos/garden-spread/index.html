@@ -8,6 +8,7 @@
 <meta property="og:title" content="Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,7 +39,7 @@
 
   /* Spacing */
   --wrap-width: 760px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -50,7 +51,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; font-size: 17px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
 
 /* Navigation */
 nav { display: flex; align-items: baseline; margin-bottom: 64px; font-size: 15px; }
@@ -78,7 +79,7 @@ a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
 /* Home bio */
 .home-bio { font-size: 18px; color: #4a4a4a; line-height: 1.75; margin-bottom: 40px; max-width: 640px; }
 .home-bio p { margin-bottom: 16px; }
-.home-bio a { color: var(--accent); font-weight: 600; }
+body .home-bio a { color: var(--accent); font-weight: 600; }
 
 /* Section intro */
 .section-intro { font-size: 17px; color: var(--text-muted); line-height: 1.65; margin-bottom: 32px; }
@@ -205,6 +206,7 @@ nav {
   font-size: 14px; font-family: var(--font-mono);
   letter-spacing: 0.01em;
   max-width: 1000px; width: 100%; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
 }
 nav .site-name {
   font-family: var(--font-display);
@@ -215,6 +217,9 @@ nav .site-name {
 .nav-links { display: flex; gap: 20px; }
 nav a { color: var(--text-faint); text-decoration: none; }
 nav a:hover { color: var(--text); }
+
+/* Hide nav name on desktop — h1 in left column is the main name display */
+.site-name-hidden { visibility: hidden; }
 
 /* === TWO-COLUMN SPREAD === */
 .spread-container {
@@ -356,6 +361,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 @media (max-width: 660px) {
   body { height: auto; overflow: auto; }
   .spread-shell { height: auto; overflow: visible; }
+  .site-name-hidden { visibility: visible; }
   nav { padding: 16px 20px 12px; font-size: 13px; gap: 12px; }
   nav .site-name { font-size: 19px; }
   .spread-container { flex-direction: column; }
@@ -391,20 +397,8 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="spread-shell">
-<div class="nav-band"><nav><a href="index.html" class="site-name">Jordan Mazer</a></nav></div>
+<div class="nav-band"><nav><a href="index.html" class="site-name site-name-hidden">Jordan Mazer</a></nav></div>
 <div class="spread-container">
 <div class="col-left">
 <h1>Jordan Mazer</h1>
@@ -430,7 +424,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </div>
 <div class="footer-band"><footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer></div>
 </div>
-</body>
-</html>
 </body>
 </html>

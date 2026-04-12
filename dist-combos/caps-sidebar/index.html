@@ -50,7 +50,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 48px 40px 32px; }
 a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(13,148,136,0.3); }
 a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
 
@@ -186,7 +185,7 @@ a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
 
 /* --- Two-column wrapper --- */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+.wrap { width: 100% !important; max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
 
 /* --- Left sidebar (sticky) --- */
 .sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
@@ -197,6 +196,7 @@ a:hover { color: var(--accent-hover); }
 .sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
 
 /* --- Sidebar nav --- */
+nav { display: block; background: transparent; border: none; box-shadow: none; padding: 0; margin: 0; text-transform: none; letter-spacing: normal; font-size: inherit; }
 .nav-links { list-style: none; padding: 0; margin: 0; }
 .nav-links li { margin-bottom: 12px; }
 .nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
@@ -322,18 +322,6 @@ footer a:hover { color: var(--footer-link-hover); }
 }</style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="wrap">
 <aside class="sidebar">
   <div class="sidebar-top">
@@ -356,7 +344,5 @@ footer a:hover { color: var(--footer-link-hover); }
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </main>
 </div>
-</body>
-</html>
 </body>
 </html>

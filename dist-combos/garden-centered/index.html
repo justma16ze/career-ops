@@ -8,6 +8,7 @@
 <meta property="og:title" content="Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,7 +39,7 @@
 
   /* Spacing */
   --wrap-width: 760px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -50,7 +51,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; font-size: 17px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 48px 36px 56px; }
 
 /* Navigation */
 nav { display: flex; align-items: baseline; margin-bottom: 64px; font-size: 15px; }
@@ -78,7 +79,7 @@ a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
 /* Home bio */
 .home-bio { font-size: 18px; color: #4a4a4a; line-height: 1.75; margin-bottom: 40px; max-width: 640px; }
 .home-bio p { margin-bottom: 16px; }
-.home-bio a { color: var(--accent); font-weight: 600; }
+body .home-bio a { color: var(--accent); font-weight: 600; }
 
 /* Section intro */
 .section-intro { font-size: 17px; color: var(--text-muted); line-height: 1.65; margin-bottom: 32px; }
@@ -246,8 +247,9 @@ h2 {
   font-size: 0.8rem; font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.12em;
   color: var(--accent);
-  text-align: center; margin-bottom: 24px;
+  text-align: center; margin: 0 0 24px; padding-top: 0; border-top: none;
 }
+h2::before { content: none !important; }
 
 /* === EXPERIENCE === */
 .entry { margin-bottom: 32px; }
@@ -348,18 +350,6 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="wrap">
 <h1>Jordan Mazer</h1>
 <div class="hero-headline">Talent leader who scales teams from startup to global -- recruiting, HR ops, and people strategy</div>
@@ -370,19 +360,19 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 <div class="experience"><div class="entry">
 <div class="entry-title">Andreessen Horowitz</div>
 <div class="entry-header"><span class="entry-role">Head of Talent, speedrun</span><span class="entry-date">January 2023 - Present</span></div>
-<ul><li>Built the a16z speedrun talent network from zero — 50M impressions, 5M applications to portfolio companies, 220K followers, 70K newsletter subscribers</li><li>Source, vet, and broker introductions between top candidates and hundreds of a16z portfolio startups</li><li>Created a distribution engine across social, email, and events that drives consistent candidate flow without paid acquisition</li><li>Designed and run the candidate evaluation pipeline (screening, interviewing, matching) that portcos rely on for warm intros</li><li>Help speedrun + game fund founders build their founding teams through direct recruiting support and talent strategy</li><li>Built internal tooling (AI screening pipeline, candidate matching, automated briefings) to scale a 3-person team's output</li></ul>
+<ul><li>Built the a16z speedrun talent network from zero — 50M impressions, 5M applications to portfolio companies, 220K followers, 70K newsletter subscribers</li><li>Source, vet, and broker introductions between top candidates and hundreds of a16z portfolio startups</li></ul><details><summary></summary><div class="detail-content"><ul><li>Created a distribution engine across social, email, and events that drives consistent candidate flow without paid acquisition</li><li>Designed and run the candidate evaluation pipeline (screening, interviewing, matching) that portcos rely on for warm intros</li><li>Help speedrun + game fund founders build their founding teams through direct recruiting support and talent strategy</li><li>Built internal tooling (AI screening pipeline, candidate matching, automated briefings) to scale a 3-person team's output</li></ul></div></details>
 </div>
 <div class="entry">
 <div class="entry-title">Riot Games <span class="entry-date">2015 - January 2023</span></div>
 <div class="sub-entry">
 <div class="entry-header"><span class="entry-role">Sr. Director, Global HR Shared Services</span><span class="entry-date">November 2021 - January 2023</span></div>
-<ul><li>Accountable for delivering the following for all of Riot's teams and operations throughout the world:</li><li>HR Operations (transactions, data management, onboarding, offboarding, etc.)</li><li>HR Technology & Systems</li><li>HR Analytics</li><li>Contingent Workforce Staffing / Vendor Management</li><li>In-HR budget, program and initiative planning & tracking (internal PMO)</li><li>The goal for our team: be the concierge for Rioters so they can focus on what they do best: making games.</li></ul>
+<ul><li>Accountable for delivering the following for all of Riot's teams and operations throughout the world:</li><li>HR Operations (transactions, data management, onboarding, offboarding, etc.)</li></ul><details><summary></summary><div class="detail-content"><ul><li>HR Technology & Systems</li><li>HR Analytics</li><li>Contingent Workforce Staffing / Vendor Management</li><li>In-HR budget, program and initiative planning & tracking (internal PMO)</li><li>The goal for our team: be the concierge for Rioters so they can focus on what they do best: making games.</li></ul></div></details>
 </div><div class="sub-entry">
 <div class="entry-header"><span class="entry-role">Director, HR</span><span class="entry-date">August 2020 - November 2021</span></div>
-<ul><li>Los Angeles</li><li>Led HR team global re-org strategy process</li><li>Led HR team annual planning / budget process</li><li>Acted as overall execution lead for Riot's domestic-US COVID-response efforts (compliance, contact tracing, return to work efforts, etc.)</li></ul>
+<ul><li>Los Angeles</li><li>Led HR team global re-org strategy process</li></ul><details><summary></summary><div class="detail-content"><ul><li>Led HR team annual planning / budget process</li><li>Acted as overall execution lead for Riot's domestic-US COVID-response efforts (compliance, contact tracing, return to work efforts, etc.)</li></ul></div></details>
 </div><div class="sub-entry">
 <div class="entry-header"><span class="entry-role">Director, Talent Acquisition</span><span class="entry-date">May 2018 - August 2020</span></div>
-<ul><li>Responsible for the Talent Acquisition teams that staffed all of Riot's game and non-game product groups.</li><li>Led a team that produced >1000 annual hires</li><li>Managed employment brand efforts</li><li>Restructured Riot's interviewing / hiring approach in the post-Kotaku aftermath</li><li>Delivered Riot's first accurate headcount forecasts</li></ul>
+<ul><li>Responsible for the Talent Acquisition teams that staffed all of Riot's game and non-game product groups.</li><li>Led a team that produced >1000 annual hires</li></ul><details><summary></summary><div class="detail-content"><ul><li>Managed employment brand efforts</li><li>Restructured Riot's interviewing / hiring approach in the post-Kotaku aftermath</li><li>Delivered Riot's first accurate headcount forecasts</li></ul></div></details>
 </div><div class="sub-entry">
 <div class="entry-header"><span class="entry-role">Recruiting Manager</span><span class="entry-date">May 2016 - May 2018</span></div>
 <ul><li>Led the recruiting teams that hired all of Riot's engineers</li></ul>
@@ -414,7 +404,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 <div class="entry">
 <div class="entry-title">CRL Associates, Inc.</div>
 <div class="entry-header"><span class="entry-role">Legislative Researcher (Internship)</span><span class="entry-date">January 2008 - May 2010</span></div>
-<ul><li>Prepared research reports</li><li>Attended city council meetings</li><li>Participated in municipal lobbying process</li></ul>
+<ul><li>Prepared research reports</li><li>Attended city council meetings</li></ul><details><summary></summary><div class="detail-content"><ul><li>Participated in municipal lobbying process</li></ul></div></details>
 </div></div>
 <hr class="section-sep">
 <h2>Skills</h2>
@@ -427,7 +417,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 <div class="contact-line"><a href="https://linkedin.com/in/jordanmazer">LinkedIn</a><a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></div>
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </div>
-</body>
-</html>
 </body>
 </html>

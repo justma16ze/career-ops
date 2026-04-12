@@ -8,6 +8,7 @@
 <meta property="og:title" content="Experience — Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -15,7 +16,7 @@
   --bg: #0a0a0a;
   --bg-alt: #111;
   --bg-card: #141414;
-  --bg-nav: transparent;
+  --bg-nav: rgba(10,10,10,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -38,7 +39,7 @@
 
   /* Spacing */
   --wrap-width: 660px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — dark bg: accent color for link */
   --footer-text: #aaa;
@@ -50,7 +51,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 14px; border-top: 2px solid var(--accent); }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 48px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 48px; }
 a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(143,170,110,0.3); }
 a:hover { color: var(--accent-hover); border-bottom-color: var(--accent-hover); }
 
@@ -108,9 +109,9 @@ h2::before { content: '// '; color: #3a3a3a; }
 .service-org { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #e0e0e0; text-transform: uppercase; letter-spacing: 1px; }
 .service-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); white-space: nowrap; letter-spacing: 1px; }
 .service-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
-.service-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.service-bullets { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .service-bullets li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
-.service-bullets li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.service-bullets li::before { content: '>' !important; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
 .service-bullets a { color: var(--accent); }
 
 /* Standard entry classes */
@@ -122,9 +123,9 @@ h2::before { content: '// '; color: #3a3a3a; }
 .entry-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
 .entry-desc { font-size: 14px; color: #a0a0a0; line-height: 1.6; }
 .entry-desc a { color: var(--accent); }
-.entry ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.entry ul { margin: 8px 0 0; padding-left: 0 !important; list-style: none !important; }
 .entry li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
-.entry li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.entry li::before { content: '>' !important; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
 
 /* DETAILS */
 details { margin-top: 6px; }
@@ -221,7 +222,7 @@ a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
 
 /* --- Two-column wrapper --- */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+.wrap { width: 100% !important; max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
 
 /* --- Left sidebar (sticky) --- */
 .sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
@@ -232,6 +233,7 @@ a:hover { color: var(--accent-hover); }
 .sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
 
 /* --- Sidebar nav --- */
+nav { display: block; background: transparent; border: none; box-shadow: none; padding: 0; margin: 0; text-transform: none; letter-spacing: normal; font-size: inherit; }
 .nav-links { list-style: none; padding: 0; margin: 0; }
 .nav-links li { margin-bottom: 12px; }
 .nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
@@ -300,7 +302,7 @@ a:hover { color: var(--accent-hover); }
 .contact-line a:hover { color: var(--accent); }
 
 /* --- Education --- */
-h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; margin-top: 48px; }
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 48px 0 16px; padding-top: 0; border-top: none; }
 
 /* --- Details toggle --- */
 details { margin-top: 6px; }
@@ -355,18 +357,6 @@ footer a:hover { color: var(--footer-link-hover); }
   .entry li { font-size: 12px; }
   .home-bio { font-size: 13px; }
 }</style>
-</head>
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Experience — Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Experience — Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
 </head>
 <body>
 <div class="wrap">
@@ -437,7 +427,5 @@ footer a:hover { color: var(--footer-link-hover); }
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </main>
 </div>
-</body>
-</html>
 </body>
 </html>

@@ -8,6 +8,7 @@
 <meta property="og:title" content="Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,9 +39,10 @@
 
   /* Spacing */
   --wrap-width: 720px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — coral bg is mid-tone, text is dark #111 for contrast */
+  --footer-bg: #ff6b4a;
   --footer-text: #111;
   --footer-link: #111;
   --footer-link-hover: #fff;
@@ -50,13 +52,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 15px; background-image: radial-gradient(circle, #ddd 1px, transparent 1px); background-size: 24px 24px; }
-.wrap { width: var(--wrap-width); margin: 0 auto; padding: 24px 36px 40px; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 24px 36px 40px; }
 a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
 a:hover { color: var(--accent-hover); }
 
 /* NAV */
 nav { display: flex; align-items: center; gap: 28px; padding: 16px 24px; margin-bottom: 36px; background: var(--bg-nav); border: 3px solid var(--text); box-shadow: 6px 6px 0 0 var(--text); font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
-.site-name { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--text); text-decoration: none; background: #fff; border: 2px solid var(--text); padding: 5px 12px; margin-right: auto; letter-spacing: 0.5px; text-transform: none; }
+nav .site-name { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--text); text-decoration: none; background: #fff; border: 2px solid var(--text); padding: 5px 12px; margin-right: auto; letter-spacing: 0.5px; text-transform: none; }
 nav .site-name:hover { background: var(--bg); }
 nav a { color: var(--text); text-decoration: none; font-weight: 700; }
 nav a:hover { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; }
@@ -149,7 +151,7 @@ details .detail-content { padding-top: 8px; }
 .looking-for { font-family: var(--font-mono); font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
 /* FOOTER */
-footer { margin-top: 40px; padding: 16px 24px; background: #ff6b4a; border: 3px solid var(--footer-border); box-shadow: 6px 6px 0 0 var(--text); font-family: var(--font-mono); font-size: 12px; color: var(--footer-text); font-weight: 700; letter-spacing: 0.5px; border-top: 3px solid var(--footer-border); }
+footer { background: var(--footer-bg, #ff6b4a); font-family: var(--font-mono); font-size: 12px; color: var(--footer-text); font-weight: 700; letter-spacing: 0.5px; }
 footer a { color: var(--footer-link); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700; }
 footer a:hover { color: var(--footer-link-hover); }
 
@@ -207,7 +209,8 @@ body { margin: 0; padding: 0; }
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: var(--bg-nav, var(--bg));
-  border-bottom: 1px solid var(--border);
+  border: none; border-bottom: 1px solid var(--border);
+  box-shadow: none;
   height: var(--nav-height, 48px);
   display: flex; align-items: center; justify-content: center; gap: 28px;
   font-size: 13px;
@@ -222,6 +225,7 @@ nav .site-name {
   padding-left: 24px;
 }
 .nav-links { display: flex; gap: 24px; padding-right: 24px; }
+nav .site-name-hidden { visibility: hidden; }
 nav a { color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
 nav a:hover { color: var(--text); }
 body { padding-top: var(--nav-height, 48px); }
@@ -257,7 +261,7 @@ h2 {
   font-size: 13px; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--text-faint);
-  margin-bottom: 24px;
+  margin: 0 0 24px; padding-top: 0; border-top: none;
 }
 
 /* === EXPERIENCE === */
@@ -327,7 +331,7 @@ footer {
   font-size: 11px;
   color: var(--footer-text);
   border-top: 1px solid var(--footer-border, var(--border));
-  background: var(--bg);
+  background: var(--footer-bg, var(--bg));
 }
 footer a { color: var(--footer-link); font-weight: 700; }
 footer a:hover { color: var(--footer-link-hover, var(--accent)); }
@@ -373,20 +377,8 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <nav>
-<a href="#hero" class="site-name">Jordan Mazer</a>
+<a href="#hero" class="site-name site-name-hidden">Jordan Mazer</a>
 <div class="nav-links"><a href="#about">About</a> <a href="#experience">Experience</a> <a href="#skills">Skills</a> <a href="#contact">Contact</a></div>
 </nav>
 <section id="hero" class="band band-white">
@@ -430,7 +422,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </div>
 </section>
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</body>
-</html>
 </body>
 </html>

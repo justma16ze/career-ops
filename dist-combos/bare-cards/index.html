@@ -9,6 +9,7 @@
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
 
+
 <style>
 :root {
   /* Backgrounds */
@@ -38,7 +39,7 @@
 
   /* Spacing */
   --wrap-width: 600px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — light bg */
   --footer-text: #666;
@@ -102,9 +103,14 @@ ul li { margin-bottom: 3px; line-height: 1.5; }
 
 .detail { font-size: 13px; color: var(--text-muted); }
 .skills-list { font-size: 13px; color: var(--text-muted); }
+
+/* Override layout-specific pill/tag styling — bare shows plain text */
+body .skills-list span { background: none; border: none; padding: 2px 0; font-family: var(--font-body); font-size: 13px; color: var(--text-muted); }
+body .skills-list .tag::after { content: ', '; color: var(--text-muted); }
+body .skills-list .tag:last-child::after { content: ''; }
 .skills-grid { font-size: 13px; color: var(--text-muted); }
 .strengths-list { list-style: none; padding: 0; }
-.strengths-list li { font-size: 13px; color: var(--text-muted); }
+.strengths-list li { font-size: 13px; color: var(--text-muted); padding-left: 0; }
 .strengths { font-size: 13px; color: var(--text-muted); }
 .contact-line { font-size: 13px; }
 .contact-line a { margin-right: 12px; }
@@ -334,18 +340,6 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="wrap">
 <main>
 <div class="hero">
@@ -476,7 +470,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </main>
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </div>
-</body>
-</html>
 </body>
 </html>

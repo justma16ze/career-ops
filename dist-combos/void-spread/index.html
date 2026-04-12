@@ -8,13 +8,14 @@
 <meta property="og:title" content="Jordan Mazer">
 <meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
 <meta property="og:type" content="website">
+
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>:root {
   /* Backgrounds */
   --bg: #050505;
   --bg-alt: #0a0a0a;
   --bg-card: #0f0f0f;
-  --bg-nav: transparent;
+  --bg-nav: rgba(5,5,5,0.92);
   --bg-sidebar: transparent;
 
   /* Text */
@@ -37,7 +38,7 @@
 
   /* Spacing */
   --wrap-width: 620px;
-  --nav-height: auto;
+  --nav-height: 48px;
 
   /* Footer — dark bg: use readable light color for link */
   --footer-text: #aaa;
@@ -50,6 +51,7 @@
 body { font-family: var(--font-body); color: #888; background: var(--bg); line-height: 1.6; font-size: 14px; }
 a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
+h1 { font-family: var(--font-display); font-weight: 500; color: #ccc; letter-spacing: -0.02em; }
 h2 { font-family: var(--font-display); font-size: 13px; font-weight: 500; color: #555; margin: 40px 0 16px; text-transform: lowercase; letter-spacing: 0.05em; }
 .site-name { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: #ccc; text-decoration: none; letter-spacing: -0.02em; }
 
@@ -92,7 +94,7 @@ nav .active { color: #888; }
 .entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 .entry-desc a { color: #888; text-decoration: underline; text-decoration-color: #333; text-underline-offset: 3px; }
 .entry-desc a:hover { color: #ccc; }
-.entry ul { margin: 6px 0 0 0; padding-left: 0; font-size: 13px; color: var(--text-muted); list-style: none; }
+.entry ul { margin: 6px 0 0 0; padding-left: 0 !important; font-size: 13px; color: var(--text-muted); list-style: none !important; }
 .entry li { margin-bottom: 3px; line-height: 1.5; padding-left: 16px; text-indent: -16px; }
 .entry li::before { content: '-'; margin-right: 8px; color: #333; display: inline; }
 
@@ -122,6 +124,12 @@ details .detail-content { padding-top: 8px; }
 .contact-line { font-size: 14px; }
 .contact-line a { margin-right: 20px; color: #888; text-decoration: underline; text-decoration-color: #333; text-underline-offset: 4px; }
 .contact-line a:hover { color: #ccc; text-decoration-color: #666; }
+
+/* ---- CARDS PILL OVERRIDE ---- */
+.skills-list span { border-color: #333 !important; }
+
+/* ---- CARD BORDER OVERRIDE ---- */
+.card, .hero { border-color: #222 !important; }
 
 /* ---- FOOTER ---- */
 footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
@@ -171,6 +179,7 @@ nav {
   font-size: 14px; font-family: var(--font-mono);
   letter-spacing: 0.01em;
   max-width: 1000px; width: 100%; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
 }
 nav .site-name {
   font-family: var(--font-display);
@@ -181,6 +190,9 @@ nav .site-name {
 .nav-links { display: flex; gap: 20px; }
 nav a { color: var(--text-faint); text-decoration: none; }
 nav a:hover { color: var(--text); }
+
+/* Hide nav name on desktop — h1 in left column is the main name display */
+.site-name-hidden { visibility: hidden; }
 
 /* === TWO-COLUMN SPREAD === */
 .spread-container {
@@ -322,6 +334,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 @media (max-width: 660px) {
   body { height: auto; overflow: auto; }
   .spread-shell { height: auto; overflow: visible; }
+  .site-name-hidden { visibility: visible; }
   nav { padding: 16px 20px 12px; font-size: 13px; gap: 12px; }
   nav .site-name { font-size: 19px; }
   .spread-container { flex-direction: column; }
@@ -357,20 +370,8 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jordan Mazer</title>
-<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:title" content="Jordan Mazer">
-<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
-<meta property="og:type" content="website">
-</head>
-<body>
 <div class="spread-shell">
-<div class="nav-band"><nav><a href="index.html" class="site-name">Jordan Mazer</a></nav></div>
+<div class="nav-band"><nav><a href="index.html" class="site-name site-name-hidden">Jordan Mazer</a></nav></div>
 <div class="spread-container">
 <div class="col-left">
 <h1>Jordan Mazer</h1>
@@ -396,7 +397,5 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 </div>
 <div class="footer-band"><footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer></div>
 </div>
-</body>
-</html>
 </body>
 </html>
