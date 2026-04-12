@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Chen</title>
+<meta name="description" content="Senior Software Engineer with 5 years of experience building high-scale payment systems and distributed infrastructure. Led a 14-service microservices...">
+
+<style>
+:root {
+  /* Backgrounds */
+  --bg: #fff;
+  --bg-alt: #fafafa;
+  --bg-card: #fff;
+  --bg-nav: transparent;
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #111;
+  --text-muted: #444;
+  --text-faint: #888;
+
+  /* Accent */
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+
+  /* Borders */
+  --border: #eee;
+  --border-light: #f0f0f0;
+
+  /* Typography */
+  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+
+  /* Spacing */
+  --wrap-width: 600px;
+  --nav-height: 48px;
+
+  /* Footer — light bg */
+  --footer-text: #666;
+  --footer-link: #444;
+  --footer-link-hover: var(--accent);
+  --footer-border: var(--border);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 40px; }
+a { color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+/* NAV */
+nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; margin-bottom: 20px; font-size: 13px; }
+.site-name { font-family: var(--font-display); font-weight: 600; color: var(--text); text-decoration: none; margin-right: auto; }
+nav a { color: var(--text-faint); text-decoration: none; }
+nav a:hover { color: var(--text); }
+nav .active { color: var(--text); font-weight: 500; }
+
+/* HEADINGS */
+h2 { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin: 24px 0 8px; }
+
+p { margin-bottom: 8px; }
+p:last-child { margin-bottom: 0; }
+
+/* HOME BIO */
+.home-bio { line-height: 1.7; margin-bottom: 16px; }
+.home-bio p { margin-bottom: 10px; }
+.home-bio a { color: var(--accent); }
+
+/* EXPERIENCE */
+.exp-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.exp-header strong { font-weight: 700; }
+.exp-header .dates { color: var(--text-faint); font-size: 13px; white-space: nowrap; }
+.exp-item { margin-bottom: 20px; }
+.exp-role { font-size: 13px; color: var(--text-muted); margin-top: 1px; }
+
+/* Standard entry classes */
+.entry { margin-bottom: 20px; }
+.entry:last-child { margin-bottom: 0; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.entry-title { font-weight: 700; color: var(--text); }
+.entry-date { color: var(--text-faint); font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+.entry-role { font-size: 13px; color: var(--text-muted); margin-top: 1px; }
+.entry-desc, .entry li { font-size: 13px; color: var(--text-muted); }
+.entry-desc { line-height: 1.6; }
+
+/* SUB ROLES */
+.sub-role { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-light); }
+.sub-role:first-child { border-top: none; padding-top: 2px; margin-top: 4px; }
+.sub-role .exp-header strong { font-weight: 600; font-size: 13px; }
+.sub-role .dates { font-size: 12px; }
+.sub-entry { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { border-top: none; padding-top: 2px; margin-top: 4px; }
+
+ul { margin: 4px 0 0 18px; font-size: 13px; color: var(--text-muted); }
+ul li { margin-bottom: 3px; line-height: 1.5; }
+
+.detail { font-size: 13px; color: var(--text-muted); }
+.skills-list { font-size: 13px; color: var(--text-muted); }
+
+/* Override layout-specific pill/tag styling — bare shows plain text */
+body .skills-list span { background: none; border: none; padding: 2px 0; font-family: var(--font-body); font-size: 13px; color: var(--text-muted); }
+body .skills-list .tag::after { content: ', '; color: var(--text-muted); }
+body .skills-list .tag:last-child::after { content: ''; }
+.skills-grid { font-size: 13px; color: var(--text-muted); }
+.strengths-list { list-style: none; padding: 0; }
+.strengths-list li { font-size: 13px; color: var(--text-muted); padding-left: 0; }
+.strengths { font-size: 13px; color: var(--text-muted); }
+.contact-line { font-size: 13px; }
+.contact-line a { margin-right: 12px; }
+
+/* DETAILS */
+details { margin-top: 4px; }
+details summary { cursor: pointer; font-size: 12px; color: #999; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 4px; }
+
+/* FOOTER */
+footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); }
+footer a { color: var(--footer-link); text-decoration: underline; font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* PRINT */
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; max-width: none; } }
+
+/* RESPONSIVE 660px */
+@media (max-width: 700px) {
+  .wrap { padding: 24px 20px; }
+  nav { font-size: 12px; gap: 14px; }
+  .exp-header { flex-direction: column; gap: 0; }
+  .exp-header .dates { white-space: normal; }
+  .entry-header { flex-direction: column; gap: 0; }
+}
+
+/* RESPONSIVE 480px */
+@media (max-width: 480px) {
+  .wrap { padding: 16px; }
+  nav { font-size: 11px; gap: 10px; }
+}
+
+
+/* === RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+
+/* === OUTER SHELL === */
+.spread-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* === NAV === */
+.nav-band { flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--bg-nav, var(--bg)); }
+nav {
+  display: flex; gap: 20px; align-items: baseline;
+  flex-wrap: wrap; padding: 20px 40px 16px;
+  font-size: 14px; font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+  max-width: 1000px; width: 100%; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
+}
+nav .site-name {
+  font-family: var(--font-display);
+  font-size: 22px; color: var(--text);
+  text-decoration: none; font-weight: 400;
+  margin-right: auto; letter-spacing: 0;
+}
+.nav-links { display: flex; gap: 20px; }
+nav a { color: var(--text-faint); text-decoration: none; }
+nav a:hover { color: var(--text); }
+
+/* Hide nav name on desktop — h1 in left column is the main name display */
+.site-name-hidden { visibility: hidden; }
+
+/* === TWO-COLUMN SPREAD === */
+.spread-container {
+  flex: 1; display: flex;
+  max-width: 1000px; width: 100%;
+  margin: 0 auto; min-height: 0;
+}
+.col-left {
+  width: 45%; overflow-y: auto;
+  padding: 36px 32px 48px 40px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-sidebar, var(--bg));
+}
+.col-right {
+  width: 55%; overflow-y: auto;
+  padding: 36px 40px 48px 32px;
+}
+
+/* Scrollbar styling */
+.col-left::-webkit-scrollbar, .col-right::-webkit-scrollbar { width: 4px; }
+.col-left::-webkit-scrollbar-track, .col-right::-webkit-scrollbar-track { background: transparent; }
+.col-left::-webkit-scrollbar-thumb, .col-right::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* === HEADINGS === */
+h1 {
+  font-family: var(--font-display);
+  font-size: 38px; font-weight: 400;
+  line-height: 1.12; margin-bottom: 4px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 400;
+  margin: 32px 0 14px; padding-top: 22px;
+  border-top: 1px solid var(--border);
+  line-height: 1.3; color: var(--text);
+}
+h2:first-child, h2.section-lead { margin-top: 0; padding-top: 0; border-top: none; }
+
+/* === LEFT COLUMN CONTENT === */
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 400; font-style: italic;
+  color: var(--text-faint); margin: 0 0 16px;
+  line-height: 1.55;
+}
+.meta-line {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--text-faint); line-height: 1.9;
+}
+.links { margin-top: 14px; font-size: 14px; }
+.links a { margin-right: 16px; color: var(--accent); }
+.home-bio { font-size: 15px; color: var(--text-muted); line-height: 1.78; margin-top: 20px; }
+.home-bio p { margin-bottom: 12px; }
+.home-bio a { color: var(--accent); }
+.strengths-list { list-style: none; padding: 0; margin: 0; }
+.strengths-list li {
+  font-size: 14px; color: var(--text-muted);
+  padding: 4px 0; line-height: 1.6;
+  border-bottom: 1px solid var(--border-light);
+}
+.strengths-list li:last-child { border-bottom: none; }
+.looking-for { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+.contact-line { font-size: 14px; padding-bottom: 8px; }
+.contact-line a { margin-right: 16px; color: var(--accent); }
+
+/* === RIGHT COLUMN CONTENT === */
+
+/* === EXPERIENCE === */
+.entry {
+  margin-bottom: 0; padding: 22px 0;
+  border-top: 1px solid var(--border);
+}
+.entry:first-child { border-top: none; padding-top: 0; }
+.entry-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; flex-wrap: wrap;
+  gap: 8px; margin-bottom: 4px;
+}
+.entry-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.entry-date {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--text-faint);
+  white-space: nowrap;
+}
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+.entry-desc, .entry li { color: var(--text-muted); }
+.sub-entry { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { margin-top: 6px; padding-top: 0; border-top: none; }
+.sub-entry .entry-header { margin-bottom: 4px; }
+.sub-entry .entry-role { font-weight: 600; color: var(--text); font-size: 13px; }
+ul { margin: 4px 0 0 18px; }
+li { font-size: 13px; color: var(--text-muted); margin-bottom: 2px; line-height: 1.6; }
+
+/* === DETAILS === */
+details { margin-top: 4px; }
+details summary {
+  cursor: pointer; font-family: var(--font-mono);
+  font-size: 11px; color: var(--text-faint); list-style: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 4px; }
+
+/* === EDUCATION === */
+.edu { margin-bottom: 6px; font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+/* === SKILLS === */
+.skills-list {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--text-faint); line-height: 2;
+}
+
+/* === FOOTER === */
+.footer-band { flex-shrink: 0; border-top: 1px solid var(--footer-border, var(--border)); }
+footer {
+  max-width: 1000px; width: 100%; margin: 0 auto;
+  padding: 12px 40px 16px;
+  font-size: 11px;
+  color: var(--footer-text);
+  font-family: var(--font-mono);
+}
+footer a { color: var(--footer-link); font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover, var(--accent)); }
+
+/* === PRINT === */
+@media print {
+  .nav-band, .footer-band { display: none; }
+  body { height: auto; overflow: visible; }
+  .spread-shell { height: auto; overflow: visible; }
+  .spread-container { flex-direction: column; max-width: none; }
+  .col-left, .col-right { width: 100%; overflow-y: visible; border-right: none; padding: 16px; }
+  .col-right { border-top: 1px solid var(--border); }
+}
+
+/* === RESPONSIVE 660px === */
+@media (max-width: 660px) {
+  body { height: auto; overflow: auto; }
+  .spread-shell { height: auto; overflow: visible; }
+  .site-name-hidden { visibility: visible; }
+  nav { padding: 16px 20px 12px; font-size: 13px; gap: 12px; }
+  nav .site-name { font-size: 19px; }
+  .spread-container { flex-direction: column; }
+  .col-left {
+    width: 100%; overflow-y: visible;
+    border-right: none; padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-right { width: 100%; overflow-y: visible; padding: 24px 20px 32px; }
+  footer { padding: 12px 20px 16px; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 18px; }
+  .hero-headline { font-size: 16px; }
+  .entry-header { flex-direction: column; gap: 2px; }
+  .sub-entry .entry-header { flex-direction: column; gap: 2px; }
+}
+
+/* === RESPONSIVE 480px === */
+@media (max-width: 480px) {
+  nav { padding: 12px 16px 10px; font-size: 12px; gap: 8px; }
+  nav .site-name { font-size: 17px; }
+  .col-left { padding: 16px 16px 16px; }
+  .col-right { padding: 16px 16px 24px; }
+  footer { padding: 10px 16px 14px; }
+  h1 { font-size: 26px; }
+  h2 { font-size: 17px; margin: 20px 0 8px; padding-top: 14px; }
+  .hero-headline { font-size: 15px; }
+  .home-bio { font-size: 14px; }
+  li { font-size: 12px; }
+  .strengths-list li { font-size: 13px; }
+  .skills-list { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div class="spread-shell">
+<div class="nav-band"><nav><a href="index.html" class="site-name site-name-hidden">Alex Chen</a></nav></div>
+<div class="spread-container">
+<div class="col-left">
+<h1>Alex Chen</h1>
+<p class="hero-headline">Senior engineer who builds payment systems that handle billions.</p>
+<div class="meta-line">San Francisco, CA</div>
+<div class="links"><a href="mailto:alex.chen@gmail.com">alex.chen@gmail.com</a></div>
+<article class="home-bio"><p>I build the infrastructure behind payments at <a href="https://stripe.com">Stripe</a>, where my team processes over $2B/month. Before that, I built the real-time collaboration engine at <a href="https://notion.so">Notion</a>.</p><p>I care about latency, reliability, and making distributed systems feel simple. Three patents filed, 14 microservices shipped, P99 latency cut from 800ms to 120ms.</p></article>
+<h2>Strengths</h2><ul class="strengths-list"><li>Payment processing at scale</li><li>Microservices architecture</li><li>Latency optimization</li></ul>
+<h2>Contact</h2><p class="contact-line"><a href="mailto:alex.chen@gmail.com">alex.chen@gmail.com</a></p>
+</div>
+<div class="col-right">
+<h2 class="section-lead">Experience</h2>
+<article class="entry"><div class="entry-header"><strong class="entry-title">Stripe</strong><span class="entry-date">2021 - Present</span></div><div class="entry-role">Senior Engineer</div><ul><li>Built payment processing pipeline handling $2B/month in transaction volume</li><li>Led migration from monolith to microservices architecture (14 services)</li></ul><details><summary></summary><div class="detail-content"><ul><li>Reduced P99 latency from 800ms to 120ms through query optimization and caching</li><li>Mentored 4 junior engineers, 2 promoted within 18 months</li></ul></div></details></article>
+<article class="entry"><div class="entry-header"><strong class="entry-title">Notion</strong><span class="entry-date">2018 - 2021</span></div><div class="entry-role">Software Engineer</div><ul><li>Built real-time collaboration engine supporting 10K concurrent editors</li><li>Filed 3 patents for conflict resolution algorithms</li></ul><details><summary></summary><div class="detail-content"><ul><li>Optimized page load time by 40% through lazy rendering pipeline</li></ul></div></details></article>
+<h2>Education</h2><p class="edu">BS Computer Science, Stanford University (2018)</p>
+<h2>Skills</h2><p class="skills-list">Go, TypeScript, Python, PostgreSQL, Kafka, Kubernetes, Redis, gRPC, Terraform</p>
+</div>
+</div>
+<div class="footer-band"><footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer></div>
+</div>
+</body>
+</html>
