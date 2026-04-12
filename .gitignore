@@ -46,3 +46,4 @@ package-lock.json
 .claude/worktrees/
 cv.md
 article-digest.md
+.playwright-mcp/
