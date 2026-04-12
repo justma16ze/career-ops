@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 
 /**
- * serve-picker.mjs — Premium template picker gallery for speedrun-career-ops.
+ * serve-picker.mjs — Premium template picker for speedrun-career-ops.
  *
- * On startup, takes Playwright screenshots of each combo template at full width,
- * then serves a Squarespace-quality horizontal carousel gallery.
+ * On startup:
+ *   1. Takes Playwright full-page screenshots of each combo at 1280px wide
+ *   2. Serves a Squarespace-quality horizontal carousel gallery at localhost:3849
  *
  * Usage:
  *   node serve-picker.mjs ink-spread void-scroll coral-multipage
  *
- * Serves on http://localhost:3849
+ * The user picks a template; selection is written to /tmp/speedrun-template-choice.txt.
  */
 
 import { createServer } from 'http';
-import { readFile, writeFile, stat } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { resolve, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
@@ -35,34 +36,34 @@ if (combos.length === 0) {
 }
 
 // ---------------------------------------------------------------------------
-// Derive descriptions from combo names
+// Style + Layout metadata
 // ---------------------------------------------------------------------------
 
-const STYLE_DESCRIPTIONS = {
-  almanac: 'Vintage reference book aesthetic',
-  bare: 'Clean and minimal, content-first',
-  blush: 'Soft warm tones, gentle palette',
-  caps: 'Bold uppercase headings, strong type',
-  coral: 'Warm coral accent, modern feel',
-  dusk: 'Dark muted tones, evening palette',
-  ember: 'Warm ember glow, rich darks',
-  folio: 'Portfolio-forward, showcase layout',
-  garden: 'Digital garden, editorial warmth',
-  gradient: 'Gradient accents, modern depth',
-  grid: 'Grid-based structure, precise alignment',
-  ink: 'Warm editorial, serif-led typography',
-  lab: 'Technical and precise, lab notebook',
-  patrol: 'Bold and structured, high contrast',
-  press: 'Newspaper editorial, classic print',
-  prose: 'Long-form reading, literary feel',
-  statement: 'Serif statement, confident authority',
-  tactical: 'Tactical and utilitarian, mission-ready',
-  terminal: 'Monospace terminal, developer aesthetic',
-  void: 'Dark void, high-contrast minimalism',
-  volt: 'Electric accent, energetic and modern',
+const STYLE_META = {
+  almanac: { desc: 'Vintage reference book aesthetic', accent: '#A08060' },
+  bare:    { desc: 'Clean and minimal, content-first', accent: '#fff' },
+  blush:   { desc: 'Soft warm tones, gentle palette', accent: '#D4918F' },
+  caps:    { desc: 'Bold uppercase headings, strong type', accent: '#fff' },
+  coral:   { desc: 'Warm coral accent, modern feel', accent: '#FF6B6B' },
+  dusk:    { desc: 'Dark muted tones, evening palette', accent: '#9B8AAE' },
+  ember:   { desc: 'Warm ember glow, rich darks', accent: '#E07D42' },
+  folio:   { desc: 'Portfolio-forward, showcase layout', accent: '#3D7A37' },
+  garden:  { desc: 'Digital garden, editorial warmth', accent: '#6BA85B' },
+  gradient:{ desc: 'Gradient accents, modern depth', accent: '#818CF8' },
+  grid:    { desc: 'Grid-based structure, precise alignment', accent: '#3B8BEB' },
+  ink:     { desc: 'Warm editorial, serif-led typography', accent: '#B5714D' },
+  lab:     { desc: 'Technical and precise, lab notebook', accent: '#5B8DEF' },
+  patrol:  { desc: 'Bold and structured, high contrast', accent: '#EF4444' },
+  press:   { desc: 'Newspaper editorial, classic print', accent: '#fff' },
+  prose:   { desc: 'Long-form reading, literary feel', accent: '#7B8BA0' },
+  statement:{ desc: 'Serif statement, confident authority', accent: '#fff' },
+  tactical:{ desc: 'Tactical and utilitarian, mission-ready', accent: '#6B7B30' },
+  terminal:{ desc: 'Monospace terminal, developer aesthetic', accent: '#22D953' },
+  void:    { desc: 'Dark void, high-contrast minimalism', accent: '#fff' },
+  volt:    { desc: 'Electric accent, energetic and modern', accent: '#FACC15' },
 };
 
-const LAYOUT_DESCRIPTIONS = {
+const LAYOUT_META = {
   bands: 'Full-bleed alternating sections',
   cards: 'Card grid with bordered tiles',
   centered: 'Centered vertical scroll',
@@ -73,43 +74,25 @@ const LAYOUT_DESCRIPTIONS = {
   spread: 'Two-column magazine spread',
 };
 
-// Accent colors per style for the "Use this template" button
-const STYLE_ACCENTS = {
-  almanac: '#8B7355',
-  bare: '#333333',
-  blush: '#D4918F',
-  caps: '#222222',
-  coral: '#FF6B6B',
-  dusk: '#7C6E8A',
-  ember: '#D4713B',
-  folio: '#2D5A27',
-  garden: '#5B8C51',
-  gradient: '#6366F1',
-  grid: '#0066CC',
-  ink: '#8B4513',
-  lab: '#2563EB',
-  patrol: '#DC2626',
-  press: '#1A1A1A',
-  prose: '#4A5568',
-  statement: '#1B1B1B',
-  tactical: '#4B5320',
-  terminal: '#00FF41',
-  void: '#E0E0E0',
-  volt: '#FACC15',
-};
+const KNOWN_LAYOUTS = Object.keys(LAYOUT_META).sort((a, b) => b.length - a.length);
 
-function getComboDescription(comboName) {
-  const knownLayouts = Object.keys(LAYOUT_DESCRIPTIONS).sort((a, b) => b.length - a.length);
-  for (const layout of knownLayouts) {
-    if (comboName.endsWith(`-${layout}`)) {
-      const style = comboName.slice(0, comboName.length - layout.length - 1);
-      const styleName = STYLE_DESCRIPTIONS[style] || style;
-      const layoutName = LAYOUT_DESCRIPTIONS[layout] || layout;
-      const accent = STYLE_ACCENTS[style] || '#FFFFFF';
-      return { style, layout, styleDesc: styleName, layoutDesc: layoutName, accent };
+function parseCombo(name) {
+  for (const layout of KNOWN_LAYOUTS) {
+    if (name.endsWith(`-${layout}`)) {
+      const style = name.slice(0, name.length - layout.length - 1);
+      const meta = STYLE_META[style] || { desc: style, accent: '#fff' };
+      const layoutDesc = LAYOUT_META[layout] || layout;
+      const isLight = ['#fff', '#FACC15', '#22D953'].includes(meta.accent);
+      return {
+        style, layout,
+        styleDesc: meta.desc,
+        layoutDesc,
+        accent: meta.accent,
+        btnTextColor: isLight ? '#111' : '#fff',
+      };
     }
   }
-  return { style: comboName, layout: '', styleDesc: comboName, layoutDesc: '', accent: '#FFFFFF' };
+  return { style: name, layout: '', styleDesc: name, layoutDesc: '', accent: '#fff', btnTextColor: '#111' };
 }
 
 // ---------------------------------------------------------------------------
@@ -117,24 +100,15 @@ function getComboDescription(comboName) {
 // ---------------------------------------------------------------------------
 
 const MIME = {
-  '.html': 'text/html',
-  '.css': 'text/css',
-  '.js': 'application/javascript',
-  '.mjs': 'application/javascript',
-  '.json': 'application/json',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
-  '.ttf': 'font/ttf',
+  '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript',
+  '.mjs': 'application/javascript', '.json': 'application/json',
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
+  '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf',
 };
 
 // ---------------------------------------------------------------------------
-// Screenshot generation with Playwright
+// Screenshot capture via Playwright
 // ---------------------------------------------------------------------------
 
 async function captureScreenshots() {
@@ -145,47 +119,60 @@ async function captureScreenshots() {
   for (const combo of combos) {
     const htmlPath = resolve(COMBOS_DIR, combo, 'index.html');
     if (!existsSync(htmlPath)) {
-      console.error(`    WARNING: ${htmlPath} not found, skipping screenshot`);
+      console.error(`    WARNING: ${htmlPath} not found, skipping`);
       continue;
     }
-
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(800);
-
-    const screenshotPath = `/tmp/picker-${combo}.png`;
-    await page.screenshot({ path: screenshotPath, fullPage: true });
+    const out = `/tmp/picker-${combo}.png`;
+    await page.screenshot({ path: out, fullPage: true });
     await page.close();
-    console.log(`    ${combo} -> ${screenshotPath}`);
+    console.log(`    ${combo} -> ${out}`);
   }
 
   await browser.close();
-  console.log('\n  Screenshots captured.\n');
+  console.log('\n  Screenshots ready.\n');
 }
 
 // ---------------------------------------------------------------------------
-// Gallery HTML — Premium carousel design
+// Gallery HTML
 // ---------------------------------------------------------------------------
 
 function buildGalleryHTML() {
-  const templateData = combos.map((combo, i) => {
-    const info = getComboDescription(combo);
-    return { combo, index: i, ...info };
-  });
-
-  // Build template data as JSON for JS consumption
-  const templateJSON = JSON.stringify(templateData.map(t => ({
-    combo: t.combo,
-    style: t.style,
-    layout: t.layout,
-    styleDesc: t.styleDesc,
-    layoutDesc: t.layoutDesc,
-    accent: t.accent,
+  const templates = combos.map((combo, i) => ({ combo, index: i, ...parseCombo(combo) }));
+  const dataJSON = JSON.stringify(templates.map(t => ({
+    combo: t.combo, style: t.style, layout: t.layout,
   })));
 
+  const slides = templates.map((t) => `
+    <div class="slide">
+      <div class="browser-frame">
+        <div class="chrome">
+          <div class="traffic"><span></span><span></span><span></span></div>
+          <div class="url-bar">
+            <svg class="lock" viewBox="0 0 12 14" fill="currentColor"><path d="M10 5V4a4 4 0 00-8 0v1a2 2 0 00-2 2v5a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2zM4 4a2 2 0 014 0v1H4V4z"/></svg>
+            yourname.dev
+          </div>
+          <div class="chrome-spacer"></div>
+        </div>
+        <div class="preview-scroll">
+          <img src="/screenshots/${t.combo}.png" alt="${t.combo} template preview" />
+        </div>
+      </div>
+      <div class="info">
+        <h2 class="tname">${t.style} <span class="ltag">${t.layout}</span></h2>
+        <p class="tdesc">${t.styleDesc}. ${t.layoutDesc}.</p>
+        <button class="use-btn" style="background:${t.accent};color:${t.btnTextColor};" onclick="pick('${t.combo}')">Use this template</button>
+      </div>
+    </div>`).join('');
+
+  const dotHTML = templates.map((_, i) =>
+    `<button class="dot${i === 0 ? ' active' : ''}" onclick="go(${i})"></button>`
+  ).join('');
+
   return `<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Choose your template</title>
@@ -193,597 +180,85 @@ function buildGalleryHTML() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #111;
-    color: #e0e0e0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* ---- Top header ---- */
-  .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    padding: 24px 40px 20px;
-    background: linear-gradient(to bottom, #111 60%, transparent);
-    pointer-events: none;
-    text-align: center;
-  }
-  .header h1 {
-    font-size: 15px;
-    font-weight: 500;
-    color: #888;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    pointer-events: auto;
-  }
-
-  /* ---- Carousel wrapper ---- */
-  .carousel-viewport {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .carousel-track {
-    display: flex;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-  }
-
-  .carousel-slide {
-    flex: 0 0 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 40px 120px;
-    height: 100vh;
-  }
-
-  /* ---- Browser frame mockup ---- */
-  .browser-frame {
-    width: min(80vw, 960px);
-    height: calc(100vh - 280px);
-    background: #1a1a1a;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.06),
-      0 20px 60px rgba(0,0,0,0.5),
-      0 8px 24px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow 0.3s ease;
-  }
-  .browser-frame:hover {
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.1),
-      0 24px 80px rgba(0,0,0,0.6),
-      0 12px 32px rgba(0,0,0,0.4);
-  }
-
-  /* Browser chrome / address bar */
-  .browser-chrome {
-    flex: 0 0 auto;
-    height: 40px;
-    background: #252525;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    gap: 8px;
-  }
-  .browser-dots {
-    display: flex;
-    gap: 6px;
-  }
-  .browser-dots span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #333;
-  }
-  .browser-dots span:nth-child(1) { background: #ff5f57; }
-  .browser-dots span:nth-child(2) { background: #febc2e; }
-  .browser-dots span:nth-child(3) { background: #28c840; }
-
-  .browser-url {
-    flex: 1;
-    height: 26px;
-    background: #1a1a1a;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    font-size: 12px;
-    color: #666;
-    font-family: 'Inter', monospace;
-    letter-spacing: 0.01em;
-  }
-  .browser-url .lock {
-    color: #28c840;
-    margin-right: 6px;
-    font-size: 10px;
-  }
-
-  /* Screenshot container — scrollable */
-  .screenshot-container {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: #fff;
-    scroll-behavior: smooth;
-  }
-  .screenshot-container::-webkit-scrollbar {
-    width: 6px;
-  }
-  .screenshot-container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .screenshot-container::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
-    border-radius: 3px;
-  }
-  .screenshot-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.35);
-  }
-
-  .screenshot-container img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /* ---- Template info below frame ---- */
-  .template-info {
-    margin-top: 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  .template-name {
-    font-size: 20px;
-    font-weight: 600;
-    color: #fff;
-    text-transform: capitalize;
-    letter-spacing: -0.01em;
-  }
-  .template-desc {
-    font-size: 14px;
-    color: #777;
-    font-weight: 400;
-    max-width: 400px;
-    line-height: 1.5;
-  }
-
-  /* Use this template button */
-  .use-btn {
-    margin-top: 4px;
-    padding: 12px 32px;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
-    letter-spacing: -0.01em;
-  }
-  .use-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  }
-  .use-btn:active {
-    transform: translateY(0);
-  }
-
-  /* ---- Navigation arrows ---- */
-  .nav-arrow {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 40;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(30,30,30,0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #ccc;
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
-  }
-  .nav-arrow:hover {
-    background: rgba(50,50,50,0.9);
-    border-color: rgba(255,255,255,0.2);
-    color: #fff;
-  }
-  .nav-arrow.disabled {
-    opacity: 0.2;
-    pointer-events: none;
-  }
-  .nav-arrow.left { left: 24px; }
-  .nav-arrow.right { right: 24px; }
-
-  .nav-arrow svg {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* ---- Dot indicators ---- */
-  .dots {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 40;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    cursor: pointer;
-    transition: background 0.3s, transform 0.3s;
-  }
-  .dot.active {
-    background: #fff;
-    transform: scale(1.25);
-  }
-  .dot:hover:not(.active) {
-    background: rgba(255,255,255,0.4);
-  }
-
-  /* ---- "See all templates" link ---- */
-  .see-all {
-    position: fixed;
-    bottom: 62px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 40;
-    font-size: 13px;
-    color: #555;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: 'Inter', sans-serif;
-    transition: color 0.2s;
-    letter-spacing: 0.02em;
-  }
-  .see-all:hover {
-    color: #999;
-  }
-
-  /* ---- Success overlay ---- */
-  .success-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    justify-content: center;
-    align-items: center;
-  }
-  .success-overlay.visible {
-    display: flex;
-  }
-
-  .success-card {
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 48px 56px;
-    text-align: center;
-    max-width: 420px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-  }
-
-  /* Checkmark animation */
-  .check-circle {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: #22c55e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    opacity: 0;
-  }
-  @keyframes scaleIn {
-    0% { transform: scale(0); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .check-circle svg {
-    width: 28px;
-    height: 28px;
-    stroke: #fff;
-    fill: none;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 40;
-    stroke-dashoffset: 40;
-    animation: drawCheck 0.4s 0.3s ease-out forwards;
-  }
-  @keyframes drawCheck {
-    to { stroke-dashoffset: 0; }
-  }
-
-  .success-card h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 8px;
-    letter-spacing: -0.02em;
-  }
-  .success-card p {
-    font-size: 15px;
-    color: #777;
-    line-height: 1.6;
-  }
-  .success-card .chosen {
-    color: #fff;
-    font-weight: 600;
-  }
-
-  /* ---- Loading state ---- */
-  .loading-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 300;
-    background: #111;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.5s ease;
-  }
-  .loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-  .loading-spinner {
-    width: 32px;
-    height: 32px;
-    border: 2px solid rgba(255,255,255,0.1);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  .loading-text {
-    margin-top: 16px;
-    font-size: 14px;
-    color: #666;
-    font-weight: 400;
-  }
-
-  /* ---- Responsive ---- */
-  @media (max-width: 768px) {
-    .browser-frame {
-      width: 95vw;
-    }
-    .carousel-slide {
-      padding: 70px 12px 120px;
-    }
-    .nav-arrow { display: none; }
-    .template-name { font-size: 18px; }
-  }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0e0e0e;color:#e0e0e0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.hdr{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 40px 14px;background:linear-gradient(to bottom,#0e0e0e 70%,transparent);text-align:center;pointer-events:none}
+.hdr h1{font-size:12px;font-weight:600;color:#555;letter-spacing:.14em;text-transform:uppercase}
+.vp{position:fixed;inset:0;overflow:hidden}
+.track{display:flex;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform}
+.slide{flex:0 0 100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 40px 100px}
+.browser-frame{width:min(76vw,900px);height:calc(100vh - 290px);min-height:300px;background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 20px 60px rgba(0,0,0,.55),0 8px 24px rgba(0,0,0,.3);transition:box-shadow .3s ease}
+.browser-frame:hover{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 28px 80px rgba(0,0,0,.6),0 12px 32px rgba(0,0,0,.4)}
+.chrome{flex:0 0 auto;height:44px;background:#232323;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;padding:0 16px;gap:12px}
+.traffic{display:flex;gap:7px;flex-shrink:0}
+.traffic span{width:11px;height:11px;border-radius:50%}
+.traffic span:nth-child(1){background:#ff5f57}
+.traffic span:nth-child(2){background:#febc2e}
+.traffic span:nth-child(3){background:#28c840}
+.url-bar{flex:1;max-width:420px;margin:0 auto;height:28px;background:#1a1a1a;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 14px;font-size:12px;color:#4a4a4a;font-family:'Inter',sans-serif}
+.lock{width:10px;height:10px;margin-right:6px;opacity:.45}
+.chrome-spacer{width:52px;flex-shrink:0}
+.preview-scroll{flex:1;overflow-y:auto;overflow-x:hidden;background:#fff;scroll-behavior:smooth}
+.preview-scroll::-webkit-scrollbar{width:5px}
+.preview-scroll::-webkit-scrollbar-track{background:transparent}
+.preview-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:3px}
+.preview-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.3)}
+.preview-scroll img{display:block;width:100%;height:auto}
+.info{margin-top:18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.tname{font-size:22px;font-weight:700;color:#fff;text-transform:capitalize;letter-spacing:-.02em}
+.ltag{font-weight:400;font-size:16px;color:#666;margin-left:2px}
+.tdesc{font-size:13px;color:#555;max-width:420px;line-height:1.5}
+.use-btn{margin-top:10px;padding:13px 38px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.01em;transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.use-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.35);filter:brightness(1.1)}
+.use-btn:active{transform:translateY(0)}
+.arr{position:fixed;top:50%;z-index:40;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(20,20,20,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s ease}
+.arr:hover{background:rgba(55,55,55,.95);border-color:rgba(255,255,255,.25);color:#fff;transform:translateY(-50%) scale(1.06)}
+.arr.off{opacity:.12;pointer-events:none}
+.arr.left{left:20px}
+.arr.right{right:20px}
+.arr svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bbar{position:fixed;bottom:0;left:0;right:0;z-index:40;text-align:center;padding:0 0 24px;background:linear-gradient(to top,#0e0e0e 40%,transparent);pointer-events:none}
+.see-all-link{pointer-events:auto;display:inline-block;margin-bottom:12px;font-size:12px;color:#3a3a3a;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.04em;transition:color .2s}
+.see-all-link:hover{color:#888;text-decoration:underline;text-underline-offset:3px}
+.pager{display:flex;align-items:center;justify-content:center;gap:10px;pointer-events:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;padding:0;transition:background .3s,transform .3s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.dot:hover:not(.active){background:rgba(255,255,255,.35)}
+.ctr{font-size:11px;color:#444;margin-left:12px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.sov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);justify-content:center;align-items:center}
+.sov.vis{display:flex}
+.scard{background:#1a1a1a;border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:52px 60px;text-align:center;max-width:420px;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.chk{width:64px;height:64px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0}
+@keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.chk svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:drawChk .4s .3s ease-out forwards}
+@keyframes drawChk{to{stroke-dashoffset:0}}
+.scard h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.02em}
+.scard p{font-size:15px;color:#666;line-height:1.6}
+.ld{position:fixed;inset:0;z-index:300;background:#0e0e0e;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease}
+.ld.gone{opacity:0;pointer-events:none}
+.ldsp{width:28px;height:28px;border:2px solid rgba(255,255,255,.07);border-top-color:rgba(255,255,255,.5);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldtx{margin-top:16px;font-size:13px;color:#444;letter-spacing:.02em}
+.vp,.hdr,.arr,.bbar{opacity:0;transition:opacity .45s ease}
+.vp.show,.hdr.show,.arr.show,.bbar.show{opacity:1}
+.arr.show.off{opacity:.12}
+@media(max-width:768px){.browser-frame{width:95vw}.slide{padding:52px 10px 100px}.arr{display:none}.tname{font-size:18px}}
 </style>
-</head>
-<body>
-
-<div class="loading-overlay" id="loading">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">Preparing previews...</div>
+</head><body>
+<div class="ld" id="ld"><div class="ldsp"></div><div class="ldtx">Preparing previews</div></div>
+<div class="hdr" id="hdr"><h1>Choose your template</h1></div>
+<button class="arr left off" id="al" aria-label="Previous"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+<button class="arr right" id="ar" aria-label="Next"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg></button>
+<div class="vp" id="vp"><div class="track" id="trk">${slides}</div></div>
+<div class="bbar" id="bb">
+  <button class="see-all-link" onclick="seeAll()">See all templates</button>
+  <div class="pager">${dotHTML}<span class="ctr" id="ctr">1 / ${templates.length}</span></div>
 </div>
-
-<div class="header">
-  <h1>Choose your template</h1>
-</div>
-
-<!-- Nav arrows -->
-<button class="nav-arrow left disabled" id="arrow-left" aria-label="Previous template">
-  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-</button>
-<button class="nav-arrow right" id="arrow-right" aria-label="Next template">
-  <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>
-</button>
-
-<!-- Carousel -->
-<div class="carousel-viewport">
-  <div class="carousel-track" id="track">
-    ${templateData.map((t, i) => {
-      // Determine button style: light text on dark accent, or dark text on light accent
-      const accent = t.accent;
-      const isLightAccent = ['#FACC15', '#E0E0E0', '#28c840', '#00FF41'].includes(accent);
-      const btnColor = isLightAccent ? '#111' : '#fff';
-      return `
-    <div class="carousel-slide" data-index="${i}">
-      <div class="browser-frame">
-        <div class="browser-chrome">
-          <div class="browser-dots"><span></span><span></span><span></span></div>
-          <div class="browser-url">
-            <span class="lock">&#x1f512;</span>
-            yourname.dev &mdash; ${t.style} ${t.layout}
-          </div>
-        </div>
-        <div class="screenshot-container" id="sc-${i}">
-          <img src="/screenshots/${t.combo}.png" alt="${t.combo} template preview" loading="eager">
-        </div>
-      </div>
-      <div class="template-info">
-        <div class="template-name">${t.style} ${t.layout}</div>
-        <div class="template-desc">${t.styleDesc}. ${t.layoutDesc}.</div>
-        <button class="use-btn"
-                style="background: ${accent}; color: ${btnColor};"
-                onclick="pickTemplate('${t.combo}')">
-          Use this template
-        </button>
-      </div>
-    </div>`;
-    }).join('')}
-  </div>
-</div>
-
-<!-- Dots -->
-<button class="see-all" id="see-all" onclick="showMore()">See all templates</button>
-<div class="dots" id="dots">
-  ${templateData.map((_, i) => `<div class="dot${i === 0 ? ' active' : ''}" data-index="${i}" onclick="goTo(${i})"></div>`).join('')}
-</div>
-
-<!-- Success overlay -->
-<div class="success-overlay" id="success">
-  <div class="success-card">
-    <div class="check-circle">
-      <svg viewBox="0 0 24 24"><polyline points="6 12 10 16 18 8"></polyline></svg>
-    </div>
-    <h2>Great choice!</h2>
-    <p>Head back to your terminal.</p>
-  </div>
-</div>
-
+<div class="sov" id="sov"><div class="scard"><div class="chk"><svg viewBox="0 0 24 24"><polyline points="6 12 10 16 18 8"></polyline></svg></div><h2 id="sh">Great choice!</h2><p id="sm">Head back to your terminal.</p></div></div>
 <script>
-  const templates = ${templateJSON};
-  const total = templates.length;
-  let current = 0;
-  let picked = false;
-
-  const track = document.getElementById('track');
-  const arrowL = document.getElementById('arrow-left');
-  const arrowR = document.getElementById('arrow-right');
-  const dots = document.querySelectorAll('.dot');
-
-  function updateCarousel() {
-    track.style.transform = 'translateX(' + (-current * 100) + 'vw)';
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    arrowL.classList.toggle('disabled', current === 0);
-    arrowR.classList.toggle('disabled', current === total - 1);
-  }
-
-  function goTo(index) {
-    if (index < 0 || index >= total) return;
-    current = index;
-    updateCarousel();
-  }
-
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
-
-  arrowL.addEventListener('click', prev);
-  arrowR.addEventListener('click', next);
-
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (picked) return;
-    if (e.key === 'ArrowLeft') prev();
-    else if (e.key === 'ArrowRight') next();
-    else if (e.key === 'Enter') pickTemplate(templates[current].combo);
-  });
-
-  // Touch/swipe support
-  let touchStartX = 0;
-  let touchStartY = 0;
-  document.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', (e) => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
-      if (dx < 0) next(); else prev();
-    }
-  }, { passive: true });
-
-  async function pickTemplate(combo) {
-    if (picked) return;
-    picked = true;
-    try {
-      await fetch('/api/pick', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ combo }),
-      });
-    } catch (e) {
-      console.error('Failed to write selection:', e);
-    }
-    document.getElementById('success').classList.add('visible');
-  }
-
-  async function showMore() {
-    try {
-      await fetch('/api/pick', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ combo: 'more' }),
-      });
-    } catch (e) {
-      console.error('Failed to write selection:', e);
-    }
-    const card = document.querySelector('.success-card');
-    card.querySelector('h2').textContent = 'Got it!';
-    card.querySelector('p').textContent = 'Head back to your terminal for more options.';
-    document.getElementById('success').classList.add('visible');
-  }
-
-  // Hide loading overlay after images load
-  const imgs = document.querySelectorAll('.screenshot-container img');
-  let loaded = 0;
-  function checkAllLoaded() {
-    loaded++;
-    if (loaded >= imgs.length) {
-      setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-      }, 200);
-    }
-  }
-  imgs.forEach(img => {
-    if (img.complete) checkAllLoaded();
-    else {
-      img.addEventListener('load', checkAllLoaded);
-      img.addEventListener('error', checkAllLoaded);
-    }
-  });
-  // Fallback: hide loading after 3s no matter what
-  setTimeout(() => {
-    document.getElementById('loading').classList.add('hidden');
-  }, 3000);
+(function(){var T=${dataJSON};var N=T.length;var cur=0,picked=false;var trk=document.getElementById('trk');var al=document.getElementById('al');var ar=document.getElementById('ar');var dots=document.querySelectorAll('.dot');var ctr=document.getElementById('ctr');function upd(){trk.style.transform='translateX('+(-cur*100)+'vw)';for(var i=0;i<dots.length;i++){if(i===cur)dots[i].classList.add('active');else dots[i].classList.remove('active')}if(cur===0)al.classList.add('off');else al.classList.remove('off');if(cur===N-1)ar.classList.add('off');else ar.classList.remove('off');ctr.textContent=(cur+1)+' / '+N}window.go=function(i){if(i>=0&&i<N){cur=i;upd()}};al.addEventListener('click',function(){go(cur-1)});ar.addEventListener('click',function(){go(cur+1)});document.addEventListener('keydown',function(e){if(picked)return;if(e.key==='ArrowLeft')go(cur-1);if(e.key==='ArrowRight')go(cur+1);if(e.key==='Enter')pick(T[cur].combo)});var tx=0,ty=0;document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;var dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1)}},{passive:true});window.pick=function(combo){if(picked)return;picked=true;fetch('/api/pick',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({combo:combo})}).catch(function(e){console.error(e)});document.getElementById('sov').classList.add('vis')};window.seeAll=function(){fetch('/api/pick',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({combo:'more'})}).catch(function(e){console.error(e)});document.getElementById('sh').textContent='Got it!';document.getElementById('sm').textContent='Head back to your terminal for more options.';document.getElementById('sov').classList.add('vis')};var imgs=document.querySelectorAll('.preview-scroll img');var loaded=0;function chk(){loaded++;if(loaded>=imgs.length)reveal()}for(var j=0;j<imgs.length;j++){if(imgs[j].complete)chk();else{imgs[j].addEventListener('load',chk);imgs[j].addEventListener('error',chk)}}setTimeout(reveal,4000);var revealed=false;function reveal(){if(revealed)return;revealed=true;document.getElementById('ld').classList.add('gone');setTimeout(function(){document.getElementById('vp').classList.add('show');document.getElementById('hdr').classList.add('show');al.classList.add('show');ar.classList.add('show');document.getElementById('bb').classList.add('show')},100)}})();
 </script>
-</body>
-</html>`;
+</body></html>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -792,15 +267,13 @@ function buildGalleryHTML() {
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
-
-  // POST /api/pick — write the user's selection
   if (req.method === 'POST' && url.pathname === '/api/pick') {
     let body = '';
     for await (const chunk of req) body += chunk;
     try {
       const { combo } = JSON.parse(body);
       await writeFile(CHOICE_FILE, combo, 'utf-8');
-      console.log(`  Selection written: ${combo}`);
+      console.log(`  Selection: ${combo}`);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true }));
     } catch (e) {
@@ -809,84 +282,46 @@ const server = createServer(async (req, res) => {
     }
     return;
   }
-
-  // GET / — gallery page
   if (url.pathname === '/' || url.pathname === '/index.html') {
-    const html = buildGalleryHTML();
-    res.writeHead(200, {
-      'Content-Type': 'text/html',
-      'Cache-Control': 'no-cache',
-    });
-    res.end(html);
+    res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-cache' });
+    res.end(buildGalleryHTML());
     return;
   }
-
-  // GET /screenshots/COMBO.png — serve captured screenshots
   if (url.pathname.startsWith('/screenshots/')) {
     const filename = url.pathname.replace('/screenshots/', '');
-    const screenshotPath = `/tmp/picker-${filename}`;
     try {
-      const data = await readFile(screenshotPath);
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Cache-Control': 'public, max-age=3600',
-      });
+      const data = await readFile(`/tmp/picker-${filename}`);
+      res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=3600' });
       res.end(data);
     } catch {
-      res.writeHead(404);
-      res.end('Screenshot not found');
+      res.writeHead(404); res.end('Screenshot not found');
     }
     return;
   }
-
-  // GET /preview/COMBO-NAME/... — serve combo static files (for full preview links)
   if (url.pathname.startsWith('/preview/')) {
     const parts = url.pathname.replace('/preview/', '').split('/');
-    const comboName = parts[0];
-    const filePath = parts.slice(1).join('/') || 'index.html';
-    const fullPath = resolve(COMBOS_DIR, comboName, filePath);
-
-    if (!fullPath.startsWith(COMBOS_DIR)) {
-      res.writeHead(403);
-      res.end('Forbidden');
-      return;
-    }
-
+    const fullPath = resolve(COMBOS_DIR, parts[0], parts.slice(1).join('/') || 'index.html');
+    if (!fullPath.startsWith(COMBOS_DIR)) { res.writeHead(403); res.end('Forbidden'); return; }
     try {
       const data = await readFile(fullPath);
-      const ext = extname(fullPath).toLowerCase();
-      const contentType = MIME[ext] || 'application/octet-stream';
-      res.writeHead(200, { 'Content-Type': contentType });
+      res.writeHead(200, { 'Content-Type': MIME[extname(fullPath).toLowerCase()] || 'application/octet-stream' });
       res.end(data);
     } catch {
-      res.writeHead(404);
-      res.end('Not found');
+      res.writeHead(404); res.end('Not found');
     }
     return;
   }
-
-  // Fallback: 404
-  res.writeHead(404);
-  res.end('Not found');
+  res.writeHead(404); res.end('Not found');
 });
-
-// ---------------------------------------------------------------------------
-// Startup: capture screenshots then serve
-// ---------------------------------------------------------------------------
 
 async function main() {
   await captureScreenshots();
-
   server.listen(PORT, () => {
-    console.log(`\n  Template picker gallery running at:\n`);
+    console.log(`\n  Template picker running at:\n`);
     console.log(`    http://localhost:${PORT}\n`);
-    console.log(`  Showing ${combos.length} templates: ${combos.join(', ')}`);
-    console.log(`  Selection will be written to ${CHOICE_FILE}\n`);
-    console.log(`  Press Ctrl+C to stop.\n`);
+    console.log(`  Templates: ${combos.join(', ')}`);
+    console.log(`  Selection -> ${CHOICE_FILE}\n`);
   });
 }
 
-main().catch(e => {
-  console.error('Failed to start picker:', e.message);
-  process.exit(1);
-});
+main().catch(e => { console.error('Failed:', e.message); process.exit(1); });
