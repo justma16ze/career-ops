@@ -22,7 +22,8 @@ body { margin: 0; padding: 0; }
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: var(--bg-nav, var(--bg));
-  border-bottom: 1px solid var(--border);
+  border: none; border-bottom: 1px solid var(--border);
+  box-shadow: none;
   height: var(--nav-height, 48px);
   display: flex; align-items: center; justify-content: center; gap: 28px;
   font-size: 13px;
@@ -37,6 +38,7 @@ nav .site-name {
   padding-left: 24px;
 }
 .nav-links { display: flex; gap: 24px; padding-right: 24px; }
+nav .site-name-hidden { visibility: hidden; }
 nav a { color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
 nav a:hover { color: var(--text); }
 body { padding-top: var(--nav-height, 48px); }
@@ -72,7 +74,7 @@ h2 {
   font-size: 13px; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--text-faint);
-  margin-bottom: 24px;
+  margin: 0 0 24px; padding-top: 0; border-top: none;
 }
 
 /* === EXPERIENCE === */
@@ -142,7 +144,7 @@ footer {
   font-size: 11px;
   color: var(--footer-text);
   border-top: 1px solid var(--footer-border, var(--border));
-  background: var(--bg);
+  background: var(--footer-bg, var(--bg));
 }
 footer a { color: var(--footer-link); font-weight: 700; }
 footer a:hover { color: var(--footer-link-hover, var(--accent)); }
@@ -209,7 +211,7 @@ export function pages(data) {
   const navLabels = { hero: 'Home', about: 'About', experience: 'Experience', skills: 'Skills', contact: 'Contact' };
 
   const navHtml = `<nav>
-<a href="#hero" class="site-name">${esc(fullName)}</a>
+<a href="#hero" class="site-name site-name-hidden">${esc(fullName)}</a>
 <div class="nav-links">${sections.filter(s => s !== 'hero').map(s => `<a href="#${s}">${navLabels[s]}</a>`).join(' ')}</div>
 </nav>`;
 
@@ -331,23 +333,9 @@ ${contactParts.length > 0 ? `<p class="contact-line">${contactParts.join(' &midd
   const body = bands.join('\n');
   const footerHtml = `<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>`;
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(fullName)}</title>
-<meta name="description" content="${esc(data.summaryShort || '')}">
-<meta property="og:title" content="${esc(fullName)}">
-<meta property="og:description" content="${esc(data.summaryShort || '')}">
-<meta property="og:type" content="website">
-</head>
-<body>
-${navHtml}
+  const content = `${navHtml}
 ${body}
-${footerHtml}
-</body>
-</html>`;
+${footerHtml}`;
 
-  return { 'index.html': html };
+  return { 'index.html': content };
 }

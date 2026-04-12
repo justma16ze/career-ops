@@ -69,8 +69,9 @@ h2 {
   font-size: 0.8rem; font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.12em;
   color: var(--accent);
-  text-align: center; margin-bottom: 24px;
+  text-align: center; margin: 0 0 24px; padding-top: 0; border-top: none;
 }
+h2::before { content: none !important; }
 
 /* === EXPERIENCE === */
 .entry { margin-bottom: 32px; }
@@ -194,6 +195,14 @@ export function pages(data) {
   }
 
   // Experience section
+  function renderBullets(bullets) {
+    if (!bullets || bullets.length === 0) return '';
+    if (bullets.length <= 2) return `<ul>${bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>`;
+    const visible = bullets.slice(0, 2);
+    const hidden = bullets.slice(2);
+    return `<ul>${visible.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul><details><summary></summary><div class="detail-content"><ul>${hidden.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul></div></details>`;
+  }
+
   const groups = experienceGroups;
   const expHtml = groups.map(g => {
     if (g.roles.length === 1) {
@@ -201,7 +210,7 @@ export function pages(data) {
       return `<div class="entry">
 <div class="entry-title">${esc(g.company)}</div>
 <div class="entry-header"><span class="entry-role">${esc(r.role)}</span><span class="entry-date">${esc(r.dateRange)}</span></div>
-${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}
+${renderBullets(r.bullets)}
 </div>`;
     }
     // Multi-role company
@@ -214,7 +223,7 @@ ${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b
 <div class="entry-title">${esc(g.company)}${spanDate ? ` <span class="entry-date">${esc(spanDate)}</span>` : ''}</div>
 ${g.roles.map(r => `<div class="sub-entry">
 <div class="entry-header"><span class="entry-role">${esc(r.role)}</span><span class="entry-date">${esc(r.dateRange)}</span></div>
-${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}
+${renderBullets(r.bullets)}
 </div>`).join('')}
 </div>`;
   }).join('\n');
@@ -251,24 +260,10 @@ ${links.length > 0 ? `<hr class="section-sep">
 <h2>Contact</h2>
 <div class="contact-line">${links.join('')}</div>` : ''}`;
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(fullName)}</title>
-<meta name="description" content="${esc(data.summaryShort || '')}">
-<meta property="og:title" content="${esc(fullName)}">
-<meta property="og:description" content="${esc(data.summaryShort || '')}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
+  const content = `<div class="wrap">
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</div>
-</body>
-</html>`;
+</div>`;
 
-  return { 'index.html': html };
+  return { 'index.html': content };
 }

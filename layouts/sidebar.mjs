@@ -19,7 +19,7 @@ a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
 
 /* --- Two-column wrapper --- */
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+.wrap { width: 100% !important; max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
 
 /* --- Left sidebar (sticky) --- */
 .sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
@@ -30,6 +30,7 @@ a:hover { color: var(--accent-hover); }
 .sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
 
 /* --- Sidebar nav --- */
+nav { display: block; background: transparent; border: none; box-shadow: none; padding: 0; margin: 0; text-transform: none; letter-spacing: normal; font-size: inherit; }
 .nav-links { list-style: none; padding: 0; margin: 0; }
 .nav-links li { margin-bottom: 12px; }
 .nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
@@ -98,7 +99,7 @@ a:hover { color: var(--accent-hover); }
 .contact-line a:hover { color: var(--accent); }
 
 /* --- Education --- */
-h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; margin-top: 48px; }
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 48px 0 16px; padding-top: 0; border-top: none; }
 
 /* --- Details toggle --- */
 details { margin-top: 6px; }
@@ -319,38 +320,13 @@ ${projects.map(p => `<div class="entry">
   ];
 
   for (const [filename, title, active, body] of pageDefs) {
-    const t = title === fullName ? title : `${title} \u2014 ${fullName}`;
-    result[filename] = buildPage({
-      title: t,
-      sidebar: sidebar(active),
-      body,
-      summaryShort: data.summaryShort,
-    });
-  }
-  return result;
-}
-
-function buildPage({ title, sidebar, body, summaryShort }) {
-  const esc = s => !s ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(title)}</title>
-<meta name="description" content="${esc(summaryShort)}">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(summaryShort)}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
-${sidebar}
+    result[filename] = `<div class="wrap">
+${sidebar(active)}
 <main class="content">
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
 </main>
-</div>
-</body>
-</html>`;
+</div>`;
+  }
+  return result;
 }

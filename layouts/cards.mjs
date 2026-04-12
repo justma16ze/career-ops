@@ -319,24 +319,10 @@ ${contactCard}
 </div>
 </main>`;
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(fullName)}</title>
-<meta name="description" content="${esc(data.summaryShort || '')}">
-<meta property="og:title" content="${esc(fullName)}">
-<meta property="og:description" content="${esc(data.summaryShort || '')}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
+  const content = `<div class="wrap">
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</div>
-</body>
-</html>`;
+</div>`;
 
-  return { 'index.html': html };
+  return { 'index.html': content };
 }

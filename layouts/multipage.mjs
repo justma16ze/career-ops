@@ -15,7 +15,7 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; }
-.wrap { width: var(--wrap-width, 700px); margin: 0 auto; padding: 28px 36px 40px; }
+.wrap { max-width: var(--wrap-width, 700px); margin: 0 auto; padding: 28px 36px 40px; }
 
 /* --- Nav --- */
 nav { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; margin-bottom: 24px; font-size: 14px; }
@@ -27,7 +27,7 @@ nav .active { text-decoration-color: var(--text); text-decoration-thickness: 2px
 nav .site-name-hidden { visibility: hidden; }
 
 /* --- Headings --- */
-h2 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text); margin: 36px 0 12px; }
+h2 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text); margin: 36px 0 12px; padding-top: 0; border-top: none; }
 
 /* --- Home Bio --- */
 .home-bio { font-size: 15px; color: var(--text-muted); line-height: 1.75; margin-bottom: 32px; }
@@ -234,31 +234,11 @@ ${education.length > 0 ? `<h2>Education</h2>${education.map(e => `<p class="entr
   ];
 
   for (const [filename, title, active, body] of pageDefs) {
-    const t = title === fullName ? title : `${title} \u2014 ${fullName}`;
-    result[filename] = buildPage({ title: t, nav: nav(active), body, summaryShort: data.summaryShort });
-  }
-  return result;
-}
-
-function buildPage({ title, nav, body, summaryShort }) {
-  const esc = s => !s ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(title)}</title>
-<meta name="description" content="${esc(summaryShort)}">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(summaryShort)}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
-${nav}
+    result[filename] = `<div class="wrap">
+${nav(active)}
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</div>
-</body>
-</html>`;
+</div>`;
+  }
+  return result;
 }

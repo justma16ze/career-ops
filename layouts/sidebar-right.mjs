@@ -17,11 +17,12 @@ html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll;
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; font-size: 15px; }
 
 /* --- Outer wrap --- */
-.wrap { max-width: 960px; margin: 0 auto; padding: 32px 40px 48px; }
+.wrap { width: 100% !important; max-width: 960px; margin: 0 auto; padding: 32px 40px 48px; }
 
 /* --- Nav --- */
-nav { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; margin-bottom: 28px; font-size: 14px; border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+nav { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; margin-bottom: 28px; font-size: 14px; border-bottom: 1px solid var(--border); padding-bottom: 14px; background: var(--bg-nav, transparent); border-top: none; border-left: none; border-right: none; box-shadow: none; }
 nav .site-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); text-decoration: none; margin-right: auto; letter-spacing: -0.02em; }
+nav .site-name-hidden { visibility: hidden; }
 nav .nav-links { display: contents; }
 nav a { color: var(--text); text-decoration: none; font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase; }
 nav a:hover { color: var(--accent); }
@@ -31,7 +32,7 @@ nav span { font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase; }
 /* --- Two-column layout --- */
 .layout { display: flex; gap: 28px; align-items: flex-start; }
 .main-col { flex: 1; min-width: 0; }
-.sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 32px; align-self: flex-start; padding-left: 24px; border-left: 1px solid var(--border); }
+.sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 32px; align-self: flex-start; padding-left: 24px; border-left: 1px solid var(--border); min-width: 0; overflow-wrap: break-word; word-break: break-word; }
 
 /* --- Sidebar sections --- */
 .sidebar-section { margin-bottom: 24px; }
@@ -39,10 +40,10 @@ nav span { font-size: 13px; letter-spacing: 0.02em; text-transform: uppercase; }
 .sidebar-content { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 .sidebar-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font-size: 13px; }
 .sidebar-item { display: block; margin-bottom: 4px; }
-.sidebar-role { font-size: 13px; color: var(--text); font-weight: 600; display: block; margin-bottom: 3px; }
+.sidebar-role { font-size: 13px; color: var(--text); font-weight: 600; display: block; margin-bottom: 3px; overflow-wrap: break-word; word-break: break-word; }
 .sidebar-location { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }
 .sidebar-skills-list { list-style: none; padding: 0; margin: 0; }
-.sidebar-skills-list li { font-size: 13px; color: var(--text-muted); padding: 2px 0; line-height: 1.5; }
+.sidebar-skills-list li { font-size: 13px; color: var(--text-muted); padding: 2px 0; line-height: 1.5; overflow-wrap: break-word; word-break: break-word; }
 
 /* --- Links --- */
 a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
@@ -221,7 +222,8 @@ export function pages(data) {
         ? `<span class="active">${esc(ni.label)}</span>`
         : `<a href="${ni.href}">${esc(ni.label)}</a>`
     ).join(' ');
-    return `<nav><a href="index.html" class="site-name">${esc(fullName)}</a><div class="nav-links">${items}</div></nav>`;
+    const siteNameClass = active === 'index.html' ? 'site-name site-name-hidden' : 'site-name';
+    return `<nav><a href="index.html" class="${siteNameClass}">${esc(fullName)}</a><div class="nav-links">${items}</div></nav>`;
   }
 
   // --- Render helpers ---
@@ -315,31 +317,11 @@ ${sidebar}
   ];
 
   for (const [filename, title, active, body] of pageDefs) {
-    const t = title === fullName ? title : `${title} \u2014 ${fullName}`;
-    result[filename] = buildPage({ title: t, nav: nav(active), body, summaryShort: data.summaryShort });
-  }
-  return result;
-}
-
-function buildPage({ title, nav, body, summaryShort }) {
-  const esc = s => !s ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(title)}</title>
-<meta name="description" content="${esc(summaryShort)}">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(summaryShort)}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
-${nav}
+    result[filename] = `<div class="wrap">
+${nav(active)}
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</div>
-</body>
-</html>`;
+</div>`;
+  }
+  return result;
 }

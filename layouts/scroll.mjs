@@ -15,13 +15,14 @@ export function css() {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; scroll-behavior: smooth; }
 body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 14px; }
-.wrap { width: var(--wrap-width, 620px); margin: 0 auto; padding: 0 36px 40px; position: relative; z-index: 1; }
+.wrap { max-width: var(--wrap-width, 620px); margin: 0 auto; padding: 0 36px 40px; position: relative; z-index: 1; }
 a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { color: var(--accent-hover); }
 
 /* --- Sticky anchor nav --- */
-nav { position: sticky; top: 0; z-index: 10; background: var(--bg-nav, var(--bg)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 16px 0; margin-bottom: 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+nav { position: sticky; top: 0; z-index: 10; background: var(--bg-nav, var(--bg)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 16px 0; margin-bottom: 0; font-size: 13px; border: none; border-bottom: 1px solid var(--border); box-shadow: none; }
 nav .site-name { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; margin-right: auto; letter-spacing: -0.02em; }
+nav .site-name-hidden { visibility: hidden; }
 nav .nav-links { display: contents; }
 nav a { color: var(--text-faint); text-decoration: none; }
 nav a:hover { color: var(--text-muted); }
@@ -29,7 +30,7 @@ section[id] { scroll-margin-top: 60px; }
 section { margin-bottom: 56px; }
 
 /* --- Headings --- */
-h2 { font-family: var(--font-display); font-size: 13px; font-weight: 500; color: var(--text-faint); margin: 0 0 20px; text-transform: lowercase; letter-spacing: 0.05em; }
+h2 { font-family: var(--font-display); font-size: 13px; font-weight: 500; color: var(--text-faint); margin: 0 0 20px; padding-top: 0; border-top: none; text-transform: lowercase; letter-spacing: 0.05em; }
 
 /* --- Hero --- */
 .hero { padding-top: 80px; margin-bottom: 56px; }
@@ -130,7 +131,7 @@ export function pages(data) {
   const githubUrl = github && (github.startsWith('http') ? github : `https://${github}`);
 
   // --- Nav (anchor links) ---
-  const nav = `<nav><a href="#" class="site-name">${esc(fullName)}</a><div class="nav-links"><a href="#about">about</a> <a href="#experience">experience</a> <a href="#skills">skills</a> <a href="#contact">contact</a></div></nav>`;
+  const nav = `<nav><a href="#" class="site-name site-name-hidden">${esc(fullName)}</a><div class="nav-links"><a href="#about">about</a> <a href="#experience">experience</a> <a href="#skills">skills</a> <a href="#contact">contact</a></div></nav>`;
 
   // --- Hero ---
   const hero = `<div class="hero"><h1>${esc(fullName)}</h1>${headline ? `<div class="hero-headline">${esc(headline)}</div>` : ''}</div>`;
@@ -187,28 +188,11 @@ export function pages(data) {
   // --- Assemble single page ---
   const body = `${hero}\n${aboutSection}\n${expSection}\n${skillsSection}\n${contactSection}`;
 
-  const escFn = s => !s ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const summaryShort = data.summaryShort || '';
-
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escFn(fullName)}</title>
-<meta name="description" content="${escFn(summaryShort)}">
-<meta property="og:title" content="${escFn(fullName)}">
-<meta property="og:description" content="${escFn(summaryShort)}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="wrap">
+  const content = `<div class="wrap">
 ${nav}
 ${body}
 <footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
-</div>
-</body>
-</html>`;
+</div>`;
 
-  return { 'index.html': html };
+  return { 'index.html': content };
 }

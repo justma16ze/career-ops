@@ -28,6 +28,7 @@ nav {
   font-size: 14px; font-family: var(--font-mono);
   letter-spacing: 0.01em;
   max-width: 1000px; width: 100%; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
 }
 nav .site-name {
   font-family: var(--font-display);
@@ -38,6 +39,9 @@ nav .site-name {
 .nav-links { display: flex; gap: 20px; }
 nav a { color: var(--text-faint); text-decoration: none; }
 nav a:hover { color: var(--text); }
+
+/* Hide nav name on desktop — h1 in left column is the main name display */
+.site-name-hidden { visibility: hidden; }
 
 /* === TWO-COLUMN SPREAD === */
 .spread-container {
@@ -179,6 +183,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 @media (max-width: 660px) {
   body { height: auto; overflow: auto; }
   .spread-shell { height: auto; overflow: visible; }
+  .site-name-hidden { visibility: visible; }
   nav { padding: 16px 20px 12px; font-size: 13px; gap: 12px; }
   nav .site-name { font-size: 19px; }
   .spread-container { flex-direction: column; }
@@ -313,21 +318,9 @@ export function pages(data) {
     rightParts.push(`<h2>Skills</h2><p class="skills-list">${skills.map(s => esc(s)).join(', ')}</p>`);
   }
 
-  // Build the single page
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(fullName)}</title>
-<meta name="description" content="${esc(data.summaryShort || '')}">
-<meta property="og:title" content="${esc(fullName)}">
-<meta property="og:description" content="${esc(data.summaryShort || '')}">
-<meta property="og:type" content="website">
-</head>
-<body>
-<div class="spread-shell">
-<div class="nav-band"><nav><a href="index.html" class="site-name">${esc(fullName)}</a></nav></div>
+  // Build the single page (body fragment for combine-portfolio.mjs)
+  const content = `<div class="spread-shell">
+<div class="nav-band"><nav><a href="index.html" class="site-name site-name-hidden">${esc(fullName)}</a></nav></div>
 <div class="spread-container">
 <div class="col-left">
 ${leftParts.join('\n')}
@@ -337,9 +330,7 @@ ${rightParts.join('\n')}
 </div>
 </div>
 <div class="footer-band"><footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer></div>
-</div>
-</body>
-</html>`;
+</div>`;
 
-  return { 'index.html': html };
+  return { 'index.html': content };
 }
