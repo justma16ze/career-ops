@@ -42,6 +42,10 @@
     "url": "https://github.com/justma16ze/career-ops"
   },
   "license": "MIT",
+  "bin": {
+    "speedrun-career-ops": "./cli.mjs"
+  },
+  "type": "module",
   "dependencies": {
     "js-yaml": "^4.1.1",
     "pg": "^8.20.0",
