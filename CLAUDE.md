@@ -135,30 +135,107 @@ Options:
 
 **STOP.** Wait for their input. Process whatever they provide → extract name, email, location, company, work history, education, skills, projects → create `cv.md` immediately → write `config/profile.yml` with extracted data.
 
+**Option D — conversational flow for candidates without a resume:**
+
+If the candidate picks D ("Just tell you about my experience"), run this fixed sequence (one question at a time, wait for each answer):
+
+1. "Are you currently a student?" (determines candidate type)
+2. "What's your background? What do you study or what have you been doing?" (education or career context)
+3. "What have you built? Any projects, internships, or work experience?" (experience + projects)
+4. "What are you looking for?" (target roles)
+
+Assemble `cv.md` from these 4 answers, present it for confirmation ("Here's what I have — anything wrong?"), then proceed to Step 2. The confirmation IS the exit condition for Option D.
+
+---
+
+#### Step 1.5: Candidate type detection (automatic)
+
+After processing the candidate's input in Step 1, **silently infer candidate type** from the extracted data. Do NOT ask the candidate what type they are unless the result is ambiguous.
+
+**Detection rules:**
+- Parse for graduation date. If graduation is in the future or within the last 12 months → `candidate.type = "student"`
+- Count years of full-time experience (roles >= 6 months without "intern" in title). If < 2 years AND no student signal → `candidate.type = "early_career"`
+- If 2+ years of full-time experience → `candidate.type = "experienced"`
+
+**Ambiguity rule — ask directly when ANY of these apply:**
+- Candidate satisfies more than one type condition
+- Graduation date is present but cannot be parsed with confidence (e.g., "Spring 2026", "Expected 2026")
+- Experience is < 3 years AND no graduation date found
+- Parse fails entirely
+
+If ambiguous, via AskUserQuestion:
+
+> I want to make sure I set up the right experience for you. Which best describes where you are?
+
+Options:
+- A) I'm a current student or recent grad (graduated within the last year)
+- B) I'm early in my career (< 2 years of full-time work)
+- C) I'm an experienced professional (2+ years)
+
+Store the result in `config/profile.yml` as `candidate.type: student | early_career | experienced`.
+
 ---
 
 #### Step 2: Confirm profile
 
-After processing, **enter plan mode** and show a plan:
+After processing, **enter plan mode** and show a plan. The plan checklist adapts to `candidate.type`:
 
+**For `experienced`:**
 ```
 Profile Setup
   [x] Import background
   [ ] Review profile
   [ ] Target roles
   [ ] Standout achievements
-  [ ] Logistics & preferences
+  [ ] Logistics
   [ ] Portfolio
   [ ] Talent network
   [ ] Ready
 ```
 
-Then present what you extracted. Via AskUserQuestion:
+**For `student`:**
+```
+Profile Setup
+  [x] Import background
+  [ ] Review profile
+  [ ] Positioning strategy
+  [ ] Projects deep-dive
+  [ ] Activities & research
+  [ ] Coursework (if academic-forward)
+  [ ] Portfolio
+  [ ] Talent network
+  [ ] Ready
+```
+
+**For `early_career`:**
+```
+Profile Setup
+  [x] Import background
+  [ ] Review profile
+  [ ] Target roles
+  [ ] Achievements & projects
+  [ ] Logistics
+  [ ] Portfolio & positioning
+  [ ] Talent network
+  [ ] Ready
+```
+
+Then present what you extracted. For students, surface education prominently. Via AskUserQuestion:
+
+**For `experienced` or `early_career`:**
 
 > Here's what I pulled from your background:
 >
 > **[Name]** — [Title] at [Company], [City]
 > **[X] years** across [N] roles. Skills: [top 5].
+> **[Email]** / **[LinkedIn]** [show if found, note if missing]
+
+**For `student`:**
+
+> Here's what I pulled from your background:
+>
+> **[Name]** — [University], [Degree] (expected [Graduation])
+> **Skills:** [top 5]. **Projects:** [count if found].
 > **[Email]** / **[LinkedIn]** [show if found, note if missing]
 
 Options:
@@ -167,9 +244,44 @@ Options:
 
 If B → ask what to fix. If email/LinkedIn missing, follow up for just those.
 
+For students, also write `education_detail` to `config/profile.yml`:
+```yaml
+education_detail:
+  university: ""
+  degree: ""
+  graduation: ""  # YYYY-MM or "May 2026"
+  gpa: ""  # optional, only if provided
+  relevant_coursework: []
+  honors: []
+```
+
 ---
 
-#### Step 3: Confirm target roles
+#### Skip path: "Just build it"
+
+After Step 2 completes, ALWAYS offer the escape hatch via AskUserQuestion:
+
+> I have enough to build you a portfolio right now. Want more questions or should I just build it?
+
+Options:
+- A) Just build it (bare-multipage default, deploy now)
+- B) Keep going, I want to customize
+
+If A: skip Steps 3-6, use `bare` style + `multipage` layout, generate immediately, deploy to GitHub Pages, then jump to Step 8 (talent network). The candidate can always come back and customize later.
+
+If B: continue to the forked onboarding below.
+
+---
+
+### Onboarding Steps 3-6: Forked by candidate.type
+
+After Step 2, the onboarding path diverges based on `candidate.type`. The three paths below replace Steps 3-6. Steps 7 (portfolio), 8 (talent network), and 9 (ready) are the same for all paths.
+
+---
+
+#### EXPERIENCED PATH (candidate.type = "experienced")
+
+##### Experienced Step 3: Confirm target roles
 
 Read cv.md. Infer 3-5 target roles from their trajectory. Via AskUserQuestion:
 
@@ -188,9 +300,7 @@ Options:
 
 If B or C → incorporate their corrections. Update `config/profile.yml` → `target_roles`.
 
----
-
-#### Step 4: Standout achievements
+##### Experienced Step 4: Standout achievements
 
 **This is the most important step.** Read cv.md. Surface their 3-5 strongest signals yourself. Via AskUserQuestion:
 
@@ -221,22 +331,6 @@ Options:
 
 If A/B/C → follow up for details. Store in `narrative` and `talent_network.current_project`.
 
-**If they mentioned building something (B or C above)**, ask for the rich version:
-
-> Tell me more about what you're building — what's the problem, what have you shipped so far, what's the hardest part?
-
-Store the detailed answer in `narrative.current_project_detail` (this powers the Projects section of their portfolio AND shows hiring teams builder energy). The short version stays in `talent_network.current_project`.
-
-Then:
-
-> What's driving this search? What made you decide "now is the time"?
-
-Options:
-- A) Let me tell you
-- B) Skip — I'd rather not say
-
-If A → store in `narrative.motivation`. This shapes the About page of their portfolio AND helps calibrate which roles feel right. Frame it to the candidate: "This helps me write your About page and match you to the right roles."
-
 Then one more:
 
 > What's your polarity — what energizes you vs. drains you?
@@ -247,9 +341,7 @@ Options:
 
 Store in `modes/_profile.md`. Create `article-digest.md` with all proof points collected.
 
----
-
-#### Step 5: Logistics & preferences
+##### Experienced Step 5: Quick logistics
 
 Via AskUserQuestion:
 
@@ -272,47 +364,205 @@ Options:
 
 If A → ask graduation date and work arrangement preferences.
 
-Then capture search preferences. These personalize their scan results AND help calibrate role recommendations.
-
-Via AskUserQuestion:
-
-> What stage of company are you drawn to? This helps me filter scan results to the right type.
-
-Options:
-- A) Pre-seed / Seed — earliest stage, building from zero
-- B) Series A — found product-market fit, scaling the team
-- C) Series B — scaling the org, adding leadership layers
-- D) Growth / Late stage — established company, big problems
-- E) No preference — I'll evaluate case by case
-
-Store in `preferences.stage_preference`.
-
-Via AskUserQuestion:
-
-> Of the companies in the a16z network, are there any that excite you most? I can prioritize those in your scan results.
-
-Options:
-- A) Yes, let me name a few
-- B) I don't know enough yet — surprise me
-- C) Skip this for now
-
-If A → ask them to list companies with brief reasons why. Store as array of `{name, reason}` in `preferences.company_rankings`. This personalizes their search AND reveals preference signals.
-
-Via AskUserQuestion:
-
-> Any deal-breakers I should know about? Things that would make you immediately pass on a role — so I don't waste your time surfacing them.
-
-Options:
-- A) Yes — here are my hard no's
-- B) Nothing specific, I'm pretty open
-
-If A → store as array in `preferences.deal_breakers`. These auto-filter scan results and evaluation warnings.
-
-**DESIGN PRINCIPLE for all preference questions:** Every question must have a clear value-to-candidate reason. The product feels like it's FOR the candidate (job search + portfolio), not FOR a16z (talent intake). Frame each question in terms of how it helps THEIR search.
+##### Experienced Step 6: (no additional step — proceed to Step 7: Portfolio)
 
 ---
 
-#### Step 6: Portfolio
+#### STUDENT PATH (candidate.type = "student")
+
+##### Student Step 3: Positioning strategy choice
+
+Via AskUserQuestion:
+
+> How do you want to position yourself?
+
+Options:
+- A) Academic-forward — Lead with your university, coursework, research. Best if your school or program is a strong signal.
+- B) Builder-forward — Lead with projects, hackathons, what you've shipped. Best if you've built impressive things.
+- C) Appear experienced — Structure like a professional portfolio. Education is mentioned but isn't the headline. Best if you want reviewers to focus on your work, not your graduation date.
+
+Store in `config/profile.yml` as `candidate.positioning: academic | builder | experienced`.
+
+This choice controls how the portfolio is structured:
+- **academic**: Education section moves to top, rich detail (university, degree, GPA, honors, coursework). Projects prominent. Internships rendered but lower.
+- **builder**: Projects section is the hero. Education brief. Skills/tools prominent. Internships compact.
+- **experienced**: Standard professional layout. Education as a one-liner at the bottom. No "Student" or "Graduating" labels. Projects rendered as "Selected Work." Internships rendered as full experience entries.
+
+##### Student Step 4: Projects deep-dive
+
+This replaces the achievements step. Projects are a student's strongest signal.
+
+Via AskUserQuestion:
+
+> What have you built? Walk me through your 2-3 best projects.
+>
+> For each one, I want to know: what problem you solved, what you built, the tech stack, and the outcome (users, GitHub stars, awards, grade — whatever applies).
+
+Options:
+- A) Let me describe them
+- B) I have links (GitHub, live demos) — let me share those and fill in context
+
+Wait for their response. For each project, extract and store in `config/profile.yml` → `preferences.projects`:
+
+```yaml
+preferences:
+  projects:
+    - name: ""
+      problem: ""
+      what_built: ""
+      tech_stack: []
+      outcome: ""
+      url: ""  # optional
+    - name: ""
+      problem: ""
+      what_built: ""
+      tech_stack: []
+      outcome: ""
+      url: ""
+```
+
+Push for specifics. "How many users?" "Did you ship it?" "What was the hardest technical decision?" Store rich detail — this powers the portfolio Projects section and shows builder energy to hiring teams.
+
+Also create `article-digest.md` from the project details as proof points.
+
+##### Student Step 5: Activities + research
+
+Via AskUserQuestion:
+
+> Any hackathons, research, clubs, TA work, or leadership roles?
+>
+> These round out your profile and show what you care about beyond coursework.
+
+Options:
+- A) Yes — let me list them
+- B) Nothing notable — skip this
+
+If A → collect and store in `config/profile.yml` → `preferences.activities`:
+
+```yaml
+preferences:
+  activities:
+    - name: ""
+      role: ""       # e.g., "Winner, Best Technical Hack" or "Teaching Assistant"
+      date: ""       # e.g., "2025" or "Fall 2025"
+      description: "" # optional brief description
+```
+
+Also store any research separately:
+
+```yaml
+research:
+  - title: ""
+    lab: ""           # e.g., "CSAIL"
+    advisor: ""       # e.g., "Prof. Smith"
+    url: ""           # optional
+    description: ""   # brief summary
+```
+
+##### Student Step 6: Coursework (ONLY if academic-forward positioning)
+
+**Skip this step entirely if `candidate.positioning` is `builder` or `experienced`.** Only ask if `candidate.positioning = academic`.
+
+Via AskUserQuestion:
+
+> What courses shaped how you think? Not just the names — what was interesting about them?
+>
+> This helps write your education section with real substance instead of a generic course list.
+
+Options:
+- A) Let me describe a few
+- B) Just list the names and I'll add context later
+
+Store in `config/profile.yml` → `education_detail.relevant_coursework`:
+
+```yaml
+education_detail:
+  relevant_coursework:
+    - name: ""
+      why_notable: ""  # what was interesting, what you learned
+```
+
+After completing Steps 3-6 for the student path, proceed to Step 7 (Portfolio).
+
+---
+
+#### EARLY CAREER PATH (candidate.type = "early_career")
+
+##### Early Career Step 3: Confirm target roles
+
+Read cv.md. Infer 3-5 target roles from their 1-2 roles. Suggest lateral and growth targets. Via AskUserQuestion:
+
+> Based on your background, here's what I'd target:
+>
+> 1. **[Role A]** — [why: direct extension of current work]
+> 2. **[Role B]** — [why: lateral move leveraging specific skill]
+> 3. **[Role C]** — [why: growth role, viable because of X]
+>
+> RECOMMENDATION: These cover a direct move, a lateral, and a stretch.
+
+Options:
+- A) These are right (recommended)
+- B) I'd adjust the list
+- C) I'm targeting something completely different
+
+If B or C → incorporate their corrections. Update `config/profile.yml` → `target_roles`.
+
+##### Early Career Step 4: Achievements AND projects
+
+For early career candidates, work accomplishments and personal projects carry equal weight. Ask about both.
+
+Via AskUserQuestion:
+
+> What have you shipped — at work AND on your own? Both count equally.
+>
+> - **At work:** What's the most impactful thing you contributed to? Ship a feature, fix a system, lead a project?
+> - **Side projects:** Built anything outside of work? Open source, apps, tools, hackathon projects?
+
+Options:
+- A) Let me describe what I've done
+- B) I have links — let me share those and add context
+
+Wait for response. Surface their strongest signals. Store work achievements in `narrative.proof_points` and projects in `preferences.projects` (same schema as student path).
+
+Then follow up:
+
+> A few more things that help candidates stand out. Which of these apply to you?
+
+Options:
+- A) I've built something from 0→1 (product, team, company)
+- B) I'm building something right now (side project, open source, startup idea)
+- C) Both
+- D) Neither — but I have other things to highlight
+
+If A/B/C → follow up for details. Store in `narrative` and `talent_network.current_project`.
+
+Create `article-digest.md` with all proof points and project details collected.
+
+##### Early Career Step 5: Quick logistics
+
+Same as Experienced Step 5. Run all the same questions (founding, student status).
+
+##### Early Career Step 6: Portfolio positioning
+
+Before generating the portfolio, offer positioning choice. Via AskUserQuestion:
+
+> How do you want your portfolio structured?
+
+Options:
+- A) Lead with experience — Professional layout, work history up front, projects below. Best if your work experience tells the stronger story.
+- B) Lead with projects — Projects and what you've built as the hero section, work history below. Best if your side projects or shipped work are more impressive than your job titles.
+
+Store in `config/profile.yml` as `candidate.positioning: experience | projects`.
+
+**Rendering rules for early career positioning:**
+- **Lead with experience** (`positioning: experience`): Standard professional layout, same as experienced candidates. Projects section appears after experience.
+- **Lead with projects** (`positioning: projects`): Projects section moves above experience. Section heading changes from "Projects" to "What I've Built." Experience section heading changes to "Work History" (signals lighter weight). Education stays at bottom.
+
+After completing Steps 3-6 for the early career path, proceed to Step 7 (Portfolio).
+
+---
+
+#### Step 7: Portfolio
 
 Check if they have a personal site. Via AskUserQuestion:
 
@@ -327,7 +577,7 @@ If A → run portfolio mode. If B → ask for URL, store it.
 
 ---
 
-#### Step 7: Talent network
+#### Step 8: Talent network
 
 **Check:** Is the user @a16z.com or do they work at a16z/speedrun? → Skip this step entirely.
 
@@ -343,7 +593,7 @@ If A → run talent-network mode (auto-submit both Typeforms). If B → "No prob
 
 ---
 
-#### Step 8: Ready
+#### Step 9: Ready
 
 Silently set up remaining infrastructure:
 - Copy `templates/portals.example.yml` → `portals.yml` if missing
@@ -375,8 +625,10 @@ Options:
 
 - **Use AskUserQuestion with Options at EVERY decision point.** Never print a paragraph and wait for free text when structured choices exist.
 - **ONE input to start.** Resume/LinkedIn. Extract everything from that.
+- **Detect candidate type silently in Step 1.5.** Only ask if ambiguous. Store in `candidate.type`.
+- **Fork Steps 3-6 based on candidate.type.** Experienced, student, and early_career paths have different questions. Follow the correct path — do not mix steps across paths.
 - **Present, don't ask.** Show what you inferred with options to confirm/edit. Never show blank fields.
-- **Build files as you go.** Write cv.md after Step 1. Update profile.yml after each step. Create article-digest.md in Step 4.
+- **Build files as you go.** Write cv.md after Step 1. Update profile.yml after each step. Create article-digest.md during the achievements/projects step (Step 4 for all paths).
 - **React to their choices.** After each selection, do work — surface insights, identify signals, write files. Show progress in the plan.
 - **STOP after each AskUserQuestion.** Wait for their response before proceeding. Never batch multiple questions.
 - **Accept free text when offered.** If the user types something instead of picking an option, parse it and move on.
@@ -574,10 +826,3 @@ Write one TSV file per evaluation to `batch/tracker-additions/{num}-{company-slu
 | `Rejected` | Rejected by company |
 | `Discarded` | Discarded by candidate or offer closed |
 | `SKIP` | Doesn't fit, don't apply |
-
-## Design System
-Always read DESIGN.md before making any visual or UI decisions for portfolio generation.
-All font choices, colors, spacing, and aesthetic direction for each template are defined there.
-Do not deviate from template specs without explicit user approval.
-When generating portfolios, the candidate picks a template name (ink, terminal, volt, folio, grid, statement, caps, bare) and the generator applies that template's complete design.
-In QA mode, flag any generated portfolio that doesn't match its DESIGN.md template spec.
