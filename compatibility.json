@@ -1,0 +1,33 @@
+{
+  "_comment": "Blocked style x layout combinations. These produce broken or aesthetically poor results.",
+  "blocked": [
+    ["gradient", "sidebar", "Gradient pastel hero does not fit in sidebar column"],
+    ["gradient", "sidebar-right", "Gradient pastel hero does not fit in sidebar column"],
+    ["gradient", "cards", "Gradient stacked hero name breaks card grid"],
+    ["coral", "spread", "Coral centered-column design forces wide and breaks"],
+    ["coral", "sidebar", "Coral frame layout conflicts with sidebar chrome"],
+    ["coral", "sidebar-right", "Coral frame layout conflicts with sidebar chrome"],
+    ["press", "centered", "Neo-brutalist boxes look broken when centered without nav"],
+    ["press", "sidebar", "Brutalist box shadows clip in sidebar column"],
+    ["press", "sidebar-right", "Brutalist box shadows clip in sidebar column"],
+    ["grid", "centered", "Data-bar header needs nav, centered has none"],
+    ["grid", "sidebar", "Dense data layout needs full width, not sidebar"],
+    ["grid", "sidebar-right", "Dense data layout needs full width, not sidebar"],
+    ["patrol", "centered", "Military texture and grain overlay needs full-width bands"],
+    ["patrol", "cards", "Field-manual aesthetic clashes with card grid"],
+    ["tactical", "centered", "Command-and-control layout needs nav structure"],
+    ["tactical", "cards", "Military monospace clashes with card grid"],
+    ["dusk", "cards", "Solarized section-grid layout conflicts with card grid"],
+    ["caps", "sidebar", "All-caps bold headlines overflow narrow sidebar"],
+    ["caps", "sidebar-right", "All-caps bold headlines overflow narrow sidebar"],
+    ["statement", "sidebar", "Thesis hero needs full width, not sidebar"],
+    ["statement", "sidebar-right", "Thesis hero needs full width, not sidebar"],
+    ["garden", "sidebar", "Large serif garden text overflows sidebar column"],
+    ["garden", "sidebar-right", "Large serif garden text overflows sidebar column"],
+    ["blush", "sidebar", "Centered italic serif design clashes with sidebar"],
+    ["blush", "sidebar-right", "Centered italic serif design clashes with sidebar"],
+    ["ember", "centered", "Ember card-based layout needs nav for page switching"],
+    ["lab", "sidebar", "Lab monospace layout too dense for sidebar"],
+    ["lab", "sidebar-right", "Lab monospace layout too dense for sidebar"]
+  ]
+}
