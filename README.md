@@ -1,89 +1,97 @@
-# Speedrun Career Ops
+# 168 portfolio templates. Two commands. Free.
 
-**The best AI-powered job search tool on the internet. Free. Built by the a16z speedrun team.**
-
-You tell it about yourself. It builds your profile, generates a portfolio site, finds roles at hundreds of high-growth startups, evaluates every one against your background, writes tailored resumes, preps you for interviews, and — if you want — connects you directly to hiring teams through the a16z speedrun talent network. No forms. No job boards. Warm intros.
-
-## How it works
-
-This runs inside [Claude Code](https://claude.ai/code). You install it, type `/speedrun`, and it walks you through everything.
-
-### 1. It gets to know you
-
-Interactive onboarding — not a form, a conversation. It reads your resume, infers your target roles, surfaces your strongest signals, and builds your profile in real time.
-
-### 2. It finds roles for you
-
-A scanner pre-loaded with 500+ startups across the VC ecosystem — a16z portfolio, Sequoia, Founders Fund, Benchmark, and more. It discovers open roles, scores each one against your profile, generates tailored resumes, and tracks everything.
-
-### 3. It preps you for interviews
-
-Full interview prep for any role: company research, round-by-round breakdown, question categories, and STAR stories mapped from your experience. Stories accumulate across evaluations so you get better every time.
-
-### 4. It builds your portfolio
-
-No personal site? It generates one from your profile and deploys it to GitHub Pages. Responsive, polished, yours to keep.
-
-### 5. It connects you to startups
-
-The a16z speedrun talent network works with hundreds of portfolio companies. If you opt in, the system submits your profile on your behalf — directly to hiring teams. One click. You fill out nothing.
-
-### 6. It helps you negotiate
-
-When you get an offer, it evaluates against market data, provides a negotiation strategy, and helps you compare multiple offers side by side.
-
-## Get started
-
-```bash
-git clone https://github.com/justma16ze/career-ops.git
-cd speedrun-career-ops
-npm install
+```
+npx speedrun-career-ops
 claude
 ```
 
-Then type `/speedrun`. The system handles everything from there — including installing any tools you need.
+That's it. Claude walks you through onboarding, builds your portfolio, and deploys it to GitHub Pages in under 5 minutes.
 
-## What you can do
+---
 
-| Command | What happens |
-|---------|-------------|
-| `/speedrun` | Start here — onboarding or command menu |
-| `/speedrun scan` | Discover roles at hundreds of startups |
-| `/speedrun evaluate` | Score a specific role against your profile |
-| `/speedrun portfolio` | Build and deploy your personal site |
-| `/speedrun talent-network` | Join the talent network (one click) |
-| `/speedrun pdf` | Generate a tailored resume for a role |
-| `/speedrun compare` | Rank multiple offers side by side |
-| `/speedrun outreach` | Find contacts + draft a LinkedIn message |
-| `/speedrun deep` | Deep-dive research on a company |
-| `/speedrun interview-prep` | Full interview prep for a specific company |
-| `/speedrun apply` | Fill out an application form with AI |
-| `/speedrun tracker` | See your full application pipeline |
-| `/speedrun patterns` | Analyze rejection patterns and improve targeting |
+## What you get
 
-Or just paste a job URL — the system runs the full pipeline automatically.
+21 visual styles x 8 layout structures = 168 unique portfolio combinations. Every one is responsive, accessible, and deploys as a single static HTML file with zero dependencies.
 
-## Dashboard
+### Template gallery
 
-An interactive terminal dashboard for your pipeline. Filter by status, sort by score, preview reports inline, update statuses. Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
+| Category | Example | Vibe |
+|----------|---------|------|
+| **Minimal** | `bare` x `multipage` | System fonts, no decoration, just the words |
+| **Editorial** | `ink` x `multipage` | Warm serif, magazine feature energy |
+| **Dark** | `void` x `scroll` | Near-black with radial glow, hacker minimal |
+| **Bold** | `press` x `cards` | Neo-brutalist boxes, thick borders, offset shadows |
+| **Warm** | `folio` x `sidebar` | Cream background, handmade energy |
+| **Technical** | `terminal` x `bands` | Dark + gold + monospace, late-night shipping session |
 
-## The talent network
+## How it works
 
-The a16z speedrun talent network connects exceptional candidates to hiring teams at hundreds of high-growth startups. Not a job board — direct introductions.
+### 1. Install and run
 
-[Learn more →](https://bit.ly/joinstartups)
+```
+npx speedrun-career-ops
+cd my-portfolio
+claude
+```
 
-## Requirements
+### 2. Onboarding
 
-- [Claude Code](https://claude.ai/code)
-- Node.js 18+
+Claude reads your resume (paste, LinkedIn PDF, or just describe yourself). It extracts everything, confirms with you, and builds your profile.
 
-Everything else is installed automatically.
+### 3. Build and deploy
 
-## Credits
+Pick a template or say "just build it" for the default. Claude generates your site and deploys to GitHub Pages. Done.
 
-Built on [career-ops](https://github.com/santifer/career-ops) by Santiago Fernandez de Valderrama. Adapted for the startup/VC ecosystem by the a16z speedrun team.
+## Style x Layout system
 
-## License
+Styles control the visuals: colors, fonts, spacing, personality.
+Layouts control the structure: page count, navigation, content arrangement.
 
-MIT
+Mix any style with any layout. The system validates combinations and warns you about ones that don't work well.
+
+```bash
+# Generate one combo
+node combine-portfolio.mjs --style=ink --layout=multipage
+
+# Generate all valid combos
+node combine-portfolio.mjs --all
+
+# Demo mode (uses sample data)
+node combine-portfolio.mjs --demo
+
+# Validate all styles
+node validate-styles.mjs
+
+# Run test suite
+node test-portfolio.mjs
+```
+
+## For students
+
+The onboarding detects whether you're a student, early career, or experienced professional and adapts the flow. Students get:
+- Positioning strategy choice (academic-forward, builder-forward, or appear-experienced)
+- Projects deep-dive instead of work history focus
+- Activities and research sections
+- Education-prominent layouts
+
+## For developers
+
+The system is designed to be extended. Add a new style by creating `styles/your-style.mjs` that exports `name`, `fonts`, and `css()`. Add a new layout by creating `layouts/your-layout.mjs` that exports `name`, `description`, `css()`, and `pages(data)`.
+
+```bash
+# Lint your new style
+node validate-styles.mjs
+
+# Test everything
+node test-portfolio.mjs
+```
+
+## Beyond portfolios
+
+This is also a full AI job search tool: role evaluation, resume generation, interview prep, offer comparison, and direct connection to the a16z speedrun talent network (500+ startups).
+
+Type `/speedrun` in Claude Code to explore everything.
+
+---
+
+**made by the a16z speedrun team**
