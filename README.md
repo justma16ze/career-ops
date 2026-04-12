@@ -1,7 +1,7 @@
 # 168 portfolio templates. Two commands. Free.
 
 ```
-npx speedrun-career-ops
+npx your-personal-readme
 claude
 ```
 
@@ -15,21 +15,44 @@ That's it. Claude walks you through onboarding, builds your portfolio, and deplo
 
 ### Template gallery
 
-| Category | Example | Vibe |
-|----------|---------|------|
-| **Minimal** | `bare` x `multipage` | System fonts, no decoration, just the words |
-| **Editorial** | `ink` x `multipage` | Warm serif, magazine feature energy |
-| **Dark** | `void` x `scroll` | Near-black with radial glow, hacker minimal |
-| **Bold** | `press` x `cards` | Neo-brutalist boxes, thick borders, offset shadows |
-| **Warm** | `folio` x `sidebar` | Cream background, handmade energy |
-| **Technical** | `terminal` x `bands` | Dark + gold + monospace, late-night shipping session |
+**Clean & Minimal** -- `bare` x `multipage`
+System fonts, no decoration, just the words.
+
+![bare-multipage](screenshots/bare-multipage.png)
+
+**Dark & Technical** -- `void` x `scroll`
+Near-black with radial glow, hacker minimal.
+
+![void-scroll](screenshots/void-scroll.png)
+
+**Warm & Editorial** -- `ink` x `spread`
+Warm serif, magazine feature energy.
+
+![ink-spread](screenshots/ink-spread.png)
+
+**Bold & Confident** -- `press` x `cards`
+Neo-brutalist boxes, thick borders, offset shadows.
+
+![press-cards](screenshots/press-cards.png)
+
+**Warm & Organic** -- `garden` x `multipage`
+Cream background, soft serif, handmade energy.
+
+![garden-multipage](screenshots/garden-multipage.png)
+
+**Dark & Technical (alt)** -- `terminal` x `sidebar`
+Dark + gold + monospace, late-night shipping session.
+
+![terminal-sidebar](screenshots/terminal-sidebar.png)
+
+These are 6 of 168 combinations. Mix any style with any layout.
 
 ## How it works
 
 ### 1. Install and run
 
 ```
-npx speedrun-career-ops
+npx your-personal-readme
 cd my-portfolio
 claude
 ```
@@ -63,7 +86,7 @@ node combine-portfolio.mjs --demo
 node validate-styles.mjs
 
 # Run test suite
-node test-portfolio.mjs
+npm test
 ```
 
 ## For students
@@ -83,7 +106,7 @@ The system is designed to be extended. Add a new style by creating `styles/your-
 node validate-styles.mjs
 
 # Test everything
-node test-portfolio.mjs
+npm test
 ```
 
 ## Beyond portfolios
