@@ -23,13 +23,17 @@ Read `portals.yml` which contains:
 
 ## Discovery strategy (3 levels)
 
-### Level 1 — Direct Playwright (PRIMARY)
+### Level 1 — WebFetch career pages (PRIMARY)
 
-**For each company in `tracked_companies`:** Navigate to its `careers_url` with Playwright (`browser_navigate` + `browser_snapshot`), read ALL visible job listings, and extract title + URL for each one. This is the most reliable method because:
-- Sees the page in real time (not cached Google results)
-- Works with SPAs (Ashby, Lever, Workday)
-- Detects new offers instantly
-- Does not depend on Google indexing
+**IMPORTANT: Do NOT use Playwright (browser_navigate/browser_snapshot) for scan mode.** Playwright opens visible browser windows that flood the user's desktop. Scan is a background batch operation.
+
+**For each company in `tracked_companies`:** Use WebFetch on its `careers_url` to read ALL visible job listings and extract title + URL for each one. WebFetch works for most career pages because:
+- Sees the page content (most career pages are server-rendered or have JSON in the HTML)
+- Does not open visible browser windows
+- Runs silently in the background
+- Fast (no browser launch overhead)
+
+**If WebFetch fails** (returns empty/blocked/403): fall back to WebSearch for that company (`site:company.com careers OR jobs`). Do NOT fall back to Playwright.
 
 **Each company MUST have a `careers_url` in portals.yml.** If it doesn't, search for it once, save it, and use in future scans.
 
@@ -42,7 +46,7 @@ For companies using Greenhouse, the JSON API (`boards-api.greenhouse.io/v1/board
 The `search_queries` with `site:` filters cover portals broadly (all Ashby, all Greenhouse, etc.). Useful for discovering NEW companies not yet in `tracked_companies`, but results may be stale.
 
 **Execution priority:**
-1. Level 1: Playwright → all `tracked_companies` with `careers_url`
+1. Level 1: WebFetch → all `tracked_companies` with `careers_url`
 2. Level 2: API → all `tracked_companies` with `api:`
 3. Level 3: WebSearch → all `search_queries` with `enabled: true`
 
@@ -97,15 +101,16 @@ For `title_filter.negative`, keep the static list from `portals.yml` as-is (thos
 3. **Read history**: `data/scan-history.tsv` → previously seen URLs
 4. **Read dedup sources**: `data/applications.md` + `data/pipeline.md`
 
-4. **Level 1 — Playwright scan** (parallel in batches of 3-5):
+4. **Level 1 — WebFetch scan** (parallel in batches of 5-10):
    For each company in `tracked_companies` with `enabled: true` and `careers_url` defined:
-   a. `browser_navigate` to the `careers_url`
-   b. `browser_snapshot` to read all job listings
-   c. If the page has filters/departments, navigate the relevant sections
-   d. For each job listing extract: `{title, url, company}`
-   e. If the page paginates results, navigate additional pages
-   f. Accumulate in candidate list
-   g. If `careers_url` fails (404, redirect), try `scan_query` as fallback and note for URL update
+   a. WebFetch the `careers_url`
+   b. Parse the HTML response for job listings (look for links containing /jobs/, /careers/, /positions/, /openings/)
+   c. For each job listing extract: `{title, url, company}`
+   d. If WebFetch returns empty/blocked/403: fall back to WebSearch (`site:company.com careers {keyword}`)
+   e. Accumulate in candidate list
+   f. If `careers_url` fails entirely, note for URL update
+   
+   **DO NOT use browser_navigate or browser_snapshot.** These open visible browser windows.
 
 5. **Level 2 — Greenhouse APIs** (parallel):
    For each company in `tracked_companies` with `api:` defined and `enabled: true`:
@@ -134,21 +139,22 @@ For `title_filter.negative`, keep the static list from `portals.yml` as-is (thos
 
 7.5. **Verify liveness of WebSearch results (Level 3)** — BEFORE adding to pipeline:
 
-   WebSearch results may be stale (Google caches results for weeks or months). To avoid evaluating expired offers, verify each new URL from Level 3 with Playwright. Levels 1 and 2 are inherently real-time and do not require this verification.
+   WebSearch results may be stale (Google caches results for weeks or months). To avoid evaluating expired offers, verify each new URL from Level 3 with WebFetch. Levels 1 and 2 are inherently real-time and do not require this verification.
 
-   For each new Level 3 URL (sequential — NEVER Playwright in parallel):
-   a. `browser_navigate` to the URL
-   b. `browser_snapshot` to read the content
-   c. Classify:
-      - **Active**: job title visible + role description + Apply/Submit button
+   **DO NOT use Playwright (browser_navigate/browser_snapshot) for verification.** Use WebFetch instead.
+
+   For each new Level 3 URL:
+   a. WebFetch the URL
+   b. Classify from the HTML response:
+      - **Active**: job title visible + role description + Apply/Submit button text in HTML
       - **Expired** (any of these signals):
         - Final URL contains `?error=true` (Greenhouse redirects this way when the offer is closed)
         - Page contains: "job no longer available" / "no longer open" / "position has been filled" / "this job has expired" / "page not found"
-        - Only navbar and footer visible, no JD content (content < ~300 chars)
-   d. If expired: register in `scan-history.tsv` with status `skipped_expired` and discard
-   e. If active: continue to step 8
+        - Very little content in response (< ~300 chars of visible text)
+   c. If expired: register in `scan-history.tsv` with status `skipped_expired` and discard
+   d. If active: continue to step 8
 
-   **Do not interrupt the entire scan if a URL fails.** If `browser_navigate` errors (timeout, 403, etc.), mark as `skipped_expired` and continue with the next one.
+   **Do not interrupt the entire scan if a URL fails.** If WebFetch errors (timeout, 403, etc.), mark as `skipped_expired` and continue with the next one.
 
 8. **For each new verified offer that passes filters**:
    a. Add to `pipeline.md` "Pending" section: `- [ ] {url} | {company} | {title}`
