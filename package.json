@@ -23,7 +23,14 @@
     "update": "node update-system.mjs apply",
     "rollback": "node update-system.mjs rollback",
     "liveness": "node check-liveness.mjs",
-    "scan": "node scan.mjs"
+    "scan": "node scan.mjs",
+    "eval": "node tests/eval/run-evals.mjs",
+    "eval:quick": "node tests/eval/run-evals.mjs --quick",
+    "test": "node tests/run-all.mjs",
+    "test:unit": "node tests/run-all.mjs --unit",
+    "test:e2e": "node tests/run-all.mjs --e2e",
+    "test:visual": "node tests/run-all.mjs --visual",
+    "test:quick": "node tests/run-all.mjs --unit --no-visual"
   },
   "keywords": [
     "ai",

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera</title>
+
+<style>:root {
+  /* Backgrounds */
+  --bg: #0d0d0d;
+  --bg-alt: #181818;
+  --bg-card: #151515;
+  --bg-nav: rgba(13,13,13,0.92);
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #d4d4d4;
+  --text-muted: #888;
+  --text-faint: #555;
+
+  /* Accent */
+  --accent: #e8c473;
+  --accent-hover: #f0d48b;
+
+  /* Borders */
+  --border: #222;
+  --border-light: #1a1a1a;
+
+  /* Typography */
+  --font-display: 'General Sans', sans-serif;
+  --font-body: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --wrap-width: 800px;
+  --nav-height: 48px;
+
+  /* Footer — dark bg: accent color for link */
+  --footer-text: #aaa;
+  --footer-link: #e8c473;
+  --footer-link-hover: #f0d48b;
+  --footer-border: var(--border);
+}
+
+/* ---- BASE ---- */
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; position: relative; }
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(232,196,115,0.3); }
+a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
+h2 { font-family: var(--font-display); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin: 24px 0 12px; }
+.site-name { font-family: var(--font-body); color: var(--text); text-decoration: none; font-weight: 500; }
+
+/* ---- STAR PARTICLES ---- */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 8% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 22% 55%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 48% 8%, rgba(232,196,115,0.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 35%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 88% 72%, rgba(255,255,255,0.18) 0%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 12% 82%, rgba(232,196,115,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 42% 42%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 78% 12%, rgba(255,255,255,0.22) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 68%, rgba(232,196,115,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 35% 28%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 92% 45%, rgba(232,196,115,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 18% 95%, rgba(255,255,255,0.2) 0%, transparent 100%);
+}
+.wrap { position: relative; z-index: 1; }
+
+/* ---- NAV ---- */
+nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+nav .site-name { margin-right: auto; }
+nav a { color: #444; text-decoration: none; } nav a:hover { color: var(--text); }
+nav .active { color: var(--accent); font-weight: 500; }
+
+/* ---- PROMPT / CURSOR ---- */
+.prompt { color: var(--text-faint); }
+.accent { color: var(--accent); }
+h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; color: #e5e5e5; }
+h1 .cursor { display: inline-block; width: 10px; height: 24px; background: var(--accent); margin-left: 4px; animation: blink 1s step-end infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.status-line { font-size: 12px; color: var(--text-faint); }
+.status-line span { color: var(--accent); }
+
+/* ---- LOG ENTRIES ---- */
+.log-entry { display: grid; grid-template-columns: 90px 1fr; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border-light); }
+.log-entry:last-child { border-bottom: none; }
+.log-date { font-size: 11px; color: #3a3a3a; padding-top: 2px; }
+.log-content h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.log-content p { font-size: 12px; color: var(--text-muted); }
+.log-content .delta { color: var(--accent); font-weight: 500; }
+
+/* ---- SHIP ENTRIES ---- */
+section { margin-bottom: 8px; }
+article { margin-bottom: 8px; }
+.ship-entry { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-light); }
+.ship-entry:last-child { border-bottom: none; }
+.ship-entry h3 { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.ship-entry h3 a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232,196,115,0.3); }
+.ship-entry p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+.ship-entry .delta { color: var(--text); font-weight: 400; font-size: 12px; margin-top: 6px; }
+p { margin-bottom: 6px; } p:last-child { margin-bottom: 0; }
+
+/* ---- HERO ---- */
+.hero { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.hero-headline { font-size: 12px; color: var(--text-muted); }
+
+/* ---- HOME BIO ---- */
+.home-bio { font-size: 14px; color: #bbb; line-height: 1.8; margin-top: 8px; }
+.home-bio p { margin-bottom: 12px; }
+.home-bio a { color: var(--accent); }
+
+/* ---- EXPERIENCE ---- */
+.job { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-light); }
+.job:last-child { border-bottom: none; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+.job-header strong { font-size: 15px; color: var(--accent); }
+.date { font-size: 11px; color: var(--accent); white-space: nowrap; }
+.role { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.sub-role { margin-top: 20px; padding-top: 0; }
+.sub-role:first-child { margin-top: 8px; }
+.sub-role-header { margin-bottom: 8px; }
+.sub-role-header .role { color: var(--accent); font-weight: 700; font-size: 13px; display: block; margin-bottom: 2px; }
+.sub-role-header .date { display: block; color: var(--text-faint); }
+ul { margin: 6px 0 0 18px; } li { font-size: 12px; color: #777; margin-bottom: 4px; line-height: 1.5; }
+
+/* ---- ENTRIES (standardized) ---- */
+.entry { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-light); }
+.entry:last-child { border-bottom: none; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+.entry-title { font-weight: 700; font-size: 15px; color: var(--accent); }
+.entry-date { font-size: 11px; color: var(--accent); white-space: nowrap; font-family: var(--font-mono); }
+.entry-role { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.entry-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+.entry li { font-size: 12px; color: #777; margin-bottom: 4px; line-height: 1.5; }
+.sub-entry { margin-top: 20px; padding-top: 0; }
+.sub-entry:first-child { margin-top: 8px; }
+.sub-entry .entry-role { color: var(--accent); font-weight: 700; font-size: 13px; }
+.sub-entry .entry-date { color: var(--text-faint); }
+
+/* ---- DETAILS ---- */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 11px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 6px; }
+
+/* ---- ABOUT ---- */
+.detail { font-size: 12px; color: #777; }
+.skills-list { font-size: 12px; color: #777; line-height: 2.2; }
+.strengths-list { list-style: none; margin: 0; padding: 0; }
+.strengths-list li { font-size: 12px; color: #777; margin-bottom: 4px; padding-left: 20px; position: relative; }
+.strengths-list li::before { content: '>'; color: var(--accent); position: absolute; left: 0; }
+
+/* ---- CONTACT ---- */
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 20px; }
+
+/* ---- FOOTER ---- */
+footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); }
+footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(232,196,115,0.4); }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* ---- PRINT ---- */
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; max-width: none; } body { background: #fff; color: #111; } body::before { display: none; } }
+
+/* ---- RESPONSIVE 660px ---- */
+@media (max-width: 660px) {
+  h1 { font-size: 20px; }
+  nav { font-size: 12px; gap: 12px; }
+  .hero { margin-bottom: 16px; padding-bottom: 14px; }
+  .job-header { flex-direction: column; }
+  .sub-role-header { flex-direction: column; }
+  .entry-header { flex-direction: column; }
+  .home-bio { font-size: 13px; }
+  li { font-size: 11px; }
+  .role { font-size: 11px; }
+  .date { font-size: 10px; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+  ul { margin-left: 14px; }
+}
+
+/* ---- RESPONSIVE 480px ---- */
+@media (max-width: 480px) {
+  h1 { font-size: 18px; }
+  h2 { font-size: 10px; }
+  nav { font-size: 11px; gap: 8px; flex-wrap: wrap; }
+  .job-header strong { font-size: 13px; }
+  .entry-title { font-size: 13px; }
+  .status-line { font-size: 11px; }
+  .home-bio { font-size: 12px; line-height: 1.7; }
+  .strengths-list li { font-size: 11px; }
+  .skills-list { font-size: 11px; }
+}
+/* === sidebar layout: structural only === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; scroll-behavior: smooth; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.7; margin: 0; padding: 0; font-size: 14px; }
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+a:hover { color: var(--accent-hover); }
+
+/* --- Two-column wrapper --- */
+.wrap { width: 100% !important; max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+
+/* --- Left sidebar (sticky) --- */
+.sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
+.sidebar-top { }
+.site-name { font-family: var(--font-display); font-size: 46px; font-weight: 700; color: var(--text); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; text-decoration: none; display: block; }
+.site-name:hover { color: var(--text); }
+.hero-headline { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+.sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
+
+/* --- Sidebar nav --- */
+nav { display: block; background: transparent; border: none; box-shadow: none; padding: 0; margin: 0; text-transform: none; letter-spacing: normal; font-size: inherit; }
+.nav-links { list-style: none; padding: 0; margin: 0; }
+.nav-links li { margin-bottom: 12px; }
+.nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
+.nav-links a::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--text-faint); transition: width 0.15s ease, background 0.15s ease; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::before { width: 64px; background: var(--text); }
+.nav-links .active { color: var(--text); }
+.nav-links .active::before { width: 64px; background: var(--text); }
+
+.sidebar-bottom { }
+.social-links { display: flex; gap: 20px; align-items: center; }
+.social-links a { color: var(--text-faint); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease; }
+.social-links a:hover { color: var(--text); }
+
+/* --- Right content (scrolls) --- */
+.content { flex: 1; padding: 96px 0 80px; min-width: 0; }
+
+/* --- Section spacing --- */
+.section { margin-bottom: 96px; }
+.section:last-child { margin-bottom: 48px; }
+.section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 40px; display: none; }
+
+/* --- About / Bio --- */
+.home-bio { font-size: 16px; color: var(--text-muted); line-height: 1.8; }
+.home-bio p { margin-bottom: 16px; }
+.home-bio a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.home-bio a:hover { color: var(--accent); }
+.home-bio strong { color: var(--text); font-weight: 600; }
+
+/* --- Experience entry --- */
+.entry { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 24px; margin: 0 -24px; border-radius: 8px; transition: background 0.15s ease, box-shadow 0.15s ease; margin-bottom: 4px; border: 1px solid transparent; }
+.entry:hover { background: var(--bg-alt); }
+.entry-date { font-size: 12px; color: var(--text-faint); font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 5px; white-space: nowrap; line-height: 1.5; }
+.entry-body { }
+.entry-header { margin-bottom: 4px; }
+.entry-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.entry-title a { color: var(--text); text-decoration: none; }
+.entry-title a:hover { color: var(--accent); }
+.entry-company { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+.entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+.entry ul { margin: 6px 0 0 0; padding-left: 16px; list-style: disc; }
+.entry li { margin-bottom: 4px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* --- Sub-entry (multi-role companies) --- */
+.sub-entry { padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { padding-top: 0; margin-top: 0; border-top: none; }
+.sub-entry .entry-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.sub-entry .entry-role { font-size: 14px; font-weight: 600; color: var(--text); }
+.sub-entry .entry-date { font-size: 12px; }
+
+/* --- Skills --- */
+.skills-list { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+.skills-list .tag { display: inline; }
+.skills-list .tag::after { content: ' · '; color: var(--text-faint); }
+.skills-list .tag:last-child::after { content: ''; }
+
+/* --- Strengths --- */
+.strengths-list { list-style: none; padding: 0; }
+.strengths-list li { font-size: 14px; color: var(--text-muted); padding: 8px 0 8px 20px; line-height: 1.5; border-left: 2px solid var(--border); margin-bottom: 4px; transition: border-color 0.15s ease; }
+.strengths-list li:hover { border-left-color: var(--accent); color: var(--text); }
+
+/* --- Contact --- */
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 20px; color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+.contact-line a:hover { color: var(--accent); }
+
+/* --- Education --- */
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 48px 0 16px; padding-top: 0; border-top: none; }
+
+/* --- Details toggle --- */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ show more'; }
+details[open] summary::before { content: '- show less'; }
+details .detail-content { padding-top: 8px; }
+
+/* --- Footer --- */
+footer { margin-top: 80px; padding: 24px 0 40px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
+footer a { color: var(--footer-link); font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* --- Print --- */
+@media print {
+  .sidebar { display: none; }
+  .wrap { max-width: none; padding: 1rem; display: block; }
+  .content { padding: 0; }
+  footer { display: none; }
+  .entry { background: none !important; }
+  .section-label { display: block; }
+}
+
+/* --- Mobile: sidebar stacks on top --- */
+@media (max-width: 660px) {
+  .wrap { flex-direction: column; padding: 0 24px; gap: 0; }
+  .sidebar { position: relative; width: 100%; min-width: 0; height: auto; padding: 48px 0 24px; }
+  .sidebar-tagline { margin-bottom: 24px; }
+  .nav-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .nav-links li { margin-bottom: 0; }
+  .nav-links a::before { display: none; }
+  .nav-links a { font-size: 11px; }
+  .content { padding: 24px 0 48px; }
+  .section { margin-bottom: 64px; }
+  .section-label { display: block; position: sticky; top: 0; z-index: 10; background: var(--bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; margin: 0 0 24px; }
+  .entry { grid-template-columns: 1fr; gap: 4px; padding: 16px 12px; margin: 0 -12px; border: none; }
+  .entry-date { padding-top: 0; font-size: 11px; }
+  .site-name { font-size: 34px; }
+  .hero-headline { font-size: 15px; }
+  .home-bio { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 0 16px; }
+  .sidebar { padding: 32px 0 16px; }
+  .site-name { font-size: 28px; }
+  .hero-headline { font-size: 14px; }
+  .nav-links a { font-size: 10px; }
+  .entry { padding: 12px 8px; margin: 0 -8px; }
+  .entry-title { font-size: 14px; }
+  .entry-desc { font-size: 12px; }
+  .entry li { font-size: 12px; }
+  .home-bio { font-size: 13px; }
+}</style>
+</head>
+<body>
+<div class="wrap">
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="index.html" class="site-name">Alex Rivera</a>
+    <div class="hero-headline">Full-stack engineer building infrastructure for teams.</div>
+    <p class="sidebar-tagline">Full-stack engineer with 6 years of experience building high-traffic web applications.</p>
+    <nav>
+      <ul class="nav-links"><li><a href="index.html" class="active">About</a></li><li><a href="experience.html">Experience</a></li><li><a href="work.html">Projects</a></li><li><a href="about.html">More</a></li></ul>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="social-links"><a href="https://linkedin.com/in/alexrivera" target="_blank" rel="noopener">LinkedIn</a><a href="https://github.com/alexrivera" target="_blank" rel="noopener">GitHub</a><a href="mailto:alex@example.com">alex@example.com</a></div>
+  </div>
+</aside>
+<main class="content">
+<section class="section">
+<div class="section-label">About</div>
+<div class="home-bio"><p>Full-stack engineer who loves distributed systems. Over the past 6 years I have built real-time collaboration engines, API gateways handling 10K req/s, and developer tools that cut onboarding from weeks to days.</p></div>
+</section>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</main>
+</div>
+</body>
+</html>

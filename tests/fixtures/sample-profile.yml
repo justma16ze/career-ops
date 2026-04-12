@@ -1,0 +1,31 @@
+candidate:
+  full_name: Alex Rivera
+  email: alex@example.com
+  location: Seattle, WA
+  linkedin: linkedin.com/in/alexrivera-demo
+  github: github.com/alexrivera-demo
+  type: experienced
+
+narrative:
+  headline: "Full-stack engineer. I build the infrastructure that lets teams ship faster."
+  home_bio: "<p>I'm a full-stack engineer who loves making complex distributed systems feel simple. Over the past 6 years I've built real-time collaboration engines, API gateways handling 10K req/s, and developer tools that cut onboarding from weeks to days.</p><p>Currently at <a href=\"#\">Wavelength Labs</a> leading the platform team. Previously built data pipelines processing 500M events/month at Nimbus Technologies.</p>"
+  superpowers:
+    - "Distributed systems design (CRDTs, event sourcing, service mesh)"
+    - "Developer experience and internal tooling"
+    - "Performance optimization at scale"
+  proof_points: []
+  exit_story: "Looking for a senior or staff role at a startup where I can own the platform layer."
+  current_project: "Building an open-source feature flag SDK with edge evaluation support."
+
+target_roles:
+  primary:
+    - Senior Software Engineer
+    - Staff Engineer
+    - Platform Engineer
+
+compensation:
+  location_flexibility: "Remote or Seattle hybrid"
+
+talent_network:
+  current_project: "Open-source feature flag SDK with edge evaluation"
+  considering_founding: "maybe"
