@@ -130,7 +130,7 @@ details .detail-content { padding-top: 6px; }
 .edu { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 6px; }
 
 /* ---- FOOTER ---- */
-footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
 footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 footer a:hover { color: var(--footer-link-hover); }
 

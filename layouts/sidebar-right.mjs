@@ -80,7 +80,7 @@ h2:first-child, .main-col > h2:first-child { margin-top: 0; border-top: none; pa
 .sub-entry { padding: 10px 0 0; margin-top: 10px; border-top: 1px solid var(--border-light); }
 .sub-entry:first-child { padding-top: 4px; margin-top: 4px; border-top: none; }
 .sub-entry .entry-role { font-weight: 600; font-style: normal; color: var(--text); }
-.sub-entry .entry-date { font-size: 11px; }
+.sub-entry .entry-date { font-size: 12px; }
 .sub-entry .entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 
 /* --- Details toggle --- */
@@ -142,8 +142,8 @@ footer a:hover { color: var(--footer-link-hover); }
   .wrap { padding: 16px !important; }
   h1 { font-size: 22px; }
   nav .site-name { font-size: 14px; }
-  nav { font-size: 10px; gap: 6px; }
-  nav span { font-size: 10px; }
+  nav { font-size: 12px; gap: 6px; }
+  nav span { font-size: 12px; }
   .hero-headline { font-size: 14px; }
   .home-bio { font-size: 13px; }
   .entry-title { font-size: 13px; }

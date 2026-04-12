@@ -96,7 +96,7 @@ nav .active { color: #888; }
 .sub-entry { padding: 10px 0 0; margin-top: 10px; border-top: 1px solid var(--border-light); }
 .sub-entry:first-child { padding-top: 4px; margin-top: 4px; border-top: none; }
 .sub-entry .entry-role { font-weight: 500; font-style: normal; font-size: 13px; color: #888; }
-.sub-entry .entry-date { font-size: 11px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* ---- DETAILS ---- */
 details { margin-top: 6px; }
@@ -150,7 +150,7 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   nav .site-name { font-size: 14px; }
   h2 { font-size: 12px; }
-  nav { font-size: 11px; gap: 8px; }
+  nav { font-size: 12px; gap: 8px; }
   .entry-title { font-size: 13px; }
   .entry-desc { font-size: 12px; }
   .entry ul { font-size: 12px; }

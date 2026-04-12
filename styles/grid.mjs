@@ -157,7 +157,7 @@ details .detail-content { padding-top: 4px; }
 .about-intro p { margin-bottom: 8px; }
 
 /* FOOTER */
-footer { margin-top: 32px; padding: 12px 28px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); }
+footer { margin-top: 32px; padding: 12px 28px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
 footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 footer a:hover { color: var(--footer-link-hover); }
 
@@ -184,10 +184,10 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   .data-bar { padding: 10px 16px; }
   .data-bar .bar-name { font-size: 15px; }
-  .data-bar .bar-meta { font-size: 10px; gap: 8px; }
-  nav { padding: 8px 16px; font-size: 11px; gap: 8px; }
+  .data-bar .bar-meta { font-size: 12px; gap: 8px; }
+  nav { padding: 8px 16px; font-size: 12px; gap: 8px; }
   main { padding: 16px 16px 0; }
-  h2 { font-size: 10px; }
+  h2 { font-size: 12px; }
   .exp-company, .entry-title { font-size: 13px; }
   .exp-role, .entry-role { font-size: 12px; }
   .exp-bullets { font-size: 12px; }

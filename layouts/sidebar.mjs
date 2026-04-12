@@ -132,12 +132,12 @@ footer a:hover { color: var(--footer-link-hover); }
   .nav-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
   .nav-links li { margin-bottom: 0; }
   .nav-links a::before { display: none; }
-  .nav-links a { font-size: 11px; }
+  .nav-links a { font-size: 12px; }
   .content { padding: 24px 0 48px; }
   .section { margin-bottom: 64px; }
   .section-label { display: block; position: sticky; top: 0; z-index: 10; background: var(--bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; margin: 0 0 24px; }
   .entry { grid-template-columns: 1fr; gap: 4px; padding: 16px 12px; margin: 0 -12px; border: none; }
-  .entry-date { padding-top: 0; font-size: 11px; }
+  .entry-date { padding-top: 0; font-size: 12px; }
   .site-name { font-size: 34px; }
   .hero-headline { font-size: 15px; }
   .home-bio { font-size: 14px; }
@@ -147,7 +147,7 @@ footer a:hover { color: var(--footer-link-hover); }
   .sidebar { padding: 32px 0 16px; }
   .site-name { font-size: 28px; }
   .hero-headline { font-size: 14px; }
-  .nav-links a { font-size: 10px; }
+  .nav-links a { font-size: 12px; }
   .entry { padding: 12px 8px; margin: 0 -8px; }
   .entry-title { font-size: 14px; }
   .entry-desc { font-size: 12px; }

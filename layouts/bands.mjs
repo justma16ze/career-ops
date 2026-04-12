@@ -174,7 +174,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
 @media (max-width: 480px) {
   nav { height: 44px; }
   nav .site-name { font-size: 13px; padding-left: 12px; }
-  .nav-links { gap: 12px; padding-right: 12px; font-size: 11px; }
+  .nav-links { gap: 12px; padding-right: 12px; font-size: 12px; }
   body { padding-top: 44px; }
   .band { padding: 48px 16px; }
   .hero h1 { font-size: 28px; }

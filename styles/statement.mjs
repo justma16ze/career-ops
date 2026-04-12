@@ -161,9 +161,9 @@ footer a:hover { color: var(--footer-link-hover); }
   h1 { font-size: 24px; }
   h2 { font-size: 17px; }
   nav .site-name { font-size: 14px; }
-  nav { font-size: 11px; gap: 8px; }
+  nav { font-size: 12px; gap: 8px; }
   .exp-table { font-size: 12px; }
-  .exp-table .dates { font-size: 11px; }
+  .exp-table .dates { font-size: 12px; }
   .job-header strong { font-size: 14px; }
   .date { font-size: 12px; }
   .home-bio { font-size: 13px; }

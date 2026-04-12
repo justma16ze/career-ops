@@ -142,9 +142,9 @@ details .detail-content { padding-top: 6px; }
 .sub-entry { padding: 14px 0 0; margin-top: 14px; border-top: 1px solid #141414; }
 .sub-entry:first-child { padding-top: 6px; margin-top: 6px; border-top: none; }
 .sub-entry .service-role { font-weight: 600; color: #a0b88a; margin-bottom: 4px; }
-.sub-entry .service-date { font-size: 10px; }
+.sub-entry .service-date { font-size: 12px; }
 .sub-entry .entry-role { font-weight: 600; color: #a0b88a; margin-bottom: 4px; }
-.sub-entry .entry-date { font-size: 10px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* DOSSIER / ABOUT */
 .dossier-section { margin-bottom: 32px; }
@@ -162,7 +162,7 @@ details .detail-content { padding-top: 6px; }
 .edu-entry { font-size: 14px; color: #a0a0a0; line-height: 1.6; padding: 4px 0; }
 
 /* FOOTER */
-footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-family: var(--font-mono); font-size: 11px; color: var(--footer-text); letter-spacing: 1px; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-family: var(--font-mono); font-size: 12px; color: var(--footer-text); letter-spacing: 1px; }
 footer a { color: var(--footer-link); font-weight: 700; border-bottom: none; }
 footer a:hover { color: var(--footer-link-hover); }
 
@@ -187,7 +187,7 @@ footer a:hover { color: var(--footer-link-hover); }
 /* RESPONSIVE 660px */
 @media (max-width: 660px) {
   .wrap { width: 100% !important; padding: 20px 24px; }
-  nav { font-size: 11px; gap: 12px; flex-wrap: wrap; }
+  nav { font-size: 12px; gap: 12px; flex-wrap: wrap; }
   .hero-designation { font-size: 28px; }
   .hero-meta { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .service-header, .entry-header { flex-direction: column; }
@@ -203,8 +203,8 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   .wrap { padding: 16px !important; }
   nav .site-name { font-size: 15px; letter-spacing: 2px; }
-  nav { font-size: 10px; gap: 8px; }
-  h2 { font-size: 10px; }
+  nav { font-size: 12px; gap: 8px; }
+  h2 { font-size: 12px; }
   .hero-designation { font-size: 24px; }
   .hero-headline { font-size: 13px; }
   .hero-meta { grid-template-columns: 1fr; gap: 12px; }

@@ -121,11 +121,11 @@ li { font-size: 14px; color: #444; margin-bottom: 3px; line-height: 1.65; }
 .sub-entry { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0e8dc; }
 .sub-entry:first-child { margin-top: 6px; padding-top: 0; border-top: none; }
 .sub-entry .entry-role { font-weight: 600; color: var(--text); font-size: 14px; }
-.sub-entry .entry-date { font-size: 11px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* ---- DETAILS ---- */
 details { margin-top: 6px; }
-details summary { cursor: pointer; font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); list-style: none; }
+details summary { cursor: pointer; font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); list-style: none; }
 details summary::-webkit-details-marker { display: none; }
 details summary::before { content: '+ more'; }
 details[open] summary::before { content: '- less'; }
@@ -147,7 +147,7 @@ article { margin-bottom: 8px; }
 .contact-line a { margin-right: 18px; }
 
 /* ---- FOOTER ---- */
-footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); font-family: var(--font-mono); }
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); font-family: var(--font-mono); }
 footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-decoration-color: rgba(0,0,0,0.12); text-underline-offset: 2px; }
 footer a:hover { color: var(--footer-link-hover); }
 

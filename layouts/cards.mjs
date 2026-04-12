@@ -185,7 +185,7 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
   .hero-headline { font-size: 15px; }
   .card { padding: 22px 18px; }
   .card h2 { font-size: 19px; }
-  .skills-list span { font-size: 11px; padding: 3px 8px; }
+  .skills-list span { font-size: 12px; padding: 3px 8px; }
   .home-bio p { font-size: 14px; }
   .entry-header { flex-direction: column; }
 }
@@ -198,11 +198,11 @@ footer a:hover { color: var(--footer-link-hover, var(--accent)); }
   .hero { padding: 22px 16px 20px; }
   .card { padding: 18px 14px; }
   .card h2 { font-size: 17px; }
-  .card .eyebrow { font-size: 10px; letter-spacing: 2px; }
+  .card .eyebrow { font-size: 12px; letter-spacing: 2px; }
   .entry-title { font-size: 13px; }
   .entry ul { font-size: 12px; }
-  .skills-list span { font-size: 10px; padding: 2px 6px; }
-  footer { font-size: 11px; }
+  .skills-list span { font-size: 12px; padding: 2px 6px; }
+  footer { font-size: 12px; }
 }
 `;
 }

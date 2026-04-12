@@ -111,7 +111,7 @@ h2 { font-family: var(--font-display); font-size: 30px; font-weight: 700; font-s
 .sub-entry { padding: 16px 0 0; margin-top: 16px; border-top: 2px dashed #ddd; }
 .sub-entry:first-child { padding-top: 6px; margin-top: 6px; border-top: none; }
 .sub-entry .entry-role { font-weight: 700; font-style: normal; font-size: 15px; color: var(--text); }
-.sub-entry .entry-date { font-size: 11px; color: var(--text-faint); }
+.sub-entry .entry-date { font-size: 12px; color: var(--text-faint); }
 .sub-entry .entry-header { margin-bottom: 6px; }
 
 /* DETAILS TOGGLE */
@@ -129,7 +129,7 @@ details .detail-content { padding-top: 8px; }
 .project-card .entry-header { margin-bottom: 6px; }
 .project-card .entry-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
 .project-card .entry-desc { font-size: 14px; color: var(--text-muted); }
-.project-card .entry-date { font-family: var(--font-mono); font-size: 11px; color: var(--text); background: #f5d547; border: 2px solid var(--text); padding: 3px 10px; white-space: nowrap; font-weight: 700; }
+.project-card .entry-date { font-family: var(--font-mono); font-size: 12px; color: var(--text); background: #f5d547; border: 2px solid var(--text); padding: 3px 10px; white-space: nowrap; font-weight: 700; }
 
 /* SKILLS */
 .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -164,7 +164,7 @@ footer a:hover { color: var(--footer-link-hover); }
 /* RESPONSIVE 660px */
 @media (max-width: 660px) {
   .wrap { width: 100% !important; padding: 16px 20px 32px; }
-  nav { font-size: 11px; gap: 14px; padding: 12px 16px; flex-wrap: wrap; letter-spacing: 1px; margin-bottom: 28px; }
+  nav { font-size: 12px; gap: 14px; padding: 12px 16px; flex-wrap: wrap; letter-spacing: 1px; margin-bottom: 28px; }
   nav .site-name { font-size: 13px; padding: 4px 8px; }
   .hero-card { padding: 28px 22px 24px; }
   .hero-card h1 { font-size: 40px; }
@@ -175,7 +175,7 @@ footer a:hover { color: var(--footer-link-hover); }
   .entry-date { float: none; margin-bottom: 2px; }
   .sub-entry .entry-header { flex-direction: column; }
   .sub-entry .entry-date { float: none; }
-  .skills-grid span { font-size: 11px; padding: 3px 8px; }
+  .skills-grid span { font-size: 12px; padding: 3px 8px; }
   .home-bio { font-size: 14px; }
   .project-card { padding: 16px 18px; }
   p { word-wrap: break-word; overflow-wrap: break-word; }
@@ -184,7 +184,7 @@ footer a:hover { color: var(--footer-link-hover); }
 /* RESPONSIVE 480px */
 @media (max-width: 480px) {
   .wrap { padding: 12px 14px 24px !important; }
-  nav { font-size: 10px; gap: 8px; padding: 10px 12px; letter-spacing: 0.5px; }
+  nav { font-size: 12px; gap: 8px; padding: 10px 12px; letter-spacing: 0.5px; }
   nav .site-name { font-size: 12px; padding: 3px 7px; }
   .hero-card h1 { font-size: 32px; }
   .hero-card .tagline { font-size: 14px; padding-left: 12px; border-left-width: 4px; }
@@ -197,9 +197,9 @@ footer a:hover { color: var(--footer-link-hover); }
   .home-bio { font-size: 13px; }
   .strengths-list li { font-size: 13px; padding-left: 20px; }
   .strengths-list li::before { width: 8px; height: 8px; }
-  .skills-grid span { font-size: 10px; padding: 2px 6px; }
+  .skills-grid span { font-size: 12px; padding: 2px 6px; }
   .project-card { padding: 14px; }
-  footer { font-size: 11px; padding: 12px 14px; }
+  footer { font-size: 12px; padding: 12px 14px; }
 }
 `;
 }

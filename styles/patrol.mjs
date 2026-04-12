@@ -239,7 +239,7 @@ h2 {
 .entry-title a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .entry-date {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-faint);
   white-space: nowrap;
   letter-spacing: 1px;
@@ -274,7 +274,7 @@ h2 {
 .sub-entry { padding: 14px 0 0; margin-top: 14px; border-top: 1px solid #243024; }
 .sub-entry:first-child { padding-top: 6px; margin-top: 6px; border-top: none; }
 .sub-entry .entry-role { font-weight: 600; color: #8aab50; margin-bottom: 4px; }
-.sub-entry .entry-date { font-size: 10px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* ---- DETAILS ---- */
 details { margin-top: 6px; }
@@ -449,7 +449,7 @@ footer a:hover { color: var(--footer-link-hover); }
 /* ---- RESPONSIVE 660px ---- */
 @media (max-width: 660px) {
   .wrap { width: 100% !important; padding: 20px 24px; }
-  nav { font-size: 11px; gap: 12px; flex-wrap: wrap; }
+  nav { font-size: 12px; gap: 12px; flex-wrap: wrap; }
   .hero-designation { font-size: 26px; letter-spacing: 2px; }
   .hero-meta { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .service-header, .entry-header { flex-direction: column; }
@@ -465,7 +465,7 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   .wrap { padding: 16px !important; }
   nav .site-name { font-size: 15px; letter-spacing: 1px; }
-  nav { font-size: 10px; gap: 8px; }
+  nav { font-size: 12px; gap: 8px; }
   h2 { font-size: 12px; letter-spacing: 3px; }
   .hero-designation { font-size: 22px; letter-spacing: 1px; }
   .hero-headline { font-size: 14px; }

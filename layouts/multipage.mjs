@@ -52,7 +52,7 @@ h2 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color:
 .sub-entry { padding: 10px 0 0; margin-top: 10px; border-top: 1px solid var(--border-light); }
 .sub-entry:first-child { padding-top: 4px; margin-top: 4px; border-top: none; }
 .sub-entry .entry-role { font-weight: 700; font-style: normal; font-size: 13px; color: var(--text); }
-.sub-entry .entry-date { font-size: 11px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* --- Details toggle --- */
 details { margin-top: 6px; }

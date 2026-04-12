@@ -164,9 +164,9 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   .wrap { padding: 16px !important; }
   h1 { font-size: 22px; }
-  nav .site-name { font-size: 11px; }
-  nav { font-size: 11px; gap: 8px; }
-  h2 { font-size: 10px; }
+  nav .site-name { font-size: 12px; }
+  nav { font-size: 12px; gap: 8px; }
+  h2 { font-size: 12px; }
   h3 { font-size: 14px; }
   .hero .bio { font-size: 13px; }
   .home-bio { font-size: 13px; }

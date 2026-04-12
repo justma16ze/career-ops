@@ -156,7 +156,7 @@ footer a:hover { color: var(--footer-link-hover); }
 @media (max-width: 480px) {
   .wrap { padding: 16px !important; }
   nav .site-name { font-size: 15px; }
-  nav { font-size: 11px; gap: 10px; }
+  nav { font-size: 12px; gap: 10px; }
   h1 { font-size: 24px; }
   h2 { font-size: 18px; }
   .home-bio { font-size: 13px; }
@@ -165,7 +165,7 @@ footer a:hover { color: var(--footer-link-hover); }
   li { font-size: 13px; }
   .job-header .company { font-size: 14px; }
   .role { font-size: 13px; }
-  .date { font-size: 11px; }
+  .date { font-size: 12px; }
   .skills-sidebar { font-size: 12px; }
   .skills-list { font-size: 13px; }
   .entry-title { font-size: 14px; }

@@ -83,7 +83,7 @@ nav .active { text-decoration-color: var(--text); text-decoration-thickness: 2px
 .sub-entry { padding: 10px 0 0; margin-top: 10px; border-top: 1px solid var(--border-light); }
 .sub-entry:first-child { padding-top: 4px; margin-top: 4px; border-top: none; }
 .sub-entry .entry-role { font-weight: 700; font-style: normal; font-size: 13px; color: var(--text); }
-.sub-entry .entry-date { font-size: 11px; }
+.sub-entry .entry-date { font-size: 12px; }
 
 /* ---- DETAILS ---- */
 details { margin-top: 6px; }
