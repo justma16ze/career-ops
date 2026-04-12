@@ -28,6 +28,7 @@ dist/
 dist-combos/
 dist-demo/
 dist-preview/
+dist-qa/
 dist-screenshots/
 .screenshot-tmp/
 .resolved-prompt-*
