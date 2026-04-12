@@ -91,32 +91,29 @@ Based on `candidate.type` and `candidate.positioning` (from profile.yml), select
    node combine-portfolio.mjs --style=almanac --layout=multipage --output=dist-preview/almanac-multipage
    ```
 
-3. Serve the previews on localhost so the candidate can see them in Chrome:
+3. Launch the visual template picker (ONE URL, not three):
    ```bash
-   npx serve dist-preview -l 3849 --no-clipboard
+   node serve-picker.mjs COMBO1 COMBO2 COMBO3
    ```
-   Then open the three previews:
-   - `http://localhost:3849/garden-multipage/index.html`
-   - `http://localhost:3849/ink-multipage/index.html`
-   - `http://localhost:3849/almanac-multipage/index.html`
+   This opens a gallery page at http://localhost:3849 showing all 3 templates side by side as live previews. Each has a "Pick this one" button. The user clicks their favorite directly in the browser.
 
-4. Present the 3 options to the candidate:
-   > "Here are 3 templates built with your real data. Open each in Chrome and pick your favorite."
-   >
-   > 1. **garden-multipage** — Warm linen, massive serif, editorial magazine feel
-   >    → http://localhost:3849/garden-multipage/index.html
-   > 2. **ink-multipage** — Warm editorial with proof sidebar, magazine feature energy
-   >    → http://localhost:3849/ink-multipage/index.html
-   > 3. **almanac-multipage** — Table-of-contents nav, archival book-like feel
-   >    → http://localhost:3849/almanac-multipage/index.html
-   >
-   > Options:
-   > - A) I like #1
-   > - B) I like #2
-   > - C) I like #3
-   > - D) Show me more
+4. Open the picker in Chrome:
+   ```bash
+   open http://localhost:3849
+   ```
+   Tell the candidate: "I've opened a gallery with your 3 templates. Click 'Pick this one' on your favorite, then come back here."
 
-5. If the candidate picks one → store the style and layout in profile.yml, generate the final version into `dist/`, and proceed to Step 2.5.
+5. Wait for the selection. The picker writes the choice to `/tmp/speedrun-template-choice.txt`. Read it:
+   ```bash
+   # Poll for the file (it's created when the user clicks)
+   while [ ! -f /tmp/speedrun-template-choice.txt ]; do sleep 1; done
+   cat /tmp/speedrun-template-choice.txt
+   ```
+   
+   If the file contains "more": generate 3 new combos from a different vibe, restart from step 2.
+   If the file contains a combo name: that's their choice. Proceed.
+
+6. After selection: store the style and layout in profile.yml, generate the final version into `dist/`, and proceed to Step 2.5.
 
 6. **If "show me more":** Pick 3 more combos from a DIFFERENT vibe category than the original 3. Use the vibe mapping below to find the next category. Generate those 3 the same way and present again.
 
@@ -251,14 +248,49 @@ After the candidate picks a template, check what content modules that layout ben
 
 5. Check if `gh` CLI is installed: `which gh`
 6. **If gh exists:**
-   a. Check if portfolio repo exists: `gh repo view portfolio 2>/dev/null`
-   b. If not, create it: `gh repo create portfolio --public --confirm`
-   c. Deploy: `npx gh-pages -d dist`
-   d. Derive the GitHub Pages URL: `https://{username}.github.io/portfolio`
+   a. Get GitHub username: `gh api user -q .login`
+   b. Check if portfolio repo exists: `gh repo view portfolio 2>/dev/null`
+   c. If not, create it: `gh repo create portfolio --public --confirm`
+   d. Deploy: `npx gh-pages -d dist`
+   e. Derive the GitHub Pages URL: `https://{username}.github.io/portfolio`
 7. **If gh is NOT installed:**
    a. Save HTML and inform the user: "Your portfolio is ready at `dist/index.html`"
    b. Suggest manual deployment options: GitHub Pages, Netlify Drop, Vercel, Cloudflare Pages
 8. After successful deploy: update `config/profile.yml` → `candidate.portfolio_url` with the live GitHub Pages URL
+
+### Step 4.5: GitHub Profile README (optional but recommended)
+
+After deploying the portfolio, offer to update the candidate's GitHub profile README (the special `username/username` repo that shows on their GitHub profile page).
+
+Generate a README.md that includes:
+- Their name and headline
+- A short version of their bio (2-3 sentences, markdown not HTML)
+- A prominent link to their portfolio
+- Links to LinkedIn, email, etc.
+- A "made by [your-personal-readme](https://github.com/justma16ze/your-personal-readme)" attribution
+
+```bash
+# Check if the profile repo exists
+gh repo view {username}/{username} 2>/dev/null
+# If not, create it
+gh repo create {username} --public --confirm
+# Clone, write README, push
+```
+
+Via AskUserQuestion:
+> "Want me to also update your GitHub profile? It's the page people see when they visit github.com/{username}. I'll add your bio and a link to your portfolio."
+> - A) Yes, update my profile (recommended)
+> - B) Skip
+
+### Step 4.6: Open the live portfolio
+
+After deploy, ALWAYS open the live portfolio and the user's GitHub profile in Chrome so they can see it:
+
+```bash
+open "https://{username}.github.io/portfolio"
+open "https://github.com/{username}"
+```
+
 9. Report the live URL back to the user
 
 ## HTML Generation
