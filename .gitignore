@@ -25,6 +25,11 @@ modes/_profile.md
 
 # Generated
 dist/
+dist-combos/
+dist-demo/
+dist-preview/
+dist-screenshots/
+.screenshot-tmp/
 .resolved-prompt-*
 node_modules/
 portcos.yml
@@ -49,3 +54,14 @@ article-digest.md
 .playwright-mcp/
 web/
 web-worker/
+
+# Wrangler local state
+worker/.wrangler/
+
+# Test artifacts
+tests/screenshots/
+tests/report.md
+tests/eval/output/
+
+# Screenshot generator temp
+my-portfolio/
