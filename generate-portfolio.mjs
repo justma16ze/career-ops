@@ -16,6 +16,8 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'js-yaml';
 import { getTemplate, listTemplates } from './templates/registry.mjs';
+import { getStyle, listStyles } from './styles/registry.mjs';
+import { getLayout, listLayouts } from './layouts/registry.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -24,13 +26,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const args = { output: 'dist', theme: 'light', template: 'ink' };
+  const args = { output: 'dist', theme: 'light', template: 'ink', style: '', layout: '' };
   for (const arg of argv.slice(2)) {
     if (arg.startsWith('--output=')) args.output = arg.split('=').slice(1).join('=');
     else if (arg.startsWith('--theme=')) args.theme = arg.split('=')[1].toLowerCase();
     else if (arg.startsWith('--template=')) args.template = arg.split('=')[1].toLowerCase();
+    else if (arg.startsWith('--style=')) args.style = arg.split('=')[1].toLowerCase();
+    else if (arg.startsWith('--layout=')) args.layout = arg.split('=')[1].toLowerCase();
     else if (arg === '--help' || arg === '-h') {
-      console.log('Usage: node generate-portfolio.mjs [--output=dist] [--template=ink] [--theme=dark|light]');
+      console.log('Usage: node generate-portfolio.mjs [--output=dist] [--template=ink]');
+      console.log('       node generate-portfolio.mjs --style=ink --layout=multipage [--output=dist]');
+      console.log('\nStyle x Layout combinatorial system:');
+      console.log('  --style=X    Visual style (colors, fonts, spacing)');
+      console.log('  --layout=Y   HTML structure (multipage, sidebar, scroll, bands, centered, cards, sidebar-right, spread)');
+      console.log('  --template=X Backward-compat: uses monolithic template from templates/');
       process.exit(0);
     }
   }
@@ -121,34 +130,88 @@ function parseExperience(body) {
     if (lines.length === 0) continue;
 
     const companyLine = lines[0];
-    const company = companyLine.replace(/\s*--\s*.*$/, '').trim();
-    const location = companyLine.includes('--') ? companyLine.split('--').slice(1).join('--').trim() : '';
+    // "Company -- Role" format: part after -- is the role for single-role entries, not location
+    const hasDashSep = companyLine.includes('--');
+    const company = companyLine.replace(/\s*--\s*.*$/, '').replace(/\s*\([\d\s\w]+\)\s*$/, '').trim();
+    const dashRole = hasDashSep ? companyLine.split('--').slice(1).join('--').trim() : '';
 
-    let role = '';
-    let dateRange = '';
-    const bullets = [];
+    // Check if block has #### sub-roles
+    const hasSubRoles = lines.some(l => l.startsWith('####'));
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      // Role line: **Role Title** or **Role Title / Other**
-      const roleMatch = line.match(/^\*\*(.+?)\*\*$/);
-      if (roleMatch && !role) {
-        role = roleMatch[1];
-        continue;
+    if (hasSubRoles) {
+      // Split into sub-role blocks on ####
+      const subBlocks = block.split(/^####\s+/m).filter(Boolean);
+      // First sub-block is the company header line, skip it
+      for (let s = 1; s < subBlocks.length; s++) {
+        const subLines = subBlocks[s].split('\n').map(l => l.trim()).filter(Boolean);
+        if (subLines.length === 0) continue;
+        const role = subLines[0];
+        let dateRange = '';
+        const bullets = [];
+        for (let i = 1; i < subLines.length; i++) {
+          const line = subLines[i];
+          // Date in bold: **Month YYYY - Month YYYY (duration)**
+          const boldDateMatch = line.match(/^\*\*(.+?)\*\*$/);
+          if (boldDateMatch && !dateRange) {
+            // Extract just the date part, strip duration in parens
+            dateRange = boldDateMatch[1].replace(/\s*\([^)]*\)\s*$/, '').trim();
+            continue;
+          }
+          // Bullet points
+          if (line.startsWith('-') || line.startsWith('*')) {
+            bullets.push(line.replace(/^[-*]\s*/, ''));
+            continue;
+          }
+          // Skip short location-like lines
+          if (line.length < 50 && /^[A-Z]/.test(line) && (line.includes(',') || line.includes('Area'))) continue;
+          // Non-bullet paragraph text — include as content
+          if (line.length > 10) {
+            bullets.push(line);
+          }
+        }
+        entries.push({ company, location: '', role, dateRange, bullets });
       }
-      // Date line: YYYY-YYYY or YYYY - Present or Month YYYY - Month YYYY
-      const dateMatch = line.match(/^(\d{4}\s*[-–]\s*(?:\d{4}|[Pp]resent)|\w+\s+\d{4}\s*[-–]\s*(?:\w+\s+\d{4}|[Pp]resent))$/);
-      if (dateMatch && !dateRange) {
-        dateRange = dateMatch[1].replace(/[-–]/, ' - ');
-        continue;
+    } else {
+      // Single role at this company
+      let role = dashRole; // from "Company -- Role" format
+      let dateRange = '';
+      const bullets = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        // Role in #### heading
+        const h4Match = line.match(/^####\s+(.+)/);
+        if (h4Match && !role) { role = h4Match[1]; continue; }
+        // Bold text: could be date or role
+        const boldMatch = line.match(/^\*\*(.+?)\*\*$/);
+        if (boldMatch) {
+          if (/\d{4}/.test(boldMatch[1])) {
+            if (!dateRange) dateRange = boldMatch[1].replace(/\s*\([^)]*\)\s*$/, '').trim();
+          } else if (!role) {
+            role = boldMatch[1];
+          }
+          continue;
+        }
+        // Date line
+        const dateMatch = line.match(/^(\d{4}\s*[-–]\s*(?:\d{4}|[Pp]resent)|\w+\s+\d{4}\s*[-–]\s*(?:\w+\s+\d{4}|[Pp]resent))/);
+        if (dateMatch && !dateRange) {
+          dateRange = dateMatch[1].replace(/[-–]/, ' - ');
+          continue;
+        }
+        // Bullet points
+        if (line.startsWith('-') || line.startsWith('*')) {
+          bullets.push(line.replace(/^[-*]\s*/, ''));
+          continue;
+        }
+        // Skip short location-like lines (city, state)
+        if (line.length < 50 && /^[A-Z]/.test(line) && (line.includes(',') || line.includes('Area'))) continue;
+        // Non-bullet paragraph text — include as a bullet (it's still content)
+        if (line.length > 10) {
+          bullets.push(line);
+        }
       }
-      // Bullet point
-      if (line.startsWith('-') || line.startsWith('*')) {
-        bullets.push(line.replace(/^[-*]\s*/, ''));
-      }
+      entries.push({ company, location: '', role, dateRange, bullets });
     }
-
-    entries.push({ company, location, role, dateRange, bullets });
   }
   return entries;
 }
@@ -297,12 +360,18 @@ function parseProjects(projectsBody, articleDigest, profileProofPoints) {
   if (articleDigest) {
     const digestLines = articleDigest.split('\n');
     let currentProject = null;
+    // Get candidate name for filtering metadata headings
+    const candidateName = profileProofPoints?.[0]?.name ? '' : '';
     for (const line of digestLines) {
       const h2 = line.match(/^##\s+(.+)/);
       const h3 = line.match(/^###\s+(.+)/);
       if (h2 || h3) {
+        const heading = (h2 || h3)[1].trim();
+        // Skip metadata/header lines that aren't real projects
+        const isMetadata = /proof\s*points|article\s*digest|compact\s*proof|cv\s*and\s*evaluation|for\s*cv\s*/i.test(heading);
+        if (isMetadata) continue;
         if (currentProject) projects.push(currentProject);
-        currentProject = { name: (h2 || h3)[1].trim(), description: '', heroMetric: '', url: '' };
+        currentProject = { name: heading, description: '', heroMetric: '', url: '' };
       } else if (currentProject && line.trim()) {
         const metricMatch = line.match(/(\d[\d,.]*[KkMm%]?\+?\s*(?:increase|decrease|reduction|improvement|stars|users|downloads|revenue|growth|faster|slower|saved|reduction))/i);
         if (metricMatch && !currentProject.heroMetric) {
@@ -396,6 +465,7 @@ function extractTemplateData({ profile, sections, articleDigest }) {
   const proofPoints = n.proof_points || [];
   const exitStory = n.exit_story || '';
   const currentProject = profile.talent_network?.current_project || n.current_project || '';
+  const homeBio = n.home_bio || '';
   const targetRoles = profile.target_roles?.primary || [];
   const locationFlex = profile.compensation?.location_flexibility || '';
   const sum = sections.get('professional summary') || sections.get('summary') || sections.get('about') || sections.get('_preamble') || '';
@@ -404,12 +474,17 @@ function extractTemplateData({ profile, sections, articleDigest }) {
   const experience = parseExperience(sections.get('work experience') || sections.get('experience') || '');
   const education = parseEducation(sections.get('education') || '');
   const skills = parseSkills(sections.get('skills') || '');
-  const projects = parseProjects(sections.get('projects') || '', articleDigest, proofPoints);
+  // Only use real projects from cv.md Projects section. Article-digest proof points
+  // are resume highlights, not standalone projects — they duplicate experience content.
+  // If there's no Projects section in cv.md, projects array will be empty and
+  // templates should skip the Work page entirely.
+  const projectsBody = sections.get('projects') || '';
+  const projects = projectsBody ? parseProjects(projectsBody, null, proofPoints) : [];
   const experienceGroups = groupByCompany(experience);
 
   return {
     name, headline, location, email, linkedin, github,
-    summaryText, summaryShort, exitStory, currentProject,
+    summaryText, summaryShort, exitStory, currentProject, homeBio,
     superpowers, proofPoints, targetRoles, locationFlex,
     experience, education, skills, projects, experienceGroups,
     esc, renderInlineMarkdown,
@@ -420,45 +495,173 @@ function extractTemplateData({ profile, sections, articleDigest }) {
 // Main
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Style x Layout combinator: wraps layout HTML with style CSS + fonts
+// ---------------------------------------------------------------------------
+
+function buildComboPage({ title, body, summaryShort, styleFonts, styleCss, layoutCss }) {
+  const esc = s => !s ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const fontLinks = styleFonts.map(f =>
+    `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="${f}" rel="stylesheet">`
+  ).join('\n');
+  // Layout CSS first (structural), then style CSS (visual overrides)
+  const combinedCss = `/* === LAYOUT === */\n${layoutCss}\n/* === STYLE === */\n${styleCss}`;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(summaryShort)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(summaryShort)}">
+<meta property="og:type" content="website">
+${fontLinks}
+<style>${combinedCss}</style>
+</head>
+<body>
+${body}
+</body>
+</html>`;
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   const outputDir = resolve(__dirname, args.output);
-  const templateName = args.template;
 
-  console.log('Portfolio generator (multi-page, template system)');
-  console.log(`  Template: ${templateName}`);
-  console.log(`  Output: ${outputDir}/\n`);
+  // Determine mode: style+layout combo vs monolithic template
+  const useCombo = !!(args.style || args.layout);
 
-  // Load template (validates name, throws with list of valid names if invalid)
-  let template;
-  try {
-    template = await getTemplate(templateName);
-  } catch (err) {
-    console.error(`ERROR: ${err.message}`);
-    const available = await listTemplates();
-    console.error(`Available templates: ${available.join(', ')}`);
-    process.exit(1);
+  if (useCombo) {
+    // ---------- STYLE x LAYOUT MODE ----------
+    const styleName = args.style || 'ink';
+    const layoutName = args.layout || 'multipage';
+
+    console.log('Portfolio generator (style x layout combinatorial system)');
+    console.log(`  Style: ${styleName}`);
+    console.log(`  Layout: ${layoutName}`);
+    console.log(`  Output: ${outputDir}/\n`);
+
+    let style, layout;
+    try {
+      style = await getStyle(styleName);
+    } catch (err) {
+      console.error(`ERROR: ${err.message}`);
+      const available = await listStyles();
+      console.error(`Available styles: ${available.join(', ')}`);
+      process.exit(1);
+    }
+    try {
+      layout = await getLayout(layoutName);
+    } catch (err) {
+      console.error(`ERROR: ${err.message}`);
+      const available = await listLayouts();
+      console.error(`Available layouts: ${available.join(', ')}`);
+      process.exit(1);
+    }
+
+    const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
+    const sections = parseSections(cvRaw);
+    console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
+    console.log(`  article-digest.md: ${articleDigest ? 'found' : 'not found (skipping)'}\n`);
+
+    const data = extractTemplateData({ profile, sections, articleDigest });
+
+    // Layout generates raw HTML body fragments (keyed by filename)
+    const rawPages = layout.pages(data);
+    const styleCss = style.css();
+    const layoutCss = layout.css();
+
+    await mkdir(outputDir, { recursive: true });
+    let total = 0;
+    for (const [f, bodyHtml] of Object.entries(rawPages)) {
+      const pageTitle = f === 'index.html' ? data.name : `${f.replace('.html', '').replace(/^./, c => c.toUpperCase())} \u2014 ${data.name}`;
+      const html = buildComboPage({
+        title: pageTitle,
+        body: bodyHtml,
+        summaryShort: data.summaryShort,
+        styleFonts: style.fonts,
+        styleCss,
+        layoutCss,
+      });
+      await writeFile(resolve(outputDir, f), html, 'utf-8');
+      const sz = Buffer.byteLength(html, 'utf-8');
+      total += sz;
+      console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
+    }
+    console.log(`\n  ${Object.keys(rawPages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
+    console.log(`  Style: ${styleName} | Layout: ${layoutName}`);
+    console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
+
+  } else {
+    // ---------- MONOLITHIC TEMPLATE MODE (backward compat) ----------
+    const templateName = args.template;
+
+    console.log('Portfolio generator (multi-page, template system)');
+    console.log(`  Template: ${templateName}`);
+    console.log(`  Output: ${outputDir}/\n`);
+
+    // Try monolithic template first, then fall back to style+multipage
+    let template;
+    try {
+      template = await getTemplate(templateName);
+    } catch {
+      // Check if templateName matches a style name — use style + multipage layout
+      try {
+        const style = await getStyle(templateName);
+        const layout = await getLayout('multipage');
+        const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
+        const sections = parseSections(cvRaw);
+        console.log(`  (using style "${templateName}" + layout "multipage")`);
+        console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}\n`);
+        const data = extractTemplateData({ profile, sections, articleDigest });
+        const rawPages = layout.pages(data);
+        const styleCss = style.css();
+        const layoutCss = layout.css();
+        await mkdir(outputDir, { recursive: true });
+        let total = 0;
+        for (const [f, bodyHtml] of Object.entries(rawPages)) {
+          const pageTitle = f === 'index.html' ? data.name : `${f.replace('.html', '').replace(/^./, c => c.toUpperCase())} \u2014 ${data.name}`;
+          const html = buildComboPage({ title: pageTitle, body: bodyHtml, summaryShort: data.summaryShort, styleFonts: style.fonts, styleCss, layoutCss });
+          await writeFile(resolve(outputDir, f), html, 'utf-8');
+          const sz = Buffer.byteLength(html, 'utf-8');
+          total += sz;
+          console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
+        }
+        console.log(`\n  ${Object.keys(rawPages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
+        console.log(`  Style: ${templateName} | Layout: multipage`);
+        console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
+        return;
+      } catch {
+        const available = await listTemplates();
+        const styles = await listStyles();
+        console.error(`Unknown template/style "${templateName}".`);
+        console.error(`Templates: ${available.join(', ')}`);
+        console.error(`Styles: ${styles.join(', ')}`);
+        process.exit(1);
+      }
+    }
+
+    const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
+    const sections = parseSections(cvRaw);
+    console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
+    console.log(`  article-digest.md: ${articleDigest ? 'found' : 'not found (skipping)'}\n`);
+
+    const data = extractTemplateData({ profile, sections, articleDigest });
+    const pages = template.pages(data);
+
+    await mkdir(outputDir, { recursive: true });
+    let total = 0;
+    for (const [f, html] of Object.entries(pages)) {
+      await writeFile(resolve(outputDir, f), html, 'utf-8');
+      const sz = Buffer.byteLength(html, 'utf-8');
+      total += sz;
+      console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
+    }
+    console.log(`\n  ${Object.keys(pages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
+    console.log(`  Template: ${templateName}`);
+    console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
   }
-
-  const [profile, cvRaw, articleDigest] = await Promise.all([readProfile(), readCV(), readArticleDigest()]);
-  const sections = parseSections(cvRaw);
-  console.log(`  Sections: ${[...sections.keys()].filter(k => k !== '_preamble').join(', ')}`);
-  console.log(`  article-digest.md: ${articleDigest ? 'found' : 'not found (skipping)'}\n`);
-
-  const data = extractTemplateData({ profile, sections, articleDigest });
-  const pages = template.pages(data);
-
-  await mkdir(outputDir, { recursive: true });
-  let total = 0;
-  for (const [f, html] of Object.entries(pages)) {
-    await writeFile(resolve(outputDir, f), html, 'utf-8');
-    const sz = Buffer.byteLength(html, 'utf-8');
-    total += sz;
-    console.log(`  ${f} (${(sz / 1024).toFixed(1)} KB)`);
-  }
-  console.log(`\n  ${Object.keys(pages).length} pages, ${(total / 1024).toFixed(1)} KB total`);
-  console.log(`  Template: ${templateName}`);
-  console.log(`\n  open ${resolve(outputDir, 'index.html')}`);
 }
 
 // Export data extraction utilities for use in templates and tests

@@ -12,7 +12,7 @@
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/a16z/speedrun-career-ops.git
+git clone https://github.com/justma16ze/career-ops.git
 cd speedrun-career-ops
 npm install
 npx playwright install chromium   # Required for PDF generation + portal scanning

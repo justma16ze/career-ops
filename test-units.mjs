@@ -476,7 +476,7 @@ for (const tmplName of TEMPLATE_NAMES) {
       `${tmplName}/${pageName}: has "made by speedrun" footer`
     );
     truthy(
-      html.includes('https://github.com/a16z/speedrun-career-ops'),
+      html.includes('https://github.com/justma16ze/career-ops'),
       `${tmplName}/${pageName}: footer links to GitHub repo`
     );
 

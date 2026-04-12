@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="About — Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Backgrounds */
+  --bg: #fff;
+  --bg-alt: #fafafa;
+  --bg-card: #fff;
+  --bg-nav: transparent;
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #111;
+  --text-muted: #555;
+  --text-faint: #999;
+
+  /* Accent */
+  --accent: #0d9488;
+  --accent-hover: #0d9488;
+
+  /* Borders */
+  --border: #eee;
+  --border-light: #f0f0f0;
+
+  /* Typography */
+  --font-display: 'General Sans', sans-serif;
+  --font-body: 'General Sans', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  /* Spacing */
+  --wrap-width: 700px;
+  --nav-height: auto;
+
+  /* Footer — light bg */
+  --footer-text: #666;
+  --footer-link: #444;
+  --footer-link-hover: #333;
+  --footer-border: var(--border);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; }
+.wrap { width: var(--wrap-width); margin: 0 auto; padding: 48px 40px 32px; }
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(13,148,136,0.3); }
+a:hover { color: var(--accent-hover); text-decoration-color: var(--accent); }
+
+/* Nav */
+nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; margin-bottom: 32px; font-size: 13px; }
+.site-name { font-family: var(--font-display); font-weight: 700; color: var(--text); text-decoration: none; text-transform: uppercase; font-size: 12px; letter-spacing: 0.06em; margin-right: auto; }
+nav a { color: var(--text-faint); text-decoration: none; text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em; }
+nav a:hover { color: var(--text); }
+nav .active { color: var(--text); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em; }
+
+/* Headings */
+h1 { font-family: var(--font-display); font-size: 36px; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.15; margin-bottom: 20px; max-width: 620px; }
+h2 { font-family: var(--font-display); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin: 32px 0 12px; }
+h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+h3 a { color: var(--text); text-decoration: none; border-bottom: 2px solid var(--text); padding-bottom: 1px; }
+h3 a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Body text */
+p { margin-bottom: 8px; }
+p:last-child { margin-bottom: 0; }
+
+/* Hero section */
+.hero { margin-bottom: 32px; }
+.hero .bio { font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 580px; }
+.hero .bio p { margin-bottom: 12px; }
+.hero .bio a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #ccc; }
+.hero .bio a:hover { text-decoration-color: var(--text); }
+.hero .links { margin-top: 14px; font-size: 13px; }
+.hero .links a { color: var(--accent); margin-right: 16px; }
+
+/* Home bio */
+.home-bio { font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 580px; }
+.home-bio p { margin-bottom: 12px; }
+.home-bio a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #ccc; }
+.home-bio a:hover { text-decoration-color: var(--text); }
+
+/* Projects */
+.project { margin-bottom: 20px; }
+.project p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.project .metric { font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+
+/* Experience / Jobs */
+.job { margin-bottom: 24px; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.job-header strong { font-size: 15px; }
+.date { font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+.role { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+
+/* Standard entry classes */
+.entry { margin-bottom: 24px; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.entry-title { font-weight: 700; font-size: 15px; color: var(--text); }
+.entry-date { font-size: 12px; color: var(--text-faint); white-space: nowrap; font-family: var(--font-mono); }
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+.entry-desc, .entry li { font-size: 14px; color: var(--text-muted); }
+.entry-desc { line-height: 1.6; }
+
+/* Sub roles */
+.sub-role { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-light); }
+.sub-role:first-child { margin-top: 4px; padding-top: 0; border-top: none; }
+.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.sub-role .role { font-weight: 600; color: var(--text); font-size: 14px; }
+.sub-entry { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { margin-top: 4px; padding-top: 0; border-top: none; }
+
+ul { margin: 4px 0 0 20px; }
+li { font-size: 14px; color: var(--text-muted); margin-bottom: 3px; line-height: 1.6; }
+
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ show more'; }
+details[open] summary::before { content: '- show less'; }
+details .detail-content { padding-top: 6px; }
+
+/* About page */
+.detail { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.strengths-list { list-style: none; padding: 0; margin: 0; }
+.strengths-list li { font-size: 14px; color: var(--text-muted); padding: 3px 0; }
+.skills-list { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
+.skills-grid { font-size: 14px; color: var(--text-muted); }
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 16px; }
+section { margin-bottom: 16px; }
+article { margin-bottom: 16px; }
+
+/* Footer */
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
+footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* Print */
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; max-width: none; width: auto; } }
+
+/* Responsive 660px */
+@media (max-width: 660px) {
+  .wrap { width: 100% !important; padding: 28px 24px; }
+  h1 { font-size: 26px; }
+  nav { font-size: 12px; gap: 14px; }
+  .hero .bio { font-size: 14px; }
+  .home-bio { font-size: 14px; }
+  .job-header { flex-direction: column; }
+  .sub-role-header { flex-direction: column; }
+  .entry-header { flex-direction: column; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+}
+
+/* Responsive 480px */
+@media (max-width: 480px) {
+  .wrap { padding: 16px !important; }
+  h1 { font-size: 22px; }
+  nav .site-name { font-size: 11px; }
+  nav { font-size: 11px; gap: 8px; }
+  h2 { font-size: 10px; }
+  h3 { font-size: 14px; }
+  .hero .bio { font-size: 13px; }
+  .home-bio { font-size: 13px; }
+  .job-header strong { font-size: 14px; }
+  .role { font-size: 13px; }
+  li { font-size: 13px; }
+  .detail { font-size: 13px; }
+  .strengths-list li { font-size: 13px; }
+  .skills-list { font-size: 13px; }
+  .entry-title { font-size: 14px; }
+  .entry-desc { font-size: 13px; }
+}
+
+/* === sidebar layout: structural only === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; scroll-behavior: smooth; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.7; margin: 0; padding: 0; font-size: 14px; }
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+a:hover { color: var(--accent-hover); }
+
+/* --- Two-column wrapper --- */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+
+/* --- Left sidebar (sticky) --- */
+.sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
+.sidebar-top { }
+.site-name { font-family: var(--font-display); font-size: 46px; font-weight: 700; color: var(--text); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; text-decoration: none; display: block; }
+.site-name:hover { color: var(--text); }
+.hero-headline { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+.sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
+
+/* --- Sidebar nav --- */
+.nav-links { list-style: none; padding: 0; margin: 0; }
+.nav-links li { margin-bottom: 12px; }
+.nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
+.nav-links a::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--text-faint); transition: width 0.15s ease, background 0.15s ease; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::before { width: 64px; background: var(--text); }
+.nav-links .active { color: var(--text); }
+.nav-links .active::before { width: 64px; background: var(--text); }
+
+.sidebar-bottom { }
+.social-links { display: flex; gap: 20px; align-items: center; }
+.social-links a { color: var(--text-faint); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease; }
+.social-links a:hover { color: var(--text); }
+
+/* --- Right content (scrolls) --- */
+.content { flex: 1; padding: 96px 0 80px; min-width: 0; }
+
+/* --- Section spacing --- */
+.section { margin-bottom: 96px; }
+.section:last-child { margin-bottom: 48px; }
+.section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 40px; display: none; }
+
+/* --- About / Bio --- */
+.home-bio { font-size: 16px; color: var(--text-muted); line-height: 1.8; }
+.home-bio p { margin-bottom: 16px; }
+.home-bio a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.home-bio a:hover { color: var(--accent); }
+.home-bio strong { color: var(--text); font-weight: 600; }
+
+/* --- Experience entry --- */
+.entry { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 24px; margin: 0 -24px; border-radius: 8px; transition: background 0.15s ease, box-shadow 0.15s ease; margin-bottom: 4px; border: 1px solid transparent; }
+.entry:hover { background: var(--bg-alt); }
+.entry-date { font-size: 12px; color: var(--text-faint); font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 5px; white-space: nowrap; line-height: 1.5; }
+.entry-body { }
+.entry-header { margin-bottom: 4px; }
+.entry-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.entry-title a { color: var(--text); text-decoration: none; }
+.entry-title a:hover { color: var(--accent); }
+.entry-company { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+.entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+.entry ul { margin: 6px 0 0 0; padding-left: 16px; list-style: disc; }
+.entry li { margin-bottom: 4px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* --- Sub-entry (multi-role companies) --- */
+.sub-entry { padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { padding-top: 0; margin-top: 0; border-top: none; }
+.sub-entry .entry-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.sub-entry .entry-role { font-size: 14px; font-weight: 600; color: var(--text); }
+.sub-entry .entry-date { font-size: 12px; }
+
+/* --- Skills --- */
+.skills-list { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+.skills-list .tag { display: inline; }
+.skills-list .tag::after { content: ' · '; color: var(--text-faint); }
+.skills-list .tag:last-child::after { content: ''; }
+
+/* --- Strengths --- */
+.strengths-list { list-style: none; padding: 0; }
+.strengths-list li { font-size: 14px; color: var(--text-muted); padding: 8px 0 8px 20px; line-height: 1.5; border-left: 2px solid var(--border); margin-bottom: 4px; transition: border-color 0.15s ease; }
+.strengths-list li:hover { border-left-color: var(--accent); color: var(--text); }
+
+/* --- Contact --- */
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 20px; color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+.contact-line a:hover { color: var(--accent); }
+
+/* --- Education --- */
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; margin-top: 48px; }
+
+/* --- Details toggle --- */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ show more'; }
+details[open] summary::before { content: '- show less'; }
+details .detail-content { padding-top: 8px; }
+
+/* --- Footer --- */
+footer { margin-top: 80px; padding: 24px 0 40px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
+footer a { color: var(--footer-link); font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* --- Print --- */
+@media print {
+  .sidebar { display: none; }
+  .wrap { max-width: none; padding: 1rem; display: block; }
+  .content { padding: 0; }
+  footer { display: none; }
+  .entry { background: none !important; }
+  .section-label { display: block; }
+}
+
+/* --- Mobile: sidebar stacks on top --- */
+@media (max-width: 660px) {
+  .wrap { flex-direction: column; padding: 0 24px; gap: 0; }
+  .sidebar { position: relative; width: 100%; min-width: 0; height: auto; padding: 48px 0 24px; }
+  .sidebar-tagline { margin-bottom: 24px; }
+  .nav-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .nav-links li { margin-bottom: 0; }
+  .nav-links a::before { display: none; }
+  .nav-links a { font-size: 11px; }
+  .content { padding: 24px 0 48px; }
+  .section { margin-bottom: 64px; }
+  .section-label { display: block; position: sticky; top: 0; z-index: 10; background: var(--bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; margin: 0 0 24px; }
+  .entry { grid-template-columns: 1fr; gap: 4px; padding: 16px 12px; margin: 0 -12px; border: none; }
+  .entry-date { padding-top: 0; font-size: 11px; }
+  .site-name { font-size: 34px; }
+  .hero-headline { font-size: 15px; }
+  .home-bio { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 0 16px; }
+  .sidebar { padding: 32px 0 16px; }
+  .site-name { font-size: 28px; }
+  .hero-headline { font-size: 14px; }
+  .nav-links a { font-size: 10px; }
+  .entry { padding: 12px 8px; margin: 0 -8px; }
+  .entry-title { font-size: 14px; }
+  .entry-desc { font-size: 12px; }
+  .entry li { font-size: 12px; }
+  .home-bio { font-size: 13px; }
+}</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>More — Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="More — Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="wrap">
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="index.html" class="site-name">Jordan Mazer</a>
+    <div class="hero-headline">Talent leader who scales teams from startup to global -- recruiting, HR ops, and people strategy</div>
+    <p class="sidebar-tagline">Bridge to capital and opportunities at early, a16z-backed startups.</p>
+    <nav>
+      <ul class="nav-links"><li><a href="index.html">About</a></li><li><a href="experience.html">Experience</a></li><li><a href="about.html" class="active">More</a></li></ul>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="social-links"><a href="https://linkedin.com/in/jordanmazer" target="_blank" rel="noopener">LinkedIn</a><a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></div>
+  </div>
+</aside>
+<main class="content">
+<section class="section">
+<div class="section-label">More</div>
+<h2>Strengths</h2><ul class="strengths-list"><li>Scaling orgs (Scopely 15 to 125, Riot 1000+ hires/year)</li><li>Technical recruiting at elite engineering orgs</li><li>Building and restructuring HR/TA functions</li><li>Crisis operations (led Riot&#39;s COVID response)</li><li>Startup-to-enterprise talent strategy</li></ul>
+<h2>Looking For</h2><p class="entry-desc">Head of Talent / Head of People, VP, Talent Acquisition</p>
+<h2>Skills</h2><div class="skills-list"><span class="tag">Interviewing</span><span class="tag">Sourcing</span><span class="tag">Key Account Development</span><span class="tag">Talent Acquisition</span><span class="tag">HR Operations</span><span class="tag">HR Strategy</span><span class="tag">People Analytics</span><span class="tag">Employer Branding</span><span class="tag">Headcount Planning</span><span class="tag">Stakeholder Management</span><span class="tag">Technical Recruiting</span><span class="tag">Team Leadership</span></div>
+<h2>Contact</h2><p class="contact-line"><a href="https://linkedin.com/in/jordanmazer">LinkedIn</a><a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></p>
+</section>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</main>
+</div>
+</body>
+</html>
+</body>
+</html>

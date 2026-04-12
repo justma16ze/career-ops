@@ -15,11 +15,11 @@
 
 ## Checklist
 
-- [ ] I have read [CONTRIBUTING.md](https://github.com/a16z/speedrun-career-ops/blob/main/CONTRIBUTING.md)
+- [ ] I have read [CONTRIBUTING.md](https://github.com/justma16ze/career-ops/blob/main/CONTRIBUTING.md)
 - [ ] I opened an issue first (required for features and architecture changes)
 - [ ] My PR does not include personal data (CV, email, real names)
 - [ ] I ran `node test-all.mjs` and all tests pass
-- [ ] My changes respect the [Data Contract](https://github.com/a16z/speedrun-career-ops/blob/main/DATA_CONTRACT.md) (no modifications to user-layer files)
+- [ ] My changes respect the [Data Contract](https://github.com/justma16ze/career-ops/blob/main/DATA_CONTRACT.md) (no modifications to user-layer files)
 
 ---
 Questions? [Join the Discord](https://discord.gg/8pRpHETxa4) for faster feedback.

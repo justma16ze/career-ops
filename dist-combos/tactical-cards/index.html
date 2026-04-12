@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Backgrounds */
+  --bg: #0a0a0a;
+  --bg-alt: #111;
+  --bg-card: #141414;
+  --bg-nav: transparent;
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #d4d4d4;
+  --text-muted: #909090;
+  --text-faint: #505050;
+
+  /* Accent */
+  --accent: #8faa6e;
+  --accent-hover: #a8c484;
+
+  /* Borders */
+  --border: #1f1f1f;
+  --border-light: #1a1a1a;
+
+  /* Typography */
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+
+  /* Spacing */
+  --wrap-width: 660px;
+  --nav-height: auto;
+
+  /* Footer — dark bg: accent color for link */
+  --footer-text: #aaa;
+  --footer-link: #8faa6e;
+  --footer-link-hover: #a8c484;
+  --footer-border: #1a1a1a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 14px; border-top: 2px solid var(--accent); }
+.wrap { width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 48px; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(143,170,110,0.3); }
+a:hover { color: var(--accent-hover); border-bottom-color: var(--accent-hover); }
+
+/* NAV */
+nav { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 40px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.site-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: #e0e0e0; text-decoration: none; border-bottom: none; margin-right: auto; letter-spacing: 3px; text-transform: uppercase; }
+nav a { font-family: var(--font-mono); font-size: 11px; color: #707070; text-decoration: none; border-bottom: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+nav a:hover { color: var(--accent); }
+nav .active { font-family: var(--font-mono); font-size: 11px; color: var(--accent); border-bottom: none; letter-spacing: 2px; text-transform: uppercase; }
+
+/* HEADINGS — tactical-specific // prefix */
+h2 { font-family: var(--font-display); font-size: 11px; font-weight: 600; color: var(--accent); margin: 40px 0 16px; letter-spacing: 3px; text-transform: uppercase; }
+h2::before { content: '// '; color: #3a3a3a; }
+
+/* SECTION LABELS */
+.section-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+
+/* HOME */
+.hero { margin-bottom: 40px; }
+.hero-designation { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: #e8e8e8; text-transform: uppercase; letter-spacing: 2px; line-height: 1.15; margin-bottom: 8px; }
+.hero-headline { font-family: var(--font-body); font-size: 15px; color: #808080; line-height: 1.6; margin-bottom: 16px; }
+.hero-meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 16px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); }
+.hero-meta-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-faint); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+.hero-meta-value { font-family: var(--font-mono); font-size: 13px; color: #c0c0c0; }
+.hero-meta-value a { color: var(--accent); border-bottom: none; }
+.hero-meta-value a:hover { color: var(--accent-hover); }
+
+.home-bio { font-size: 15px; color: #b0b0b0; line-height: 1.75; margin-bottom: 32px; }
+.home-bio p { margin-bottom: 14px; }
+.home-bio a { color: var(--accent); border-bottom: 1px solid rgba(143,170,110,0.3); }
+.home-bio a:hover { color: var(--accent-hover); border-bottom-color: var(--accent-hover); }
+.home-bio strong { color: #d0d0d0; font-weight: 600; }
+
+/* INTRO / FALLBACK */
+.intro { font-size: 15px; color: #a0a0a0; line-height: 1.75; margin-bottom: 32px; }
+.intro p { margin-bottom: 14px; }
+.intro a { color: var(--accent); }
+
+/* MISSION LOG (projects) */
+.mission-log { margin-top: 24px; }
+.mission-entry { padding: 20px 0; border-bottom: 1px solid var(--border-light); }
+.mission-entry:first-child { border-top: 1px solid var(--border-light); }
+.mission-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.mission-name { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: #e0e0e0; text-transform: uppercase; letter-spacing: 1px; }
+.mission-name a { color: #e0e0e0; border-bottom: 1px solid #333; }
+.mission-name a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.mission-metric { font-family: var(--font-mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
+.mission-desc { font-size: 13px; color: #707070; line-height: 1.6; }
+
+/* SERVICE RECORD (experience) */
+.service-record { margin-top: 24px; }
+.service-entry { padding: 20px 0; border-bottom: 1px solid var(--border-light); }
+.service-entry:first-child { border-top: 1px solid var(--border-light); }
+.service-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.service-org { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #e0e0e0; text-transform: uppercase; letter-spacing: 1px; }
+.service-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); white-space: nowrap; letter-spacing: 1px; }
+.service-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.service-bullets { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.service-bullets li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
+.service-bullets li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.service-bullets a { color: var(--accent); }
+
+/* Standard entry classes */
+.entry { padding: 20px 0; border-bottom: 1px solid var(--border-light); }
+.entry:last-child { border-bottom: none; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.entry-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #e0e0e0; text-transform: uppercase; letter-spacing: 1px; }
+.entry-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); white-space: nowrap; letter-spacing: 1px; }
+.entry-role { font-family: var(--font-body); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.entry-desc { font-size: 14px; color: #a0a0a0; line-height: 1.6; }
+.entry-desc a { color: var(--accent); }
+.entry ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.entry li { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 3px 0 3px 16px; position: relative; }
+.entry li::before { content: '>'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+
+/* DETAILS */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); list-style: none; letter-spacing: 1px; text-transform: uppercase; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '[+] expand'; }
+details[open] summary::before { content: '[-] collapse'; }
+details .detail-content { padding-top: 6px; }
+
+/* SUB-ENTRIES */
+.sub-entry { padding: 14px 0 0; margin-top: 14px; border-top: 1px solid #141414; }
+.sub-entry:first-child { padding-top: 6px; margin-top: 6px; border-top: none; }
+.sub-entry .service-role { font-weight: 600; color: #a0b88a; margin-bottom: 4px; }
+.sub-entry .service-date { font-size: 10px; }
+.sub-entry .entry-role { font-weight: 600; color: #a0b88a; margin-bottom: 4px; }
+.sub-entry .entry-date { font-size: 10px; }
+
+/* DOSSIER / ABOUT */
+.dossier-section { margin-bottom: 32px; }
+.strengths-list { list-style: none; padding: 0; margin: 0; }
+.strengths-list li { font-size: 14px; color: #a0a0a0; padding: 4px 0 4px 22px; position: relative; }
+.strengths-list li::before { content: '//'; position: absolute; left: 0; color: #3a3a3a; font-family: var(--font-mono); font-size: 12px; }
+.skills-grid { font-family: var(--font-mono); font-size: 12px; color: #707070; line-height: 1.5; column-count: 3; column-gap: 24px; }
+.skills-grid span { display: block; padding: 3px 0; }
+.skills-list { font-family: var(--font-mono); font-size: 12px; color: #707070; }
+.contact-line { font-family: var(--font-mono); font-size: 13px; }
+.contact-line a { margin-right: 24px; color: var(--accent); border-bottom: none; }
+.contact-line a:hover { color: var(--accent-hover); }
+
+/* EDUCATION */
+.edu-entry { font-size: 14px; color: #a0a0a0; line-height: 1.6; padding: 4px 0; }
+
+/* FOOTER */
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--footer-border); font-family: var(--font-mono); font-size: 11px; color: var(--footer-text); letter-spacing: 1px; }
+footer a { color: var(--footer-link); font-weight: 700; border-bottom: none; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* PRINT */
+@media print {
+  nav, footer { display: none; }
+  body { background: #fff; color: #111; border-top: none; }
+  .wrap { padding: 1rem; max-width: none; width: 100%; }
+  .hero-designation { color: #111; }
+  .service-org, .mission-name, .mission-name a, .entry-title { color: #111; }
+  .service-role, .entry-role { color: #333; }
+  .service-bullets li, .home-bio, .intro, .entry-desc, .strengths-list li, .entry li { color: #333; }
+  .service-bullets li::before, .strengths-list li::before, h2::before, .entry li::before { color: #999; }
+  h2 { color: #555; }
+  .hero-meta { border-color: #ddd; }
+  .service-entry, .mission-entry, .entry { border-color: #ddd; }
+  .hero-meta-label { color: #999; }
+  .hero-meta-value { color: #333; }
+  a { color: #333; border-bottom-color: #ccc; }
+}
+
+/* RESPONSIVE 660px */
+@media (max-width: 660px) {
+  .wrap { width: 100% !important; padding: 20px 24px; }
+  nav { font-size: 11px; gap: 12px; flex-wrap: wrap; }
+  .hero-designation { font-size: 28px; }
+  .hero-meta { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .service-header, .entry-header { flex-direction: column; }
+  .service-date, .entry-date { margin-bottom: 2px; }
+  .mission-header { flex-direction: column; }
+  .sub-entry .service-header, .sub-entry .entry-header { flex-direction: column; }
+  .skills-grid { column-count: 2; }
+  .home-bio { font-size: 14px; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+}
+
+/* RESPONSIVE 480px */
+@media (max-width: 480px) {
+  .wrap { padding: 16px !important; }
+  nav .site-name { font-size: 15px; letter-spacing: 2px; }
+  nav { font-size: 10px; gap: 8px; }
+  h2 { font-size: 10px; }
+  .hero-designation { font-size: 24px; }
+  .hero-headline { font-size: 13px; }
+  .hero-meta { grid-template-columns: 1fr; gap: 12px; }
+  .service-org, .entry-title { font-size: 14px; }
+  .mission-name { font-size: 14px; }
+  .service-bullets li, .entry li { font-size: 12px; }
+  .mission-desc { font-size: 12px; }
+  .home-bio { font-size: 13px; }
+  .strengths-list li { font-size: 12px; }
+  .skills-grid { column-count: 1; }
+}
+
+
+/* === RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-y: scroll; }
+body { margin: 0; padding: 0; }
+
+/* === WRAP === */
+.wrap { max-width: 760px; margin: 0 auto; padding: 32px 28px 40px; }
+
+/* === HERO CARD === */
+.hero {
+  background: var(--bg-card, var(--bg));
+  border: 3px solid var(--border);
+  padding: 40px 36px 36px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 52px; font-weight: 900;
+  line-height: 1.08; color: var(--text);
+  margin-bottom: 16px;
+}
+.hero h1 em { font-style: italic; font-weight: 900; }
+.hero-headline {
+  font-size: 17px; color: var(--text-muted);
+  border-left: 4px solid var(--border);
+  padding-left: 16px; line-height: 1.5;
+}
+.hero .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 3px; color: var(--text-faint);
+  margin-bottom: 12px; font-weight: 700;
+}
+
+/* === CARD GRID === */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.card-grid .span-2 { grid-column: 1 / -1; }
+
+/* === CARD === */
+.card {
+  background: var(--bg-card, var(--bg));
+  border: 2px solid var(--border);
+  padding: 28px 24px;
+  display: flex; flex-direction: column;
+}
+.card .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 3px; color: var(--text-faint);
+  margin-bottom: 14px; font-weight: 700;
+}
+.card .eyebrow-sub {
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-faint);
+  letter-spacing: 0.5px;
+  margin-top: -10px; margin-bottom: 14px;
+}
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700; font-style: italic;
+  color: var(--text);
+  margin-bottom: 16px; line-height: 1.2;
+}
+
+/* === BIO CARD === */
+.home-bio p {
+  font-size: 15px; color: var(--text-muted);
+  line-height: 1.75; margin-bottom: 10px;
+}
+.home-bio p:last-child { margin-bottom: 0; }
+.home-bio a { color: var(--accent); }
+
+/* === EXPERIENCE CARD === */
+.entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.entry:last-child { border-bottom: none; padding-bottom: 0; }
+.entry:first-child { padding-top: 0; }
+.entry-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.entry-title { font-weight: 700; font-size: 14px; color: var(--text); }
+.entry-date {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--text-faint);
+  white-space: nowrap; letter-spacing: 0.5px;
+}
+.entry-role { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.entry-desc, .entry li { color: var(--text-muted); }
+.entry ul {
+  margin: 6px 0 0 0; padding-left: 16px;
+  font-size: 13px; color: var(--text-muted);
+  list-style: square;
+}
+.entry li { margin-bottom: 4px; line-height: 1.55; }
+
+/* === DETAILS === */
+details { margin-top: 6px; }
+details summary {
+  cursor: pointer; font-family: var(--font-mono);
+  font-size: 11px; color: var(--text-faint);
+  list-style: none; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 6px; }
+
+/* === SKILLS CARD === */
+.skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.skills-list span {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--text);
+  background: var(--bg-alt, var(--bg));
+  border: 2px solid var(--border);
+  padding: 4px 12px;
+}
+
+/* === CONTACT CARD === */
+.contact-links { display: flex; flex-direction: column; gap: 10px; }
+.contact-links a { font-size: 14px; font-weight: 600; display: block; color: var(--accent); }
+.contact-label {
+  font-family: var(--font-mono);
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--text-faint);
+  margin-bottom: 2px;
+}
+
+/* === EDUCATION CARD === */
+.edu { font-size: 14px; color: var(--text-muted); padding: 6px 0; line-height: 1.5; }
+
+/* === FOOTER === */
+footer {
+  margin-top: 32px; padding-top: 14px;
+  border-top: 2px solid var(--footer-border, var(--border));
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--footer-text);
+  font-weight: 700; letter-spacing: 0.5px;
+}
+footer a {
+  color: var(--footer-link);
+  font-weight: 700;
+}
+footer a:hover { color: var(--footer-link-hover, var(--accent)); }
+
+/* === PRINT === */
+@media print {
+  footer { display: none; }
+  .wrap { padding: 1rem; max-width: none; }
+  .hero, .card { border-width: 1px; }
+}
+
+/* === RESPONSIVE 660px === */
+@media (max-width: 660px) {
+  .wrap { max-width: 100%; padding: 20px 18px 32px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .card-grid .span-2 { grid-column: auto; }
+  .hero { padding: 28px 22px 24px; }
+  .hero h1 { font-size: 38px; }
+  .hero-headline { font-size: 15px; }
+  .card { padding: 22px 18px; }
+  .card h2 { font-size: 19px; }
+  .skills-list span { font-size: 11px; padding: 3px 8px; }
+  .home-bio p { font-size: 14px; }
+  .entry-header { flex-direction: column; }
+}
+
+/* === RESPONSIVE 480px === */
+@media (max-width: 480px) {
+  .wrap { padding: 14px 12px 24px; }
+  .hero h1 { font-size: 30px; }
+  .hero-headline { font-size: 14px; padding-left: 12px; border-left-width: 3px; }
+  .hero { padding: 22px 16px 20px; }
+  .card { padding: 18px 14px; }
+  .card h2 { font-size: 17px; }
+  .card .eyebrow { font-size: 10px; letter-spacing: 2px; }
+  .entry-title { font-size: 13px; }
+  .entry ul { font-size: 12px; }
+  .skills-list span { font-size: 10px; padding: 2px 6px; }
+  footer { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="wrap">
+<main>
+<div class="hero">
+  <div class="eyebrow">Los Angeles, CA</div>
+  <h1>Jordan <em>Mazer</em></h1>
+  <div class="hero-headline">Talent leader who scales teams from startup to global -- recruiting, HR ops, and people strategy</div>
+</div>
+<div class="card-grid">
+<div class="card home-bio span-2">
+  <div class="eyebrow">About</div>
+  <p>I'm <a href="https://linkedin.com/in/jordanmazer">Jordan Mazer</a>, currently working with the <a href="https://speedrun.a16z.com">speedrun team at a16z</a> where I help founders build their teams. I built the <a href="https://speedrun.a16z.com">a16z speedrun talent network</a> from zero, connecting candidates to hundreds of portfolio startups. Before that, I spent almost 8 years at <a href="https://riotgames.com">Riot Games</a> scaling their recruiting and HR operations from the ground up.</p><p>I also write a <a href="https://speedrun.a16z.com">newsletter</a> for people navigating the startup job market. I love to meme. Sometimes I try to figure out <a href="https://twitter.com/justmazer">X</a> but, I won't lie, it's not my strong suit.</p>
+</div>
+<div class="card span-2">
+  <div class="eyebrow">Andreessen Horowitz</div>
+  
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Head of Talent, speedrun</span>
+    <span class="entry-date">January 2023 - Present</span>
+  </div>
+  <ul><li>Built the a16z speedrun talent network from zero — 50M impressions, 5M applications to portfolio companies, 220K followers, 70K newsletter subscribers</li><li>Source, vet, and broker introductions between top candidates and hundreds of a16z portfolio startups</li></ul><details><summary></summary><div class="detail-content"><ul><li>Created a distribution engine across social, email, and events that drives consistent candidate flow without paid acquisition</li><li>Designed and run the candidate evaluation pipeline (screening, interviewing, matching) that portcos rely on for warm intros</li><li>Help speedrun + game fund founders build their founding teams through direct recruiting support and talent strategy</li><li>Built internal tooling (AI screening pipeline, candidate matching, automated briefings) to scale a 3-person team's output</li></ul></div></details>
+</div>
+</div>
+<div class="card span-2">
+  <div class="eyebrow">Riot Games</div>
+  <div class="eyebrow-sub">2015 - January 2023</div>
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Sr. Director, Global HR Shared Services</span>
+    <span class="entry-date">November 2021 - January 2023</span>
+  </div>
+  <ul><li>Accountable for delivering the following for all of Riot's teams and operations throughout the world:</li><li>HR Operations (transactions, data management, onboarding, offboarding, etc.)</li></ul><details><summary></summary><div class="detail-content"><ul><li>HR Technology & Systems</li><li>HR Analytics</li><li>Contingent Workforce Staffing / Vendor Management</li><li>In-HR budget, program and initiative planning & tracking (internal PMO)</li><li>The goal for our team: be the concierge for Rioters so they can focus on what they do best: making games.</li></ul></div></details>
+</div>
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Director, HR</span>
+    <span class="entry-date">August 2020 - November 2021</span>
+  </div>
+  <ul><li>Los Angeles</li><li>Led HR team global re-org strategy process</li></ul><details><summary></summary><div class="detail-content"><ul><li>Led HR team annual planning / budget process</li><li>Acted as overall execution lead for Riot's domestic-US COVID-response efforts (compliance, contact tracing, return to work efforts, etc.)</li></ul></div></details>
+</div>
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Director, Talent Acquisition</span>
+    <span class="entry-date">May 2018 - August 2020</span>
+  </div>
+  <ul><li>Responsible for the Talent Acquisition teams that staffed all of Riot's game and non-game product groups.</li><li>Led a team that produced >1000 annual hires</li></ul><details><summary></summary><div class="detail-content"><ul><li>Managed employment brand efforts</li><li>Restructured Riot's interviewing / hiring approach in the post-Kotaku aftermath</li><li>Delivered Riot's first accurate headcount forecasts</li></ul></div></details>
+</div>
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Recruiting Manager</span>
+    <span class="entry-date">May 2016 - May 2018</span>
+  </div>
+  <ul><li>Led the recruiting teams that hired all of Riot's engineers</li></ul>
+</div>
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Sr. Technical Recruiter</span>
+    <span class="entry-date">May 2015 - May 2016</span>
+  </div>
+  <ul><li>Responsible for hiring all Engineering talent for fledgling/R&D products at Riot.</li></ul>
+</div>
+</div>
+<div class="card">
+  <div class="eyebrow">Scopely</div>
+  <div class="eyebrow-sub">2013 - May 2015</div>
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Lead Recruiter</span>
+    <span class="entry-date">December 2014 - May 2015</span>
+  </div>
+  <ul><li>Helped take Scopely from ~15 to ~125. Owned reporting, strategy, execution, overall recruiting goals, and stakeholder management for engineering, publishing and shared services headcount growth.</li></ul>
+</div>
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Sr. Technical Recruiter</span>
+    <span class="entry-date">May 2013 - December 2014</span>
+  </div>
+  
+</div>
+</div>
+<div class="card">
+  <div class="eyebrow">Amazon</div>
+  
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Technical Recruiter</span>
+    <span class="entry-date">March 2012 - May 2013</span>
+  </div>
+  <ul><li>Hired many SDEs, TPMs, SDMs</li></ul>
+</div>
+</div>
+<div class="card">
+  <div class="eyebrow">Prodigy Resources</div>
+  
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Technical Recruiter</span>
+    <span class="entry-date">August 2011 - February 2012</span>
+  </div>
+  
+</div>
+</div>
+<div class="card">
+  <div class="eyebrow">CRL Associates, Inc.</div>
+  
+  <div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">Legislative Researcher (Internship)</span>
+    <span class="entry-date">January 2008 - May 2010</span>
+  </div>
+  <ul><li>Prepared research reports</li><li>Attended city council meetings</li></ul><details><summary></summary><div class="detail-content"><ul><li>Participated in municipal lobbying process</li></ul></div></details>
+</div>
+</div>
+<div class="card">
+  <div class="eyebrow">Skills</div>
+  <div class="skills-list"><span>Interviewing</span><span>Sourcing</span><span>Key Account Development</span><span>Talent Acquisition</span><span>HR Operations</span><span>HR Strategy</span><span>People Analytics</span><span>Employer Branding</span><span>Headcount Planning</span><span>Stakeholder Management</span><span>Technical Recruiting</span><span>Team Leadership</span></div>
+</div>
+<div class="card">
+  <div class="eyebrow">Education</div>
+  <div class="edu">University of Colorado at Boulder</div><div class="edu">BA, Political Science, Philosophy (2006 - 2010)</div>
+</div>
+<div class="card">
+  <div class="eyebrow">Contact</div>
+  <div class="contact-links"><div><div class="contact-label">Email</div><a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></div>
+<div><div class="contact-label">LinkedIn</div><a href="https://linkedin.com/in/jordanmazer">LinkedIn</a></div></div>
+</div>
+</div>
+</main>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</div>
+</body>
+</html>
+</body>
+</html>

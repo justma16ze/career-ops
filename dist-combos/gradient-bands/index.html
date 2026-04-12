@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Backgrounds */
+  --bg: #fff;
+  --bg-alt: #f0f4ff;
+  --bg-card: #fff;
+  --bg-nav: transparent;
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #1a1a1a;
+  --text-muted: #555;
+  --text-faint: #999;
+
+  /* Accent */
+  --accent: #1a1a1a;
+  --accent-hover: #1a1a1a;
+
+  /* Borders */
+  --border: #e5e5e5;
+  --border-light: #eee;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Source Sans 3', sans-serif;
+
+  /* Spacing */
+  --wrap-width: 700px;
+  --nav-height: auto;
+
+  /* Footer — light bg */
+  --footer-text: #666;
+  --footer-link: #444;
+  --footer-link-hover: #1a1a1a;
+  --footer-border: var(--border);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; margin: 0; padding: 0; font-size: 15px; }
+.wrap { width: var(--wrap-width); margin: 0 auto; padding: 0; }
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #bbb; }
+a:hover { color: var(--accent-hover); text-decoration-color: var(--text); }
+
+/* NAV */
+nav { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding: 24px 36px; font-size: 14px; }
+.site-name { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); text-decoration: none; margin-right: auto; }
+nav a { color: var(--text); text-decoration: underline; text-underline-offset: 6px; text-decoration-color: #ccc; font-weight: 400; }
+nav a:hover { text-decoration-color: var(--text); }
+nav .active { text-decoration: underline; text-decoration-color: var(--text); text-decoration-thickness: 2px; text-underline-offset: 6px; font-weight: 600; }
+
+/* HERO — gradient-specific stacked text-stroke name */
+.hero-gradient { background: linear-gradient(155deg, #b4dced 0%, #c2e4f2 12%, #d0ecf7 28%, #e2f2fa 48%, #f2f8fc 68%, #ffffff 100%); padding: 72px 36px 52px; text-align: center; }
+.hero-name-stack { display: flex; flex-direction: column; align-items: center; gap: 2px; line-height: 0.88; margin-bottom: 36px; }
+.hero-name-row { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.03em; display: block; }
+.hero-name-row.outline { font-size: 68px; font-weight: 400; color: transparent; -webkit-text-stroke: 1.2px #2a2a2a; }
+.hero-name-row.filled { font-size: 86px; font-weight: 900; color: var(--text); -webkit-text-stroke: 0; letter-spacing: 0.02em; }
+.hero-name-row.light-outline { font-size: 62px; font-weight: 400; color: transparent; -webkit-text-stroke: 1px #aaa; letter-spacing: 0.05em; }
+.hero-headline { font-family: var(--font-body); font-size: 15px; font-weight: 300; color: #4a4a4a; letter-spacing: 0.04em; margin-top: 16px; }
+.hero-gradient-fade { height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 0 auto; width: 60%; }
+.hero-links { margin-top: 24px; }
+.hero-links a { display: inline-block; padding: 10px 28px; border: 1px solid #ccc; border-radius: 24px; text-decoration: none; font-size: 14px; color: var(--text); background: rgba(255,255,255,0.7); transition: border-color 0.2s; }
+.hero-links a:hover { border-color: var(--text); }
+
+/* CONTENT AREA */
+.content { padding: 36px 36px 40px; }
+
+/* HOME BIO */
+.home-bio { font-size: 15px; color: #333; line-height: 1.75; margin-bottom: 24px; }
+.home-bio p { margin-bottom: 14px; }
+.home-bio a { color: var(--text); font-weight: 600; }
+
+/* HEADINGS */
+h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); margin: 36px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* EXPERIENCE */
+.exp-group { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-light); }
+.exp-group:last-child { border-bottom: none; }
+.exp-company-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.exp-company { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--text); }
+.exp-date { font-size: 13px; color: #888; white-space: nowrap; font-weight: 400; }
+.exp-role-block { padding: 8px 0 4px; }
+.exp-role-block + .exp-role-block { border-top: 1px solid var(--border-light); padding-top: 10px; margin-top: 6px; }
+.exp-role-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.exp-role { font-weight: 600; font-size: 14px; color: #333; }
+.exp-role-date { font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+.exp-bullets { margin: 4px 0 0; padding-left: 18px; font-size: 14px; color: var(--text-muted); list-style: disc; }
+.exp-bullets li { margin-bottom: 3px; line-height: 1.55; }
+
+/* Standard entry classes */
+.entry { padding: 16px 0; border-bottom: 1px solid #f0f0f0; }
+.entry:last-child { border-bottom: none; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.entry-title { font-weight: 700; font-size: 16px; color: var(--text); }
+.entry-date { font-size: 12px; color: var(--text-faint); white-space: nowrap; font-family: var(--font-mono); }
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+.entry-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.entry li { font-size: 14px; color: var(--text-muted); margin-bottom: 3px; line-height: 1.55; }
+
+.sub-entry { padding: 10px 0 0; margin-top: 10px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { padding-top: 4px; margin-top: 4px; border-top: none; }
+
+/* DETAILS */
+details { margin-top: 4px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ show more'; }
+details[open] summary::before { content: '- show less'; }
+details .detail-content { padding-top: 6px; }
+
+/* PROJECTS */
+.project-entry { padding: 16px 0; border-bottom: 1px solid #f0f0f0; }
+.project-entry:last-child { border-bottom: none; }
+.project-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.project-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+.project-name a { color: var(--text); text-decoration: underline; text-decoration-color: #ccc; text-underline-offset: 3px; }
+.project-metric { font-size: 13px; color: #888; white-space: nowrap; }
+.project-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* ABOUT */
+.about-section { margin-bottom: 24px; }
+.strengths-list { list-style: none; padding: 0; margin: 0; }
+.strengths-list li { font-size: 14px; color: #333; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
+.strengths-list li:last-child { border-bottom: none; }
+.skills-grid { font-size: 13px; color: var(--text-muted); line-height: 1.4; column-count: 3; column-gap: 24px; }
+.skills-grid span { display: block; padding: 2px 0; }
+.skills-list { font-size: 13px; color: var(--text-muted); }
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 20px; }
+
+/* EDUCATION */
+.education-entry { font-size: 14px; color: #444; margin-bottom: 6px; line-height: 1.5; }
+
+/* FOOTER */
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); padding-bottom: 24px; }
+footer a { color: var(--footer-link); font-weight: 700; text-decoration: underline; text-decoration-color: #ccc; }
+footer a:hover { color: var(--footer-link-hover); text-decoration-color: var(--text); }
+
+/* PRINT */
+@media print { nav, footer, .hero-links { display: none; } .wrap { padding: 1rem; width: 100%; max-width: none; } .hero-gradient { background: none; padding: 24px 0; } .hero-name-row.outline, .hero-name-row.light-outline { -webkit-text-stroke: 1px #000; } }
+
+/* RESPONSIVE 660px */
+@media (max-width: 660px) {
+  .wrap { width: 100% !important; }
+  nav { padding: 16px 20px; font-size: 13px; gap: 12px; }
+  .hero-gradient { padding: 48px 20px 40px; }
+  .hero-name-row.outline { font-size: 38px; }
+  .hero-name-row.filled { font-size: 50px; }
+  .hero-name-row.light-outline { font-size: 34px; }
+  .hero-headline { font-size: 14px; }
+  .content { padding: 24px 20px 32px; }
+  h2 { font-size: 18px; }
+  .exp-company-header { flex-direction: column; }
+  .exp-role-header { flex-direction: column; }
+  .entry-header { flex-direction: column; }
+  .home-bio { font-size: 14px; }
+  .skills-grid { column-count: 2; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+}
+
+/* RESPONSIVE 480px */
+@media (max-width: 480px) {
+  nav { padding: 12px 16px; font-size: 12px; gap: 8px; }
+  nav .site-name { font-size: 18px; }
+  .hero-gradient { padding: 32px 16px 28px; }
+  .hero-name-row.outline { font-size: 26px; -webkit-text-stroke: 0.8px #2a2a2a; }
+  .hero-name-row.filled { font-size: 36px; }
+  .hero-name-row.light-outline { font-size: 24px; -webkit-text-stroke: 0.6px #aaa; }
+  .hero-headline { font-size: 13px; }
+  .content { padding: 16px 16px 24px; }
+  h2 { font-size: 16px; }
+  .home-bio { font-size: 13px; }
+  .strengths-list li { font-size: 13px; }
+  .skills-grid { column-count: 1; }
+  .exp-company { font-size: 15px; }
+  .exp-role { font-size: 13px; }
+  .exp-bullets { font-size: 13px; }
+  .entry-title { font-size: 15px; }
+}
+
+
+/* === RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-y: scroll; scroll-behavior: smooth; }
+body { margin: 0; padding: 0; }
+
+/* === FIXED NAV === */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg-nav, var(--bg));
+  border-bottom: 1px solid var(--border);
+  height: var(--nav-height, 48px);
+  display: flex; align-items: center; justify-content: center; gap: 28px;
+  font-size: 13px;
+}
+nav .site-name {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  margin-right: auto;
+  padding-left: 24px;
+}
+.nav-links { display: flex; gap: 24px; padding-right: 24px; }
+nav a { color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+nav a:hover { color: var(--text); }
+body { padding-top: var(--nav-height, 48px); }
+
+/* === BANDS === */
+.band { width: 100%; padding: 80px 24px; }
+#hero.band { padding: 96px 24px; }
+.band-white { background: var(--bg); }
+.band-gray { background: var(--bg-alt); }
+.band-inner { max-width: var(--wrap-width, 700px); margin: 0 auto; }
+
+/* === HERO === */
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 52px; font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.hero-headline { font-size: 18px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+.hero .meta { font-size: 13px; color: var(--text-faint); margin-top: 4px; }
+.hero .meta a { color: var(--accent); font-size: 13px; text-decoration: none; }
+.hero .meta a:hover { text-decoration: underline; }
+
+/* === ABOUT === */
+.home-bio { font-size: 16px; color: var(--text-muted); line-height: 1.75; }
+.home-bio p { margin-bottom: 14px; }
+.home-bio a { color: var(--accent); }
+
+/* === SECTION HEADINGS === */
+h2 {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 24px;
+}
+
+/* === EXPERIENCE === */
+.entry { padding: 20px 0; border-bottom: 1px solid var(--border-light); }
+.entry:last-child { border-bottom: none; }
+.entry-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.entry-title {
+  font-family: var(--font-body);
+  font-size: 16px; font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.entry-date {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--text-faint);
+  white-space: nowrap;
+}
+.entry-role { font-size: 14px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+.entry-desc, .entry li { color: var(--text-muted); }
+.entry ul {
+  margin: 6px 0 0; padding-left: 18px;
+  font-size: 13px; color: var(--text-muted); list-style: disc;
+}
+.entry li { margin-bottom: 3px; line-height: 1.5; }
+.sub-entry { padding: 12px 0 0; margin-top: 12px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { padding-top: 0; margin-top: 4px; border-top: none; }
+.sub-entry .entry-header { margin-bottom: 2px; }
+
+/* === DETAILS === */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 6px; }
+
+/* === EDUCATION === */
+.edu { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 6px; }
+
+/* === SKILLS === */
+.skills-list {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.4; column-count: 3; column-gap: 20px;
+}
+.skills-list span { display: block; padding: 2px 0; }
+
+/* === STRENGTHS === */
+.strengths-list { list-style: none; padding: 0; margin: 0; }
+.strengths-list li {
+  font-size: 15px; color: var(--text-muted);
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.strengths-list li:last-child { border-bottom: none; }
+
+/* === CONTACT === */
+.contact-target { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; }
+.contact-target strong { color: var(--text); font-weight: 700; }
+.contact-line { font-size: 15px; line-height: 2; }
+
+/* === FOOTER === */
+footer {
+  padding: 32px 24px; text-align: center;
+  font-size: 11px;
+  color: var(--footer-text);
+  border-top: 1px solid var(--footer-border, var(--border));
+  background: var(--bg);
+}
+footer a { color: var(--footer-link); font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover, var(--accent)); }
+
+/* === PRINT === */
+@media print {
+  nav, footer { display: none !important; }
+  body { padding-top: 0; }
+  .band { padding: 32px 0; background: #fff !important; }
+  .band-gray { background: #fff !important; }
+  .band-inner { max-width: none; }
+}
+
+/* === RESPONSIVE 660px === */
+@media (max-width: 660px) {
+  nav .site-name { font-size: 14px; padding-left: 16px; }
+  .nav-links { gap: 16px; padding-right: 16px; font-size: 12px; }
+  .band { padding: 64px 20px; }
+  .hero h1 { font-size: 36px; }
+  .hero-headline { font-size: 16px; }
+  .entry-header { flex-direction: column; }
+  .skills-list { column-count: 2; }
+  .home-bio { font-size: 15px; }
+}
+
+/* === RESPONSIVE 480px === */
+@media (max-width: 480px) {
+  nav { height: 44px; }
+  nav .site-name { font-size: 13px; padding-left: 12px; }
+  .nav-links { gap: 12px; padding-right: 12px; font-size: 11px; }
+  body { padding-top: 44px; }
+  .band { padding: 48px 16px; }
+  .hero h1 { font-size: 28px; }
+  .hero-headline { font-size: 14px; }
+  h2 { font-size: 12px; }
+  .entry-title { font-size: 14px; }
+  .entry-role { font-size: 13px; }
+  .entry ul { font-size: 12px; }
+  .home-bio { font-size: 14px; }
+  .strengths-list li { font-size: 13px; }
+  .skills-list { column-count: 1; }
+}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+</head>
+<body>
+<nav>
+<a href="#hero" class="site-name">Jordan Mazer</a>
+<div class="nav-links"><a href="#about">About</a> <a href="#experience">Experience</a> <a href="#skills">Skills</a> <a href="#contact">Contact</a></div>
+</nav>
+<section id="hero" class="band band-white">
+<div class="band-inner">
+<div class="hero">
+<h1>Jordan Mazer</h1>
+<div class="hero-headline">Talent leader who scales teams from startup to global -- recruiting, HR ops, and people strategy</div>
+<div class="meta">Los Angeles, CA &middot; <a href="https://linkedin.com/in/jordanmazer">LinkedIn</a> &middot; <a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></div>
+</div>
+</div>
+</section>
+<section id="about" class="band band-gray">
+<div class="band-inner">
+<h2>About</h2>
+<article class="home-bio"><p>I'm <a href="https://linkedin.com/in/jordanmazer">Jordan Mazer</a>, currently working with the <a href="https://speedrun.a16z.com">speedrun team at a16z</a> where I help founders build their teams. I built the <a href="https://speedrun.a16z.com">a16z speedrun talent network</a> from zero, connecting candidates to hundreds of portfolio startups. Before that, I spent almost 8 years at <a href="https://riotgames.com">Riot Games</a> scaling their recruiting and HR operations from the ground up.</p><p>I also write a <a href="https://speedrun.a16z.com">newsletter</a> for people navigating the startup job market. I love to meme. Sometimes I try to figure out <a href="https://twitter.com/justmazer">X</a> but, I won't lie, it's not my strong suit.</p></article>
+</div>
+</section>
+<section id="experience" class="band band-white">
+<div class="band-inner">
+<h2>Experience</h2>
+<div class="entry"><div class="entry-header"><span class="entry-title">Andreessen Horowitz</span><span class="entry-date">January 2023 - Present</span></div><div class="entry-role">Head of Talent, speedrun</div><ul><li>Built the a16z speedrun talent network from zero — 50M impressions, 5M applications to portfolio companies, 220K followers, 70K newsletter subscribers</li><li>Source, vet, and broker introductions between top candidates and hundreds of a16z portfolio startups</li></ul><details><summary></summary><div class="detail-content"><ul><li>Created a distribution engine across social, email, and events that drives consistent candidate flow without paid acquisition</li><li>Designed and run the candidate evaluation pipeline (screening, interviewing, matching) that portcos rely on for warm intros</li><li>Help speedrun + game fund founders build their founding teams through direct recruiting support and talent strategy</li><li>Built internal tooling (AI screening pipeline, candidate matching, automated briefings) to scale a 3-person team's output</li></ul></div></details></div>
+<div class="entry"><div class="entry-header"><span class="entry-title">Riot Games</span><span class="entry-date">2015 – January 2023</span></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Sr. Director, Global HR Shared Services</span><span class="entry-date">November 2021 - January 2023</span></div><ul><li>Accountable for delivering the following for all of Riot's teams and operations throughout the world:</li><li>HR Operations (transactions, data management, onboarding, offboarding, etc.)</li></ul><details><summary></summary><div class="detail-content"><ul><li>HR Technology & Systems</li><li>HR Analytics</li><li>Contingent Workforce Staffing / Vendor Management</li><li>In-HR budget, program and initiative planning & tracking (internal PMO)</li><li>The goal for our team: be the concierge for Rioters so they can focus on what they do best: making games.</li></ul></div></details></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Director, HR</span><span class="entry-date">August 2020 - November 2021</span></div><ul><li>Los Angeles</li><li>Led HR team global re-org strategy process</li></ul><details><summary></summary><div class="detail-content"><ul><li>Led HR team annual planning / budget process</li><li>Acted as overall execution lead for Riot's domestic-US COVID-response efforts (compliance, contact tracing, return to work efforts, etc.)</li></ul></div></details></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Director, Talent Acquisition</span><span class="entry-date">May 2018 - August 2020</span></div><ul><li>Responsible for the Talent Acquisition teams that staffed all of Riot's game and non-game product groups.</li><li>Led a team that produced >1000 annual hires</li></ul><details><summary></summary><div class="detail-content"><ul><li>Managed employment brand efforts</li><li>Restructured Riot's interviewing / hiring approach in the post-Kotaku aftermath</li><li>Delivered Riot's first accurate headcount forecasts</li></ul></div></details></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Recruiting Manager</span><span class="entry-date">May 2016 - May 2018</span></div><ul><li>Led the recruiting teams that hired all of Riot's engineers</li></ul></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Sr. Technical Recruiter</span><span class="entry-date">May 2015 - May 2016</span></div><ul><li>Responsible for hiring all Engineering talent for fledgling/R&D products at Riot.</li></ul></div></div>
+<div class="entry"><div class="entry-header"><span class="entry-title">Scopely</span><span class="entry-date">2013 – May 2015</span></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Lead Recruiter</span><span class="entry-date">December 2014 - May 2015</span></div><ul><li>Helped take Scopely from ~15 to ~125. Owned reporting, strategy, execution, overall recruiting goals, and stakeholder management for engineering, publishing and shared services headcount growth.</li></ul></div><div class="sub-entry"><div class="entry-header"><span class="entry-role">Sr. Technical Recruiter</span><span class="entry-date">May 2013 - December 2014</span></div></div></div>
+<div class="entry"><div class="entry-header"><span class="entry-title">Amazon</span><span class="entry-date">March 2012 - May 2013</span></div><div class="entry-role">Technical Recruiter</div><ul><li>Hired many SDEs, TPMs, SDMs</li></ul></div>
+<div class="entry"><div class="entry-header"><span class="entry-title">Prodigy Resources</span><span class="entry-date">August 2011 - February 2012</span></div><div class="entry-role">Technical Recruiter</div></div>
+<div class="entry"><div class="entry-header"><span class="entry-title">CRL Associates, Inc.</span><span class="entry-date">January 2008 - May 2010</span></div><div class="entry-role">Legislative Researcher (Internship)</div><ul><li>Prepared research reports</li><li>Attended city council meetings</li></ul><details><summary></summary><div class="detail-content"><ul><li>Participated in municipal lobbying process</li></ul></div></details></div>
+<h2 style="margin-top: 48px;">Education</h2><p class="edu">University of Colorado at Boulder</p><p class="edu">BA, Political Science, Philosophy (2006 - 2010)</p>
+</div>
+</section>
+<section id="skills" class="band band-gray">
+<div class="band-inner">
+<h2>Strengths</h2><ul class="strengths-list"><li>Scaling orgs (Scopely 15 to 125, Riot 1000+ hires/year)</li><li>Technical recruiting at elite engineering orgs</li><li>Building and restructuring HR/TA functions</li><li>Crisis operations (led Riot&#39;s COVID response)</li><li>Startup-to-enterprise talent strategy</li></ul>
+<h2 style="margin-top: 40px;">Skills</h2><div class="skills-list"><span>Interviewing</span><span>Sourcing</span><span>Key Account Development</span><span>Talent Acquisition</span><span>HR Operations</span><span>HR Strategy</span><span>People Analytics</span><span>Employer Branding</span><span>Headcount Planning</span><span>Stakeholder Management</span><span>Technical Recruiting</span><span>Team Leadership</span></div>
+</div>
+</section>
+<section id="contact" class="band band-white">
+<div class="band-inner">
+<h2>Contact</h2>
+<p class="contact-target">Looking for: <strong>Head of Talent / Head of People, VP, Talent Acquisition</strong></p>
+<p class="contact-line"><a href="https://linkedin.com/in/jordanmazer">LinkedIn</a> &middot; <a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></p>
+</div>
+</section>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</body>
+</html>
+</body>
+</html>

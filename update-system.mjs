@@ -23,7 +23,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 
-const CANONICAL_REPO = 'https://github.com/a16z/speedrun-career-ops.git';
+const CANONICAL_REPO = 'https://github.com/justma16ze/career-ops.git';
 const RAW_VERSION_URL = 'https://raw.githubusercontent.com/a16z/speedrun-career-ops/main/VERSION';
 const RELEASES_API = 'https://api.github.com/repos/a16z/speedrun-career-ops/releases/latest';
 

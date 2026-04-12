@@ -39,7 +39,7 @@
   "homepage": "https://speedrun.a16z.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/a16z/speedrun-career-ops"
+    "url": "https://github.com/justma16ze/career-ops"
   },
   "license": "MIT",
   "dependencies": {

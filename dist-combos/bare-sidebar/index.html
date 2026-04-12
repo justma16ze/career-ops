@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+
+<style>
+:root {
+  /* Backgrounds */
+  --bg: #fff;
+  --bg-alt: #fafafa;
+  --bg-card: #fff;
+  --bg-nav: transparent;
+  --bg-sidebar: transparent;
+
+  /* Text */
+  --text: #111;
+  --text-muted: #444;
+  --text-faint: #888;
+
+  /* Accent */
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+
+  /* Borders */
+  --border: #eee;
+  --border-light: #f0f0f0;
+
+  /* Typography */
+  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+
+  /* Spacing */
+  --wrap-width: 600px;
+  --nav-height: auto;
+
+  /* Footer — light bg */
+  --footer-text: #666;
+  --footer-link: #444;
+  --footer-link-hover: var(--accent);
+  --footer-border: var(--border);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.65; margin: 0; padding: 0; }
+.wrap { max-width: var(--wrap-width); margin: 0 auto; padding: 32px 40px 40px; }
+a { color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+/* NAV */
+nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; margin-bottom: 20px; font-size: 13px; }
+.site-name { font-family: var(--font-display); font-weight: 600; color: var(--text); text-decoration: none; margin-right: auto; }
+nav a { color: var(--text-faint); text-decoration: none; }
+nav a:hover { color: var(--text); }
+nav .active { color: var(--text); font-weight: 500; }
+
+/* HEADINGS */
+h2 { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin: 24px 0 8px; }
+
+p { margin-bottom: 8px; }
+p:last-child { margin-bottom: 0; }
+
+/* HOME BIO */
+.home-bio { line-height: 1.7; margin-bottom: 16px; }
+.home-bio p { margin-bottom: 10px; }
+.home-bio a { color: var(--accent); }
+
+/* EXPERIENCE */
+.exp-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.exp-header strong { font-weight: 700; }
+.exp-header .dates { color: var(--text-faint); font-size: 13px; white-space: nowrap; }
+.exp-item { margin-bottom: 20px; }
+.exp-role { font-size: 13px; color: var(--text-muted); margin-top: 1px; }
+
+/* Standard entry classes */
+.entry { margin-bottom: 20px; }
+.entry:last-child { margin-bottom: 0; }
+.entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.entry-title { font-weight: 700; color: var(--text); }
+.entry-date { color: var(--text-faint); font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+.entry-role { font-size: 13px; color: var(--text-muted); margin-top: 1px; }
+.entry-desc, .entry li { font-size: 13px; color: var(--text-muted); }
+.entry-desc { line-height: 1.6; }
+
+/* SUB ROLES */
+.sub-role { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-light); }
+.sub-role:first-child { border-top: none; padding-top: 2px; margin-top: 4px; }
+.sub-role .exp-header strong { font-weight: 600; font-size: 13px; }
+.sub-role .dates { font-size: 12px; }
+.sub-entry { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { border-top: none; padding-top: 2px; margin-top: 4px; }
+
+ul { margin: 4px 0 0 18px; font-size: 13px; color: var(--text-muted); }
+ul li { margin-bottom: 3px; line-height: 1.5; }
+
+.detail { font-size: 13px; color: var(--text-muted); }
+.skills-list { font-size: 13px; color: var(--text-muted); }
+.skills-grid { font-size: 13px; color: var(--text-muted); }
+.strengths-list { list-style: none; padding: 0; }
+.strengths-list li { font-size: 13px; color: var(--text-muted); }
+.strengths { font-size: 13px; color: var(--text-muted); }
+.contact-line { font-size: 13px; }
+.contact-line a { margin-right: 12px; }
+
+/* DETAILS */
+details { margin-top: 4px; }
+details summary { cursor: pointer; font-size: 12px; color: #999; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ more'; }
+details[open] summary::before { content: '- less'; }
+details .detail-content { padding-top: 4px; }
+
+/* FOOTER */
+footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--footer-border); font-size: 11px; color: var(--footer-text); }
+footer a { color: var(--footer-link); text-decoration: underline; font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* PRINT */
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; max-width: none; } }
+
+/* RESPONSIVE 660px */
+@media (max-width: 700px) {
+  .wrap { padding: 24px 20px; }
+  nav { font-size: 12px; gap: 14px; }
+  .exp-header { flex-direction: column; gap: 0; }
+  .exp-header .dates { white-space: normal; }
+  .entry-header { flex-direction: column; gap: 0; }
+}
+
+/* RESPONSIVE 480px */
+@media (max-width: 480px) {
+  .wrap { padding: 16px; }
+  nav { font-size: 11px; gap: 10px; }
+}
+
+/* === sidebar layout: structural only === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; scroll-behavior: smooth; }
+body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.7; margin: 0; padding: 0; font-size: 14px; }
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+a:hover { color: var(--accent-hover); }
+
+/* --- Two-column wrapper --- */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; display: flex; gap: 48px; min-height: 100vh; }
+
+/* --- Left sidebar (sticky) --- */
+.sidebar { position: sticky; top: 0; width: 400px; min-width: 400px; height: 100vh; padding: 96px 0 40px 0; display: flex; flex-direction: column; justify-content: space-between; }
+.sidebar-top { }
+.site-name { font-family: var(--font-display); font-size: 46px; font-weight: 700; color: var(--text); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; text-decoration: none; display: block; }
+.site-name:hover { color: var(--text); }
+.hero-headline { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+.sidebar-tagline { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 56px; }
+
+/* --- Sidebar nav --- */
+.nav-links { list-style: none; padding: 0; margin: 0; }
+.nav-links li { margin-bottom: 12px; }
+.nav-links a { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s ease; }
+.nav-links a::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--text-faint); transition: width 0.15s ease, background 0.15s ease; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::before { width: 64px; background: var(--text); }
+.nav-links .active { color: var(--text); }
+.nav-links .active::before { width: 64px; background: var(--text); }
+
+.sidebar-bottom { }
+.social-links { display: flex; gap: 20px; align-items: center; }
+.social-links a { color: var(--text-faint); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease; }
+.social-links a:hover { color: var(--text); }
+
+/* --- Right content (scrolls) --- */
+.content { flex: 1; padding: 96px 0 80px; min-width: 0; }
+
+/* --- Section spacing --- */
+.section { margin-bottom: 96px; }
+.section:last-child { margin-bottom: 48px; }
+.section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 40px; display: none; }
+
+/* --- About / Bio --- */
+.home-bio { font-size: 16px; color: var(--text-muted); line-height: 1.8; }
+.home-bio p { margin-bottom: 16px; }
+.home-bio a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.home-bio a:hover { color: var(--accent); }
+.home-bio strong { color: var(--text); font-weight: 600; }
+
+/* --- Experience entry --- */
+.entry { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 24px; margin: 0 -24px; border-radius: 8px; transition: background 0.15s ease, box-shadow 0.15s ease; margin-bottom: 4px; border: 1px solid transparent; }
+.entry:hover { background: var(--bg-alt); }
+.entry-date { font-size: 12px; color: var(--text-faint); font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 5px; white-space: nowrap; line-height: 1.5; }
+.entry-body { }
+.entry-header { margin-bottom: 4px; }
+.entry-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.entry-title a { color: var(--text); text-decoration: none; }
+.entry-title a:hover { color: var(--accent); }
+.entry-company { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+.entry-role { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+.entry-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+.entry ul { margin: 6px 0 0 0; padding-left: 16px; list-style: disc; }
+.entry li { margin-bottom: 4px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* --- Sub-entry (multi-role companies) --- */
+.sub-entry { padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border-light); }
+.sub-entry:first-child { padding-top: 0; margin-top: 0; border-top: none; }
+.sub-entry .entry-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.sub-entry .entry-role { font-size: 14px; font-weight: 600; color: var(--text); }
+.sub-entry .entry-date { font-size: 12px; }
+
+/* --- Skills --- */
+.skills-list { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+.skills-list .tag { display: inline; }
+.skills-list .tag::after { content: ' · '; color: var(--text-faint); }
+.skills-list .tag:last-child::after { content: ''; }
+
+/* --- Strengths --- */
+.strengths-list { list-style: none; padding: 0; }
+.strengths-list li { font-size: 14px; color: var(--text-muted); padding: 8px 0 8px 20px; line-height: 1.5; border-left: 2px solid var(--border); margin-bottom: 4px; transition: border-color 0.15s ease; }
+.strengths-list li:hover { border-left-color: var(--accent); color: var(--text); }
+
+/* --- Contact --- */
+.contact-line { font-size: 14px; }
+.contact-line a { margin-right: 20px; color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+.contact-line a:hover { color: var(--accent); }
+
+/* --- Education --- */
+h2 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; margin-top: 48px; }
+
+/* --- Details toggle --- */
+details { margin-top: 6px; }
+details summary { cursor: pointer; font-size: 12px; color: var(--text-faint); list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '+ show more'; }
+details[open] summary::before { content: '- show less'; }
+details .detail-content { padding-top: 8px; }
+
+/* --- Footer --- */
+footer { margin-top: 80px; padding: 24px 0 40px; border-top: 1px solid var(--footer-border); font-size: 12px; color: var(--footer-text); }
+footer a { color: var(--footer-link); font-weight: 700; }
+footer a:hover { color: var(--footer-link-hover); }
+
+/* --- Print --- */
+@media print {
+  .sidebar { display: none; }
+  .wrap { max-width: none; padding: 1rem; display: block; }
+  .content { padding: 0; }
+  footer { display: none; }
+  .entry { background: none !important; }
+  .section-label { display: block; }
+}
+
+/* --- Mobile: sidebar stacks on top --- */
+@media (max-width: 660px) {
+  .wrap { flex-direction: column; padding: 0 24px; gap: 0; }
+  .sidebar { position: relative; width: 100%; min-width: 0; height: auto; padding: 48px 0 24px; }
+  .sidebar-tagline { margin-bottom: 24px; }
+  .nav-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .nav-links li { margin-bottom: 0; }
+  .nav-links a::before { display: none; }
+  .nav-links a { font-size: 11px; }
+  .content { padding: 24px 0 48px; }
+  .section { margin-bottom: 64px; }
+  .section-label { display: block; position: sticky; top: 0; z-index: 10; background: var(--bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; margin: 0 0 24px; }
+  .entry { grid-template-columns: 1fr; gap: 4px; padding: 16px 12px; margin: 0 -12px; border: none; }
+  .entry-date { padding-top: 0; font-size: 11px; }
+  .site-name { font-size: 34px; }
+  .hero-headline { font-size: 15px; }
+  .home-bio { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 0 16px; }
+  .sidebar { padding: 32px 0 16px; }
+  .site-name { font-size: 28px; }
+  .hero-headline { font-size: 14px; }
+  .nav-links a { font-size: 10px; }
+  .entry { padding: 12px 8px; margin: 0 -8px; }
+  .entry-title { font-size: 14px; }
+  .entry-desc { font-size: 12px; }
+  .entry li { font-size: 12px; }
+  .home-bio { font-size: 13px; }
+}</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jordan Mazer</title>
+<meta name="description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:title" content="Jordan Mazer">
+<meta property="og:description" content="Bridge to capital and opportunities at early, a16z-backed startups. Helping speedrun + game fund founders build their">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="wrap">
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="index.html" class="site-name">Jordan Mazer</a>
+    <div class="hero-headline">Talent leader who scales teams from startup to global -- recruiting, HR ops, and people strategy</div>
+    <p class="sidebar-tagline">Bridge to capital and opportunities at early, a16z-backed startups.</p>
+    <nav>
+      <ul class="nav-links"><li><a href="index.html" class="active">About</a></li><li><a href="experience.html">Experience</a></li><li><a href="about.html">More</a></li></ul>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="social-links"><a href="https://linkedin.com/in/jordanmazer" target="_blank" rel="noopener">LinkedIn</a><a href="mailto:jmazer@a16z.com">jmazer@a16z.com</a></div>
+  </div>
+</aside>
+<main class="content">
+<section class="section">
+<div class="section-label">About</div>
+<div class="home-bio"><p>I'm <a href="https://linkedin.com/in/jordanmazer">Jordan Mazer</a>, currently working with the <a href="https://speedrun.a16z.com">speedrun team at a16z</a> where I help founders build their teams. I built the <a href="https://speedrun.a16z.com">a16z speedrun talent network</a> from zero, connecting candidates to hundreds of portfolio startups. Before that, I spent almost 8 years at <a href="https://riotgames.com">Riot Games</a> scaling their recruiting and HR operations from the ground up.</p><p>I also write a <a href="https://speedrun.a16z.com">newsletter</a> for people navigating the startup job market. I love to meme. Sometimes I try to figure out <a href="https://twitter.com/justmazer">X</a> but, I won't lie, it's not my strong suit.</p></div>
+</section>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</main>
+</div>
+</body>
+</html>
+</body>
+</html>

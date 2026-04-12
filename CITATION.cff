@@ -6,7 +6,7 @@ authors:
   - name: "a16z speedrun"
     website: "https://speedrun.a16z.com"
 url: "https://speedrun.a16z.com"
-repository-code: "https://github.com/a16z/speedrun-career-ops"
+repository-code: "https://github.com/justma16ze/career-ops"
 license: MIT
 keywords:
   - ai

@@ -1,9 +1,15 @@
 /**
  * templates/folio.mjs — Warm + Text-Forward template
  *
- * Instrument Serif + DM Sans
- * #f8f5f0 bg, #222 text, #2563eb blue accent
- * Two-column bio+skills
+ * Mood: The kind of personal site a thoughtful person would make by hand
+ *
+ * Display: Instrument Serif (Google Fonts)
+ * Body: DM Sans (Google Fonts)
+ * Background: #f8f5f0 (warm cream)
+ * Text: #222
+ * Accent: #2563eb (blue) — links, metrics
+ * Layout: Two-column (bio + projects left, skills sidebar right). Generous paragraphs.
+ * Border: #ddd5c8 (warm separator)
  */
 
 export const name = 'folio';
@@ -14,60 +20,92 @@ export const fonts = [
 
 export function css() {
   return `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; }
-body { font-family: 'DM Sans', sans-serif; color: #222; background: #f8f5f0; line-height: 1.7; max-width: 720px; margin: 0 auto; padding: 40px 40px 32px; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: 'DM Sans', sans-serif; color: #222; background: #f8f5f0; line-height: 1.7; margin: 0; padding: 0; }
+.wrap { width: 700px; margin: 0 auto; padding: 40px 40px 32px; }
 a { color: #2563eb; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(37,99,235,0.3); }
 a:hover { text-decoration-color: #2563eb; }
-nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid #ddd5c8; font-size: 13px; }
-nav .site-name { font-family: 'Instrument Serif', serif; color: #222; text-decoration: none; font-size: 16px; margin-right: auto; }
-nav a { color: #999; text-decoration: none; } nav a:hover { color: #222; }
+nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; padding-bottom: 12px; margin-bottom: 24px; border-bottom: 1px solid #ddd5c8; font-size: 13px; }
+nav .site-name { font-family: 'Instrument Serif', serif; color: #222; text-decoration: none; font-size: 18px; margin-right: auto; }
+nav a { color: #999; text-decoration: none; }
+nav a:hover { color: #222; }
 nav .active { color: #222; font-weight: 500; }
-h1 { font-family: 'Instrument Serif', serif; font-size: 36px; font-weight: 400; margin-bottom: 8px; }
-h2 { font-family: 'Instrument Serif', serif; font-size: 20px; font-weight: 400; margin: 24px 0 12px; }
+h1 { font-family: 'Instrument Serif', serif; font-size: 36px; font-weight: 400; line-height: 1.2; margin-bottom: 12px; }
+h2 { font-family: 'Instrument Serif', serif; font-size: 22px; font-weight: 400; margin: 32px 0 12px; }
 h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
 h3 a { color: #222; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #ccc; }
 h3 a:hover { text-decoration-color: #222; }
-p { margin-bottom: 8px; } p:last-child { margin-bottom: 0; }
+p { margin-bottom: 10px; }
+p:last-child { margin-bottom: 0; }
 main { }
-.hero { margin-bottom: 28px; }
-.hero .bio { font-size: 15px; color: #555; margin-bottom: 12px; }
-.hero .bio a { color: #2563eb; }
-.hero .links { font-size: 13px; }
-.hero .links a { margin-right: 14px; }
-.two-col { display: grid; grid-template-columns: 1fr 220px; gap: 40px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #ddd5c8; }
+.home-bio { font-size: 15px; color: #444; line-height: 1.8; margin-bottom: 28px; }
+.home-bio p { margin-bottom: 12px; }
+.home-bio a { color: #2563eb; }
+.two-col { display: grid; grid-template-columns: 1fr 200px; gap: 40px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #ddd5c8; }
 .skills-sidebar { font-size: 13px; color: #777; line-height: 1.9; }
-.skills-sidebar strong { display: block; color: #222; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 8px; margin-bottom: 2px; }
-.skills-sidebar strong:first-child { margin-top: 0; }
-.project { margin-bottom: 18px; }
-.project p { font-size: 14px; color: #555; }
+.skills-sidebar .sidebar-label { display: block; color: #222; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 12px; margin-bottom: 2px; font-weight: 700; }
+.skills-sidebar .sidebar-label:first-child { margin-top: 0; }
+.project { margin-bottom: 20px; }
+.project p { font-size: 14px; color: #555; line-height: 1.7; }
 .project .metric { font-size: 13px; color: #2563eb; margin-top: 2px; }
 .job { margin-bottom: 24px; }
-.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
-.job-header strong { font-size: 15px; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+.job-header .company { font-size: 15px; font-weight: 700; }
 .date { font-size: 12px; color: #999; white-space: nowrap; }
 .role { font-size: 14px; color: #555; margin-bottom: 4px; }
-.sub-role { margin-top: 8px; padding-top: 8px; border-top: 1px solid #ece5da; }
+.sub-role { margin-top: 10px; padding-top: 10px; border-top: 1px solid #ece5da; }
 .sub-role:first-child { margin-top: 4px; padding-top: 0; border-top: none; }
-.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
-ul { margin: 4px 0 0 20px; } li { font-size: 14px; color: #444; margin-bottom: 2px; line-height: 1.6; }
+.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 2px; }
+.sub-role-header .role { font-weight: 600; font-size: 14px; color: #222; margin-bottom: 0; }
+ul { margin: 4px 0 0 20px; }
+li { font-size: 14px; color: #444; margin-bottom: 3px; line-height: 1.6; }
 .detail { font-size: 14px; color: #555; }
 .skills-list { font-size: 14px; color: #555; line-height: 1.9; }
+.links { font-size: 13px; margin-top: 8px; }
+.links a { margin-right: 14px; }
 section { margin-bottom: 8px; }
 article { margin-bottom: 8px; }
-footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid #ddd5c8; font-size: 12px; color: #ccc; }
-footer a { color: #bbb; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #ddd; }
-@media print { nav, footer { display: none; } body { padding: 1rem 0; max-width: none; background: #fff; } }
-@media (max-width: 700px) { body { padding: 24px 20px; } .two-col { grid-template-columns: 1fr; } h1 { font-size: 28px; } .job-header { flex-direction: column; } }`;
+footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #ddd5c8; font-size: 12px; color: #999; }
+footer a { color: #888; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #ccc; }
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; width: auto; max-width: none; } body { background: #fff; } }
+@media (max-width: 660px) {
+  .wrap { width: 100% !important; padding: 24px 20px; }
+  .two-col { grid-template-columns: 1fr; gap: 24px; }
+  h1 { font-size: 28px; }
+  nav { font-size: 12px; gap: 14px; }
+  .job-header { flex-direction: column; }
+  .sub-role-header { flex-direction: column; }
+  .home-bio { font-size: 14px; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 16px !important; }
+  nav .site-name { font-size: 15px; }
+  nav { font-size: 11px; gap: 10px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+  .home-bio { font-size: 13px; }
+  .project p { font-size: 13px; }
+  .project .metric { font-size: 12px; }
+  li { font-size: 13px; }
+  .job-header .company { font-size: 14px; }
+  .role { font-size: 13px; }
+  .date { font-size: 11px; }
+  .skills-sidebar { font-size: 12px; }
+  .skills-list { font-size: 13px; }
+}`;
 }
 
 export function pages(data) {
   const { name: fullName, headline, location, email, linkedin, github,
-    summaryText, exitStory, currentProject, superpowers,
+    summaryText, exitStory, currentProject, superpowers, proofPoints,
     projects, experience, education, skills, experienceGroups } = data;
   const esc = data.esc;
   const renderInlineMarkdown = data.renderInlineMarkdown;
+  const homeBio = data.homeBio || '';
   const linkedinUrl = linkedin && (linkedin.startsWith('http') ? linkedin : `https://${linkedin}`);
   const githubUrl = github && (github.startsWith('http') ? github : `https://${github}`);
+  const targetRoles = data.targetRoles || [];
 
   const links = [];
   if (linkedin) links.push(`<a href="${esc(linkedinUrl)}">LinkedIn</a>`);
@@ -90,56 +128,74 @@ export function pages(data) {
     return `<nav><a href="index.html" class="site-name">${esc(fullName)}</a> ${items}</nav>`;
   }
 
-  // HOME — two-column with bio and skills sidebar
-  const bioLines = [];
-  if (summaryText) bioLines.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
-  if (exitStory) bioLines.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
-  if (currentProject) bioLines.push(`<p>Right now I'm ${renderInlineMarkdown(currentProject.charAt(0).toLowerCase() + currentProject.slice(1))}</p>`);
+  // HOME — homeBio primary, fallback to summaryText
+  let homeContent;
+  if (homeBio) {
+    homeContent = `<div class="home-bio">${homeBio}</div>`;
+  } else {
+    const parts = [];
+    if (summaryText) parts.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
+    if (exitStory) parts.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
+    if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
+    if (links.length > 0) parts.push(`<div class="links">${links.join(' ')}</div>`);
+    homeContent = `<div class="home-bio">${parts.join('\n')}</div>`;
+  }
 
+  // Skills sidebar for homepage two-column
   const skillsSidebar = skills.length > 0
-    ? `<div class="skills-sidebar"><strong>Skills</strong>${skills.slice(0, 15).map(s => esc(s)).join(', ')}</div>`
+    ? `<div class="skills-sidebar"><span class="sidebar-label">Skills</span>${skills.slice(0, 15).map(s => esc(s)).join(', ')}</div>`
     : '';
 
-  const homeBody = `<main>
-<section class="hero">
-<h1>${esc(fullName)}</h1>
-<div class="bio">${bioLines.join('\n')}</div>
-${links.length > 0 ? `<div class="links">${links.join(' ')}</div>` : ''}
-</section>
-${(projects.length > 0 || skills.length > 0) ? `<section class="two-col">
-<div>
-${projects.length > 0 ? `<h2>Selected work</h2>${projects.slice(0, 3).map(p => `<div class="project"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>${p.description ? `<p>${p.description}</p>` : ''}${p.heroMetric ? `<div class="metric">${esc(p.heroMetric)}</div>` : ''}</div>`).join('\n')}` : ''}
-</div>
+  // Homepage two-column: bio + selected projects left, skills right
+  const selectedProjects = projects.slice(0, 3);
+  const leftCol = selectedProjects.length > 0
+    ? `<h2>Selected work</h2>${selectedProjects.map(p => `<div class="project"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>${p.description ? `<p>${p.description}</p>` : ''}${p.heroMetric ? `<div class="metric">${esc(p.heroMetric)}</div>` : ''}</div>`).join('\n')}`
+    : '';
+
+  // Two-column only when there are projects for the left side; otherwise skills go below bio
+  let homeLower = '';
+  if (leftCol && skillsSidebar) {
+    homeLower = `<div class="two-col">
+<div>${leftCol}</div>
 ${skillsSidebar}
-</section>` : ''}
+</div>`;
+  } else if (leftCol) {
+    homeLower = `<div>${leftCol}</div>`;
+  } else if (skillsSidebar) {
+    homeLower = skillsSidebar;
+  }
+
+  const homeBody = `<main>
+${homeContent}
+${homeLower}
 </main>`;
 
   // WORK
-  const workBody = `<main>
+  const workBody = projects.length > 0 ? `<main>
 <h1>Work</h1>
-<p>Selected projects and things I've built.</p>
-${projects.map(p => `<section class="project">
+<p style="color:#555;margin-bottom:24px;">Selected projects and things I've built.</p>
+${projects.map(p => `<div class="project">
 <h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</h3>
 ${p.description ? `<p>${p.description}</p>` : ''}
 ${p.heroMetric ? `<div class="metric">${esc(p.heroMetric)}</div>` : ''}
-</section>`).join('\n')}
-</main>`;
+</div>`).join('\n')}
+</main>` : '';
 
-  // EXPERIENCE
+  // EXPERIENCE — bold title + date same line
   const groups = experienceGroups;
   const expBody = `<main>
 <h1>Experience</h1>
 ${groups.map(g => {
     if (g.roles.length === 1) {
       const r = g.roles[0];
-      return `<article class="job"><div class="job-header"><strong>${esc(g.company)}</strong>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.role ? `<div class="role">${esc(r.role)}</div>` : ''}${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</article>`;
+      return `<article class="job"><div class="job-header"><span class="company">${esc(g.company)}</span>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.role ? `<div class="role">${esc(r.role)}</div>` : ''}${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</article>`;
     }
     const firstDate = g.roles[0].dateRange || '';
     const lastDate = g.roles[g.roles.length - 1].dateRange || '';
     const startYear = lastDate.match(/\d{4}/)?.[0] || '';
     const endPart = firstDate.match(/[-\u2013]\s*(.+)$/)?.[1] || '';
-    const spanDate = startYear && endPart ? `${startYear} - ${endPart}` : firstDate;
-    return `<article class="job"><div class="job-header"><strong>${esc(g.company)}</strong><span class="date">${esc(spanDate)}</span></div>${g.roles.map(r => `<div class="sub-role"><div class="sub-role-header"><div class="role">${esc(r.role)}</div>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('')}</article>`;
+    const spanDate = startYear && endPart ? `${startYear} \u2013 ${endPart}` : firstDate;
+    return `<article class="job"><div class="job-header"><span class="company">${esc(g.company)}</span><span class="date">${esc(spanDate)}</span></div>${g.roles.map(r => `<div class="sub-role"><div class="sub-role-header"><span class="role">${esc(r.role)}</span>${r.dateRange ? `<span class="date">${esc(r.dateRange)}</span>` : ''}</div>${r.bullets.length > 0 ? `<ul>${r.bullets.map(b => `<li>${renderInlineMarkdown(b)}</li>`).join('')}</ul>` : ''}</div>`).join('')}</article>`;
   }).join('\n')}
 ${education.length > 0 ? `<section><h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}</section>` : ''}
 </main>`;
@@ -150,7 +206,6 @@ ${education.length > 0 ? `<section><h2>Education</h2>${education.map(e => `<p cl
   if (exitStory) aboutParts.push(`<article><p>${renderInlineMarkdown(exitStory)}</p></article>`);
   if (superpowers.length > 0) aboutParts.push(`<section><p>What I do best: ${superpowers.join(', ').replace(/, ([^,]*)$/, ', and $1')}.</p></section>`);
   if (currentProject) aboutParts.push(`<section><h2>Now</h2><p>${renderInlineMarkdown(currentProject)}</p></section>`);
-  const targetRoles = data.targetRoles || [];
   const locationFlex = data.locationFlex || '';
   const lp = [];
   if (targetRoles.length > 0) lp.push(`Interested in: ${targetRoles.join(', ')}.`);
@@ -192,9 +247,11 @@ ${fontLinks}
 <style>${cssText}</style>
 </head>
 <body>
+<div class="wrap">
 ${nav}
 ${body}
-<footer>made by <a href="https://github.com/a16z/speedrun-career-ops">speedrun</a></footer>
+<footer>made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</div>
 </body>
 </html>`;
 }

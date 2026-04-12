@@ -4,39 +4,262 @@ Generate a polished static HTML portfolio website from the user's career-ops dat
 
 ## Full Pipeline
 
+### Step 0: Data Completeness Audit (MANDATORY before generation)
+
+Before generating ANYTHING, audit the candidate's data for portfolio readiness. A thin profile produces a thin portfolio that nobody would share. The whole point is output quality.
+
+Read `cv.md` and `config/profile.yml`. For each experience entry, check:
+
+**Red flags (MUST fix before generating):**
+- Any role with 2+ years tenure and fewer than 3 bullet points → ask the candidate to expand
+- Current role with fewer than 3 bullet points → always ask, this is the most important entry
+- No `narrative.home_bio` field → write one from the conversation (conversational paragraph with inline links)
+- No headline in profile.yml → ask for one
+
+**Yellow flags (recommend fixing):**
+- Missing `narrative.motivation` → ask "what's driving this search?"
+- Missing `narrative.current_project_detail` → ask "what are you building?"
+- Fewer than 3 superpowers → ask "what are you best at?"
+- No education section → ask if they want to include it
+
+**How to fill gaps:**
+Don't ask the candidate to "update cv.md." Have a CONVERSATION. Ask them about the role:
+- "You've been at [company] for [N years] as [role]. What are the 3-5 things you're most proud of there?"
+- "What did the team/org look like when you started vs now?"
+- "What's the biggest problem you solved?"
+
+Then YOU update cv.md with their answers, formatted as bullet points under the right role.
+
+For home_bio: write a conversational paragraph about the person based on everything you know. Include inline HTML links to their LinkedIn, current company, projects, etc. Store in `narrative.home_bio` in profile.yml. Show it to them for approval before proceeding.
+
+**Only proceed to Step 1 when all red flags are resolved.**
+
+### Step 1: Read source data
+
 1. Read `cv.md` as source of truth for experience, education, skills
 2. Read `config/profile.yml` for name, email, LinkedIn, GitHub, portfolio URL, headline, superpowers, proof points
 3. Read `article-digest.md` for detailed proof points and case studies (optional — skip gracefully if missing)
 4. Scan `reports/` for top evaluation highlights (optional — use highest-scored reports as case study material)
-5. **Template selection** — present the candidate with template options and let them pick:
 
-   | Template | Vibe |
-   |----------|------|
-   | `ink` | Warm editorial — magazine feature energy |
-   | `terminal` | Dark + technical — late-night shipping session |
-   | `volt` | Bold + modern — product launch page energy |
-   | `folio` | Warm + personal — the site a thoughtful person would make by hand |
-   | `grid` | Data-forward — Bloomberg terminal meets personal site |
-   | `statement` | Thesis-driven — one bold claim, then the proof |
-   | `caps` | Bold confidence — all-caps headlines, high impact |
-   | `bare` | Ultra-minimal — just the words, nothing else |
+### Step 2: Template selection (three-door concierge)
 
-   Read `DESIGN.md` for full template specs (fonts, colors, layout, mood). The selected template name gets passed to the generator: `node generate-portfolio.mjs --template={name}`.
+**The system has 20 styles x 8 layouts = 160 combinations.** Don't dump that on the candidate. Let them choose how deep they want to go.
 
-   If the candidate can't decide, recommend `ink` for non-technical roles and `terminal` for engineering/builder roles.
+Ask the candidate:
 
-6. Generate portfolio using the selected template: `node generate-portfolio.mjs --template={name}`
-7. Check if `gh` CLI is installed: `which gh`
-8. **If gh exists:**
+> "How do you want to pick your portfolio template?"
+>
+> - A) **Quick pick** — I'll suggest 3 based on your profile. Fastest way to a great site. (recommended)
+> - B) **Browse by vibe** — Pick a mood, see what matches.
+> - C) **See everything** — Full gallery of all options with filters.
+
+---
+
+#### Path A: Quick pick (concierge) — v1, build this
+
+Based on `candidate.type` and `candidate.positioning` (from profile.yml), select 3 combos using the table below. Each combo is a style + layout pair passed to `combine-portfolio.mjs`.
+
+**Recommendation table:**
+
+| Candidate type | Positioning / signal | Combo 1 | Combo 2 | Combo 3 |
+|----------------|---------------------|---------|---------|---------|
+| Student | academic-forward | garden-multipage | ink-multipage | almanac-multipage |
+| Student | builder-forward | press-cards | void-scroll | ember-centered |
+| Student | appear experienced | slate-sidebar | volt-multipage | bare-multipage |
+| Experienced | technical | terminal-multipage | void-scroll | grid-multipage |
+| Experienced | operator/leader | ink-spread | garden-multipage | statement-multipage |
+| Experienced | creative | press-cards | coral-bands | gradient-centered |
+| Early career | lead with experience | volt-multipage | folio-multipage | bare-multipage |
+| Early career | lead with projects | press-cards | ember-centered | void-scroll |
+
+**How to determine positioning/signal for experienced and early career candidates (no explicit positioning step):**
+- Check `target_roles` and `narrative.superpowers` in profile.yml
+- If superpowers/roles mention engineering, architecture, systems, infrastructure, data → **technical**
+- If superpowers/roles mention management, operations, strategy, leadership, growth → **operator/leader**
+- If superpowers/roles mention design, brand, creative, content, UX → **creative**
+- If ambiguous → default to **technical** (most common in the speedrun funnel)
+- For early career, use their positioning choice from Step 6 of onboarding ("lead with experience" vs "lead with projects")
+
+**Generation steps:**
+
+1. Parse the combo name. Format is `STYLE-LAYOUT` (e.g., `garden-multipage` → `--style=garden --layout=multipage`).
+
+2. Generate all 3 combos into separate output directories:
+   ```bash
+   node combine-portfolio.mjs --style=garden --layout=multipage --output=dist-preview/garden-multipage
+   node combine-portfolio.mjs --style=ink --layout=multipage --output=dist-preview/ink-multipage
+   node combine-portfolio.mjs --style=almanac --layout=multipage --output=dist-preview/almanac-multipage
+   ```
+
+3. Serve the previews on localhost so the candidate can see them in Chrome:
+   ```bash
+   npx serve dist-preview -l 3849 --no-clipboard
+   ```
+   Then open the three previews:
+   - `http://localhost:3849/garden-multipage/index.html`
+   - `http://localhost:3849/ink-multipage/index.html`
+   - `http://localhost:3849/almanac-multipage/index.html`
+
+4. Present the 3 options to the candidate:
+   > "Here are 3 templates built with your real data. Open each in Chrome and pick your favorite."
+   >
+   > 1. **garden-multipage** — Warm linen, massive serif, editorial magazine feel
+   >    → http://localhost:3849/garden-multipage/index.html
+   > 2. **ink-multipage** — Warm editorial with proof sidebar, magazine feature energy
+   >    → http://localhost:3849/ink-multipage/index.html
+   > 3. **almanac-multipage** — Table-of-contents nav, archival book-like feel
+   >    → http://localhost:3849/almanac-multipage/index.html
+   >
+   > Options:
+   > - A) I like #1
+   > - B) I like #2
+   > - C) I like #3
+   > - D) Show me more
+
+5. If the candidate picks one → store the style and layout in profile.yml, generate the final version into `dist/`, and proceed to Step 2.5.
+
+6. **If "show me more":** Pick 3 more combos from a DIFFERENT vibe category than the original 3. Use the vibe mapping below to find the next category. Generate those 3 the same way and present again.
+
+   **Vibe category rotation for "show me more":**
+   - If original was from Warm & Editorial → show from Bold & Confident
+   - If original was from Bold & Confident → show from Dark & Technical
+   - If original was from Dark & Technical → show from Clean & Minimal
+   - If original was from Clean & Minimal → show from Warm & Editorial
+   - If original was from Playful & Creative → show from Professional & Structured
+   - If original was from Professional & Structured → show from Playful & Creative
+
+   **"Show me more" combo picks by vibe category:**
+
+   | Vibe category | Combo 1 | Combo 2 | Combo 3 |
+   |---------------|---------|---------|---------|
+   | Dark & Technical | terminal-multipage | void-scroll | tactical-multipage |
+   | Warm & Editorial | ink-spread | garden-multipage | prose-centered |
+   | Bold & Confident | volt-multipage | caps-multipage | ember-centered |
+   | Clean & Minimal | bare-multipage | folio-multipage | lab-multipage |
+   | Playful & Creative | coral-bands | almanac-multipage | press-cards |
+   | Professional & Structured | grid-multipage | statement-multipage | slate-sidebar |
+
+   Generate and serve exactly like the initial 3. If the candidate says "show me more" again, rotate to the next vibe category. After exhausting all 6 categories, tell the candidate they've seen the full range and ask them to pick.
+
+---
+
+#### Path B: Browse by vibe — v2, document only (do not build the full UX yet)
+
+6 vibe categories. Candidate picks a mood, sees all matching combos rendered as thumbnails.
+
+| Vibe | Styles in this category |
+|------|------------------------|
+| Dark & Technical | terminal, void, tactical, slate |
+| Warm & Editorial | ink, garden, blush, prose, almanac |
+| Bold & Confident | volt, caps, press, gradient, ember |
+| Clean & Minimal | bare, folio, lab, dusk |
+| Playful & Creative | coral, almanac, press |
+| Professional & Structured | grid, statement, slate |
+
+**v2 flow (not yet built):**
+1. Show the 6 vibe names with 1 thumbnail each as preview
+2. Candidate picks a vibe
+3. Show all layouts in that vibe (each style x all 8 layouts = ~32 thumbnails per vibe, but filter to ~8 best combos)
+4. Candidate clicks to preview with their real data on localhost
+5. Thumbnails are pre-rendered via `node combine-portfolio.mjs --all --thumbnails` (headless browser, ~5 min for 160)
+
+**Note:** Some styles appear in multiple vibes (almanac is both Warm & Editorial and Playful & Creative; press is both Bold & Confident and Playful & Creative; slate is both Dark & Technical and Professional & Structured). Deduplicate in the UI.
+
+**v1 workaround:** If a candidate picks Path B today, ask them which vibe sounds closest, then generate 3 combos from that vibe category using the "show me more" table above. Same generation/preview flow as Path A.
+
+---
+
+#### Path C: See everything — v2, document only (do not build)
+
+Full gallery of all 160 combos with filter chips and search.
+
+**v2 flow (not yet built):**
+1. Grid of pre-rendered thumbnails for all 160 combos
+2. Filter chips: Dark/Light, Single page/Multi page, Minimal/Bold, Project-heavy/Experience-heavy
+3. Search by name (e.g., "press" or "cards")
+4. Click any thumbnail → generate with real data on localhost
+5. Gallery served at `http://localhost:3850` (existing combo viewer)
+
+**v1 workaround:** If a candidate picks Path C today, run `node combine-portfolio.mjs --list-styles` and `node combine-portfolio.mjs --list-layouts`, show the candidate the full list of 20 styles and 8 layouts, ask them to pick a style and a layout, generate that single combo, and preview it. Offer to iterate.
+
+---
+
+#### Template combo reference (style x layout)
+
+For reference, here are all valid style-layout combos. Each combo is generated via `node combine-portfolio.mjs --style=STYLE --layout=LAYOUT`.
+
+**20 styles:** almanac, bare, blush, caps, coral, dusk, ember, folio, garden, gradient, grid, ink, lab, press, prose, statement, tactical, terminal, void, volt
+
+**8 layouts:** bands, cards, centered, multipage, scroll, sidebar, sidebar-right, spread
+
+**Style vibes (for describing to candidates):**
+| Style | Vibe description |
+|-------|-----------------|
+| ink | Warm editorial with proof sidebar — magazine feature energy |
+| terminal | Dark + gold + stars — late-night shipping session |
+| lab | Eggshell timeline — research lab aesthetic |
+| volt | Sharp high-contrast — product launch page energy |
+| folio | Warm cream, two-column — made by hand energy |
+| grid | Bloomberg terminal — dense, data-forward |
+| statement | Your headline IS the hero — thesis-driven |
+| caps | ALL-CAPS confidence — direct and bold |
+| bare | Anti-design — just the words, nothing else |
+| garden | Warm linen, massive serif — editorial magazine |
+| ember | Hot pink headlines — instantly recognizable |
+| blush | Italian warmth — centered serif, yellow accent |
+| prose | Large italic serif name — literary confidence |
+| coral | Coral bg framing white column — maker-culture zine |
+| almanac | Table-of-contents nav — archival, book-like |
+| void | Near-black + radial glow — hacker minimal |
+| dusk | Warm cream, sage labels — warm palette |
+| gradient | Pastel blue, stacked outline/filled serif — graphic design |
+| press | Neo-brutalist — offset shadows, coral/yellow blocks |
+| tactical | Military/defense — monospace, olive, command-and-control |
+
+Read `DESIGN.md` for full template specs.
+
+### Step 2.5: Template-aware content collection (NEW)
+
+After the candidate picks a template, check what content modules that layout benefits from. Ask targeted follow-up questions to fill gaps.
+
+**Content modules and which templates use them:**
+
+| Module | Templates that benefit | Onboarding question |
+|--------|----------------------|---------------------|
+| `projects` (detailed) | deck, spread, band, ink, grid, slate | "This layout has a project spotlight section. Tell me about 1-2 things you shipped. What was the problem? What did you build? What happened?" |
+| `testimonials` | letter, spread, garden, statement | "Got any quotes from managers or teammates? Something like 'Jordan built X from scratch' — even a Slack message or performance review line works." |
+| `values` | letter, statement, spread | "What are 3-5 principles that guide how you work? Not buzzwords — real things like 'distribution is a product problem.'" |
+| `now` | dusk, field, garden | "What are you working on right now? 2-3 sentences about your current focus." |
+| `talks` | ink, garden, spread | "Any conference talks, published articles, or podcast appearances?" |
+| `tools` | grid, dusk, field, deck | "What's your daily toolkit? Not just 'Python' — more like 'Python for data pipelines, dbt for transforms.'" |
+| `gallery` | deck, press, gradient | "Do you have screenshots, diagrams, or visual samples of your work? Link me to any hosted images." |
+| `reading` | prose, garden, almanac | "Any books that shaped how you think about your work?" |
+
+**Rules:**
+- Only ask for modules the selected template actually renders. Don't collect data that won't be used.
+- Ask through conversation, not a checklist. "Tell me about a project" not "Fill in: problem, solution, outcome."
+- Store answers in `config/profile.yml` under `preferences.projects`, `preferences.testimonials`, etc.
+- 2-3 modules max per template. Don't overwhelm the candidate.
+- If a candidate has no projects/testimonials/etc., the template renders fine without them — it just looks thinner.
+
+### Step 3: Generate
+
+3. Generate portfolio using the selected template: `node generate-portfolio.mjs --template={name}`
+4. **Open the generated pages in the browser** and review them WITH the candidate. If anything looks thin, wrong, or duplicated — fix the source data (cv.md, profile.yml) and regenerate. Do NOT deploy garbage.
+
+### Step 4: Deploy
+
+5. Check if `gh` CLI is installed: `which gh`
+6. **If gh exists:**
    a. Check if portfolio repo exists: `gh repo view portfolio 2>/dev/null`
    b. If not, create it: `gh repo create portfolio --public --confirm`
    c. Deploy: `npx gh-pages -d dist`
    d. Derive the GitHub Pages URL: `https://{username}.github.io/portfolio`
-9. **If gh is NOT installed:**
+7. **If gh is NOT installed:**
    a. Save HTML and inform the user: "Your portfolio is ready at `dist/index.html`"
    b. Suggest manual deployment options: GitHub Pages, Netlify Drop, Vercel, Cloudflare Pages
-10. After successful deploy: update `config/profile.yml` → `candidate.portfolio_url` with the live GitHub Pages URL
-11. Report the live URL back to the user
+8. After successful deploy: update `config/profile.yml` → `candidate.portfolio_url` with the live GitHub Pages URL
+9. Report the live URL back to the user
 
 ## HTML Generation
 

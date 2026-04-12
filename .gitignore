@@ -43,3 +43,4 @@ portcos-*.yml
 career-dashboard
 package-lock.json
 .gstack/
+.claude/worktrees/

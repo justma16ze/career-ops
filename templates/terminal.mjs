@@ -15,20 +15,26 @@ export const fonts = [
 
 export function css() {
   return `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; }
-body { font-family: 'JetBrains Mono', monospace; color: #d4d4d4; background: #0d0d0d; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px 40px 32px; position: relative; overflow-x: hidden; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-y: scroll; }
+body { font-family: 'JetBrains Mono', monospace; color: #d4d4d4; background: #0d0d0d; line-height: 1.6; margin: 0; padding: 0; position: relative; }
+.wrap { width: 100%; max-width: 800px; margin: 0 auto; padding: 24px 40px 32px; }
 body::before {
   content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 50% 10%, rgba(232,196,115,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.12) 0%, transparent 100%),
-    radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 15% 85%, rgba(232,196,115,0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.1) 0%, transparent 100%),
-    radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.12) 0%, transparent 100%);
+  background-image:
+    radial-gradient(2px 2px at 8% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 22% 55%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 48% 8%, rgba(232,196,115,0.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 35%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 88% 72%, rgba(255,255,255,0.18) 0%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 12% 82%, rgba(232,196,115,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 42% 42%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 78% 12%, rgba(255,255,255,0.22) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 68%, rgba(232,196,115,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 35% 28%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 92% 45%, rgba(232,196,115,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 18% 95%, rgba(255,255,255,0.2) 0%, transparent 100%);
 }
-body > * { position: relative; z-index: 1; }
+.wrap { position: relative; z-index: 1; }
 a { color: #e8c473; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(232,196,115,0.3); }
 a:hover { text-decoration-color: #e8c473; }
 nav { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid #222; font-size: 13px; }
@@ -52,23 +58,62 @@ h2 { font-family: 'General Sans', sans-serif; font-size: 11px; font-weight: 600;
 main { }
 section { margin-bottom: 8px; }
 article { margin-bottom: 8px; }
+.ship-entry { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #1a1a1a; }
+.ship-entry:last-child { border-bottom: none; }
+.ship-entry h3 { font-size: 15px; font-weight: 700; color: #e8c473; margin-bottom: 6px; }
+.ship-entry h3 a { color: #e8c473; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232,196,115,0.3); }
+.ship-entry p { font-size: 12px; color: #888; line-height: 1.6; }
+.ship-entry .delta { color: #d4d4d4; font-weight: 400; font-size: 12px; margin-top: 6px; }
 p { margin-bottom: 6px; } p:last-child { margin-bottom: 0; }
 .hero { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #222; }
-.job { margin-bottom: 20px; }
-.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
-.job-header strong { font-size: 14px; color: #d4d4d4; }
-.date { font-size: 11px; color: #3a3a3a; white-space: nowrap; }
-.role { font-size: 12px; color: #666; margin-bottom: 4px; }
-.sub-role { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1a1a1a; }
-.sub-role:first-child { margin-top: 4px; padding-top: 0; border-top: none; }
-.sub-role-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
-ul { margin: 4px 0 0 18px; } li { font-size: 12px; color: #666; margin-bottom: 2px; }
-.detail { font-size: 12px; color: #666; }
-.skills-list { font-size: 12px; color: #555; }
-footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #1a1a1a; font-size: 11px; color: #2a2a2a; }
-footer a { color: #3a3a3a; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #222; }
-@media print { nav, footer { display: none; } body { padding: 1rem 0; max-width: none; background: #fff; color: #111; } body::before { display: none; } }
-@media (max-width: 700px) { body { padding: 16px 20px; } .log-entry { grid-template-columns: 1fr; } .log-date { margin-bottom: 2px; } .job-header { flex-direction: column; } }`;
+.job { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a; }
+.job:last-child { border-bottom: none; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+.job-header strong { font-size: 15px; color: #e8c473; }
+.date { font-size: 11px; color: #e8c473; white-space: nowrap; }
+.role { font-size: 12px; color: #888; margin-bottom: 6px; }
+.sub-role { margin-top: 20px; padding-top: 0; }
+.sub-role:first-child { margin-top: 8px; }
+.sub-role-header { margin-bottom: 8px; }
+.sub-role-header .role { color: #e8c473; font-weight: 700; font-size: 13px; display: block; margin-bottom: 2px; }
+.sub-role-header .date { display: block; color: #555; }
+ul { margin: 6px 0 0 18px; } li { font-size: 12px; color: #777; margin-bottom: 4px; line-height: 1.5; }
+.detail { font-size: 12px; color: #777; }
+.skills-list { font-size: 12px; color: #777; line-height: 2.2; }
+.strengths-list { list-style: none; margin: 0; padding: 0; }
+.strengths-list li { font-size: 12px; color: #777; margin-bottom: 4px; padding-left: 0; }
+.strengths-list li::before { content: '> '; color: #e8c473; }
+.home-bio { font-size: 14px; color: #bbb; line-height: 1.8; margin-top: 8px; }
+.home-bio p { margin-bottom: 12px; }
+.home-bio a { color: #e8c473; }
+footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #222; font-size: 11px; color: #e8c473; }
+footer a { color: #e8c473; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(232,196,115,0.4); }
+@media print { nav, footer { display: none; } .wrap { padding: 1rem; max-width: none; } body { background: #fff; color: #111; } body::before { display: none; } }
+@media (max-width: 840px) {
+  .wrap { padding: 20px 24px; }
+  h1 { font-size: 20px; }
+  nav { font-size: 12px; gap: 12px; }
+  .hero { margin-bottom: 16px; padding-bottom: 14px; }
+  .job-header { flex-direction: column; }
+  .sub-role-header { flex-direction: column; }
+  .home-bio { font-size: 13px; }
+  li { font-size: 11px; }
+  .role { font-size: 11px; }
+  .date { font-size: 10px; }
+  p { word-wrap: break-word; overflow-wrap: break-word; }
+  ul { margin-left: 14px; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 16px; }
+  h1 { font-size: 18px; }
+  h2 { font-size: 10px; }
+  nav { font-size: 11px; gap: 8px; flex-wrap: wrap; }
+  .job-header strong { font-size: 13px; }
+  .status-line { font-size: 11px; }
+  .home-bio { font-size: 12px; line-height: 1.7; }
+  .strengths-list li { font-size: 11px; }
+  .skills-list { font-size: 11px; }
+}`;
 }
 
 export function pages(data) {
@@ -99,29 +144,40 @@ export function pages(data) {
     return `<nav><a href="index.html" class="site-name">${esc(username)}</a> ${items}</nav>`;
   }
 
-  // HOME
-  const statusParts = [];
-  if (targetRoles.length > 0) statusParts.push(`role: <span>${esc(targetRoles[0])}</span>`);
-  if (location) statusParts.push(`location: <span>${esc(location.toLowerCase())}</span>`);
-  statusParts.push(`status: <span>building</span>`);
+  // HOME — conversational paragraph about the person
+  // If narrative.home_bio exists, render it directly (it contains HTML links).
+  // Otherwise, fall back to assembling from structured fields.
+  const homeBio = data.homeBio || '';
+
+  let homeContent;
+  if (homeBio) {
+    homeContent = `<article class="home-bio">${homeBio}</article>`;
+  } else {
+    // Fallback: assemble from structured data
+    const parts = [];
+    if (summaryText) parts.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
+    if (exitStory) parts.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
+    if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
+    const linkParts = [];
+    if (linkedin) linkParts.push(`<a href="${esc(linkedinUrl)}">linkedin</a>`);
+    if (github) linkParts.push(`<a href="${esc(githubUrl)}">github</a>`);
+    if (email) linkParts.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
+    if (linkParts.length > 0) parts.push(`<p>${linkParts.join(' ')}</p>`);
+    homeContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+  }
 
   const homeBody = `<main>
 <section class="hero">
 <h1><span class="prompt">&gt; </span>${esc(username)}<span class="cursor"></span></h1>
-${statusParts.length > 0 ? `<div class="status-line">${statusParts.join(' | ')}</div>` : ''}
 </section>
-${summaryText ? `<article><p>${renderInlineMarkdown(summaryText)}</p></article>` : ''}
-${projects.length > 0 ? `<section><h2>Ship Log</h2>${projects.slice(0, 4).map(p => {
-    const dateStr = '';
-    return `<div class="log-entry"><div class="log-date">${esc(dateStr)}</div><div class="log-content"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name.toLowerCase())}</a>` : esc(p.name.toLowerCase())}</h3>${p.description ? `<p>${p.description}</p>` : ''}${p.heroMetric ? `<div class="delta">${esc(p.heroMetric)}</div>` : ''}</div></div>`;
-  }).join('\n')}</section>` : ''}
+${homeContent}
 </main>`;
 
-  // WORK
+  // WORK — same visual structure as experience page (job-style entries)
   const workBody = `<main>
 <h1><span class="prompt">&gt; </span>ls work/<span class="cursor"></span></h1>
-<h2>Ship Log</h2>
-${projects.map(p => `<section class="log-entry"><div class="log-date"></div><div class="log-content"><h3>${p.url ? `<a href="${esc(p.url)}">${esc(p.name.toLowerCase())}</a>` : esc(p.name.toLowerCase())}</h3>${p.description ? `<p>${p.description}</p>` : ''}${p.heroMetric ? `<div class="delta">${esc(p.heroMetric)}</div>` : ''}</div></section>`).join('\n')}
+<h2>Selected Projects</h2>
+${projects.map(p => `<article class="job"><div class="job-header"><strong>${p.url ? `<a href="${esc(p.url)}">${esc(p.name)}</a>` : esc(p.name)}</strong>${p.heroMetric ? `<span class="date">${esc(p.heroMetric)}</span>` : ''}</div>${p.description ? `<p class="role">${p.description}</p>` : ''}</article>`).join('\n')}
 </main>`;
 
   // EXPERIENCE
@@ -144,12 +200,24 @@ ${groups.map(g => {
 ${education.length > 0 ? `<section><h2>Education</h2>${education.map(e => `<p class="detail">${renderInlineMarkdown(typeof e === 'string' ? e : '')}</p>`).join('')}</section>` : ''}
 </main>`;
 
-  // ABOUT
+  // ABOUT — only content NOT already on the home page
+  // Home has the personal bio paragraph. About has: strengths, stack, what they're looking for, contact.
+  // If home_bio exists, skip summary/exitStory here (already covered). If no home_bio, include them.
   const aboutParts = ['<main>', '<h1><span class="prompt">&gt; </span>whoami<span class="cursor"></span></h1>'];
-  if (summaryText) aboutParts.push(`<article><p>${renderInlineMarkdown(summaryText)}</p></article>`);
-  if (exitStory) aboutParts.push(`<article><p>${renderInlineMarkdown(exitStory)}</p></article>`);
-  if (superpowers.length > 0) aboutParts.push(`<section><h2>Strengths</h2><p class="detail">${superpowers.join(' / ')}</p></section>`);
+  if (!homeBio) {
+    if (summaryText) aboutParts.push(`<article><p>${renderInlineMarkdown(summaryText)}</p></article>`);
+    if (exitStory) aboutParts.push(`<article><p>${renderInlineMarkdown(exitStory)}</p></article>`);
+  }
+  if (superpowers.length > 0) aboutParts.push(`<section><h2>Strengths</h2><ul class="strengths-list">${superpowers.map(s => `<li>${esc(s)}</li>`).join('')}</ul></section>`);
   if (currentProject) aboutParts.push(`<section><h2>Now</h2><p>${renderInlineMarkdown(currentProject)}</p></section>`);
+  const targetDesc = targetRoles.length > 0 ? targetRoles.join(', ') : '';
+  const locationDesc = data.locationFlex || '';
+  if (targetDesc || locationDesc) {
+    const lookingParts = [];
+    if (targetDesc) lookingParts.push(`Interested in: ${targetDesc}.`);
+    if (locationDesc) lookingParts.push(locationDesc);
+    aboutParts.push(`<section><h2>Looking For</h2><p class="detail">${lookingParts.join(' ')}</p></section>`);
+  }
   if (skills.length > 0) aboutParts.push(`<section><h2>Stack</h2><p class="skills-list">${skills.map(s => esc(s).toLowerCase()).join(', ')}</p></section>`);
   const links = [];
   if (linkedin) links.push(`<a href="${esc(linkedinUrl)}">linkedin</a>`);
@@ -190,9 +258,11 @@ ${fontLinks}
 <style>${cssText}</style>
 </head>
 <body>
+<div class="wrap">
 ${nav}
 ${body}
-<footer>~ made by <a href="https://github.com/a16z/speedrun-career-ops">speedrun</a></footer>
+<footer>~ made by <a href="https://github.com/justma16ze/career-ops">speedrun</a></footer>
+</div>
 </body>
 </html>`;
 }

@@ -35,7 +35,7 @@ When you get an offer, it evaluates against market data, provides a negotiation 
 ## Get started
 
 ```bash
-git clone https://github.com/a16z/speedrun-career-ops.git
+git clone https://github.com/justma16ze/career-ops.git
 cd speedrun-career-ops
 npm install
 claude
