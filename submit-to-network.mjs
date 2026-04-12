@@ -583,6 +583,62 @@ function buildExpandedSignals(profile) {
     signals.template_chosen = String(portfolioConfig.template).slice(0, 50);
   }
 
+  // candidate type and positioning
+  const candidate = profile?.candidate || {};
+  if (candidate.type) {
+    signals.candidate_type = String(candidate.type).slice(0, 50);
+  }
+  if (candidate.positioning) {
+    signals.positioning = String(candidate.positioning).slice(0, 50);
+  }
+
+  // projects (detailed)
+  if (preferences.projects && Array.isArray(preferences.projects) && preferences.projects.length > 0) {
+    signals.projects = preferences.projects.map(p => ({
+      name: String(p.name || '').slice(0, 200),
+      outcome: String(p.outcome || '').slice(0, 500),
+      tech: Array.isArray(p.tech) ? p.tech.slice(0, 10) : [],
+    }));
+  }
+
+  // testimonials
+  if (preferences.testimonials && Array.isArray(preferences.testimonials) && preferences.testimonials.length > 0) {
+    signals.testimonials = preferences.testimonials.map(t => ({
+      quote: String(t.quote || '').slice(0, 500),
+      person: String(t.person || '').slice(0, 100),
+      role: String(t.role || '').slice(0, 100),
+    }));
+  }
+
+  // values
+  if (preferences.values && Array.isArray(preferences.values) && preferences.values.length > 0) {
+    signals.values = preferences.values.slice(0, 10).map(v => String(v).slice(0, 200));
+  }
+
+  // activities
+  if (preferences.activities && Array.isArray(preferences.activities) && preferences.activities.length > 0) {
+    signals.activities = preferences.activities.map(a => ({
+      name: String(a.name || '').slice(0, 200),
+      role: String(a.role || '').slice(0, 200),
+    }));
+  }
+
+  // education detail
+  const edu = profile?.education_detail || {};
+  if (edu.university) {
+    signals.education = {
+      university: String(edu.university).slice(0, 200),
+      degree: String(edu.degree || '').slice(0, 200),
+      graduation: String(edu.graduation || '').slice(0, 50),
+      gpa: String(edu.gpa || '').slice(0, 10),
+    };
+  }
+
+  // portfolio URL
+  if (candidate.portfolio_url) {
+    signals.portfolio_url = String(candidate.portfolio_url).slice(0, 500);
+  }
+
   // Only return if we have at least one signal
   return Object.keys(signals).length > 0 ? signals : null;
 }
