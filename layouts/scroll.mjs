@@ -137,17 +137,20 @@ export function pages(data) {
   const hero = `<div class="hero"><h1>${esc(fullName)}</h1>${headline ? `<div class="hero-headline">${esc(headline)}</div>` : ''}</div>`;
 
   // --- About ---
-  let aboutContent;
+  // Omit the entire about section when there's nothing to show,
+  // rather than emitting an empty <article> or a stale placeholder.
+  let aboutSection = '';
   if (homeBio) {
-    aboutContent = `<article class="home-bio">${homeBio}</article>`;
+    aboutSection = `<section id="about"><h2>about</h2><article class="home-bio">${homeBio}</article></section>`;
   } else {
     const parts = [];
     if (summaryText) parts.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
     if (exitStory) parts.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
     if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
-    aboutContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+    if (parts.length > 0) {
+      aboutSection = `<section id="about"><h2>about</h2><article class="home-bio">${parts.join('\n')}</article></section>`;
+    }
   }
-  const aboutSection = `<section id="about"><h2>about</h2>${aboutContent}</section>`;
 
   // --- Experience ---
   const groups = experienceGroups;

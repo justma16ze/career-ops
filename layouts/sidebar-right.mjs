@@ -236,7 +236,9 @@ export function pages(data) {
   }
 
   // --- HOME ---
-  let homeContent;
+  // Omit the bio article when there is no content to display rather
+  // than emitting an empty <article class="home-bio"></article>.
+  let homeContent = '';
   if (homeBio) {
     homeContent = `<article class="home-bio">${homeBio}</article>`;
   } else {
@@ -244,7 +246,9 @@ export function pages(data) {
     if (summaryText) parts.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
     if (exitStory) parts.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
     if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
-    homeContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+    if (parts.length > 0) {
+      homeContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+    }
   }
 
   let projectsHtml = '';

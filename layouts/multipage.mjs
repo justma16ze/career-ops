@@ -170,7 +170,8 @@ export function pages(data) {
   }
 
   // --- HOME ---
-  let homeContent;
+  // Omit the bio article entirely when there is no content to display.
+  let homeContent = '';
   if (homeBio) {
     homeContent = `<article class="home-bio">${homeBio}</article>`;
   } else {
@@ -183,7 +184,9 @@ export function pages(data) {
     if (github) linkParts.push(`<a href="${esc(githubUrl)}">GitHub</a>`);
     if (email) linkParts.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
     if (linkParts.length > 0) parts.push(`<p>${linkParts.join(' ')}</p>`);
-    homeContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+    if (parts.length > 0) {
+      homeContent = `<article class="home-bio">${parts.join('\n')}</article>`;
+    }
   }
 
   const homeBody = `<main>
