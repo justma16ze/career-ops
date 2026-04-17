@@ -46,3 +46,40 @@ export async function listStyles() {
 }
 
 export function resetCache() { _cache = null; }
+
+/**
+ * Returns the set of external origins referenced by all registered styles'
+ * font URLs. Consumers (e.g. the readme-web Worker) use this to build a
+ * Content-Security-Policy allowlist without hardcoding domains.
+ *
+ * Currently two stylesheet origins are in use:
+ *   - https://fonts.googleapis.com   (Google Fonts CSS)
+ *   - https://api.fontshare.com      (Fontshare CSS — styles: caps, volt, grid, terminal)
+ *
+ * Each of those stylesheets references a font-file origin that the browser
+ * also fetches, so a functional CSP must additionally allow those origins
+ * in `font-src`:
+ *   - https://fonts.gstatic.com      (Google Fonts files)
+ *   - https://cdn.fontshare.com      (Fontshare files)
+ *
+ * See STYLE_FONT_FILE_ORIGINS below for that mapping.
+ */
+export async function listStyleFontStylesheetOrigins() {
+  const styles = await loadAll();
+  const origins = new Set();
+  for (const s of styles.values()) {
+    for (const f of s.fonts || []) {
+      try { origins.add(new URL(f).origin); } catch {}
+    }
+  }
+  return [...origins].sort();
+}
+
+/**
+ * Maps each stylesheet origin to the font-file origin it loads. Useful for
+ * constructing both `style-src` and `font-src` directives in a worker CSP.
+ */
+export const STYLE_FONT_FILE_ORIGINS = {
+  'https://fonts.googleapis.com': 'https://fonts.gstatic.com',
+  'https://api.fontshare.com': 'https://cdn.fontshare.com',
+};

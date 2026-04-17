@@ -11,7 +11,13 @@
  */
 
 import { Suite } from '../helpers.mjs';
-import { listStyles, getStyle, resetCache } from '../../styles/registry.mjs';
+import {
+  listStyles,
+  getStyle,
+  resetCache,
+  listStyleFontStylesheetOrigins,
+  STYLE_FONT_FILE_ORIGINS,
+} from '../../styles/registry.mjs';
 
 const s = new Suite('styles');
 
@@ -227,6 +233,25 @@ for (const name of names) {
         `${name}: no banned property '${prop}' on ${sel}`
       );
     }
+  }
+}
+
+// -------------------------------------------------------------------------
+// Regression (build-p0-sprint C2): font-origin helpers for worker CSP
+// -------------------------------------------------------------------------
+
+{
+  const origins = await listStyleFontStylesheetOrigins();
+  s.assert(Array.isArray(origins), 'listStyleFontStylesheetOrigins returns array');
+  s.assert(origins.length > 0, 'listStyleFontStylesheetOrigins finds at least one origin');
+  // Every returned origin must have a font-file origin mapped so worker CSP
+  // can build `font-src`. A stylesheet whose font files live elsewhere will
+  // silently break typography on published portfolios when the CSP tightens.
+  for (const origin of origins) {
+    s.assert(
+      origin in STYLE_FONT_FILE_ORIGINS,
+      `stylesheet origin ${origin} has a font-file origin mapping in STYLE_FONT_FILE_ORIGINS`
+    );
   }
 }
 
