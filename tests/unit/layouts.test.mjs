@@ -167,6 +167,30 @@ for (const name of names) {
   try {
     const emptyPages = layout.pages(emptyMockData);
     s.assert('index.html' in emptyPages, `${name}: empty data produces index.html`);
+
+    // Regression (build-p0-sprint C1): an empty bio MUST NOT leak the literal
+    // string "Portfolio" into the about/bio section, and must not emit an
+    // empty <article class="home-bio"></article> placeholder. When all bio
+    // sources are empty, the about section should be omitted entirely.
+    for (const [filename, html] of Object.entries(emptyPages)) {
+      const aboutEmptyArticle = /<article class="home-bio">\s*<\/article>/;
+      s.assert(
+        !aboutEmptyArticle.test(html),
+        `${name}/${filename}: empty bio does not emit empty home-bio article`
+      );
+      // The substring "Portfolio" (case-sensitive, word boundary) should not
+      // appear as visible bio text. We can't forbid the word everywhere (it
+      // may appear in copy), but we can assert it isn't inside the home-bio
+      // wrapper.
+      const bioContentMatch = html.match(/<article class="home-bio">([\s\S]*?)<\/article>/);
+      if (bioContentMatch) {
+        const bioContent = bioContentMatch[1];
+        s.assert(
+          !/\bPortfolio\b/.test(bioContent),
+          `${name}/${filename}: home-bio content does not contain literal "Portfolio"`
+        );
+      }
+    }
   } catch (e) {
     s.fail(`${name}: empty data crashed`, e.message);
   }

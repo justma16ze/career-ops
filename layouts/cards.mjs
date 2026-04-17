@@ -228,7 +228,8 @@ export function pages(data) {
 </div>`;
 
   // BIO CARD (spans 2 cols)
-  let bioContent;
+  // Omit the card entirely when there is no bio content to show.
+  let bioContent = '';
   if (homeBio) {
     bioContent = homeBio;
   } else {
@@ -238,10 +239,10 @@ export function pages(data) {
     if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
     bioContent = parts.join('\n');
   }
-  const bioCard = `<div class="card home-bio span-2">
+  const bioCard = bioContent ? `<div class="card home-bio span-2">
   <div class="eyebrow">About</div>
   ${bioContent}
-</div>`;
+</div>` : '';
 
   // Helper: truncate bullets with details/summary
   function renderBullets(bullets) {

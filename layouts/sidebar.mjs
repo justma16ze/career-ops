@@ -220,7 +220,9 @@ export function pages(data) {
   }
 
   // --- HOME ---
-  let homeContent;
+  // Omit both the bio wrapper and the surrounding "About" section when
+  // there is no bio content to display.
+  let homeContent = '';
   if (homeBio) {
     homeContent = `<div class="home-bio">${homeBio}</div>`;
   } else {
@@ -228,12 +230,14 @@ export function pages(data) {
     if (summaryText) parts.push(`<p>${renderInlineMarkdown(summaryText)}</p>`);
     if (exitStory) parts.push(`<p>${renderInlineMarkdown(exitStory)}</p>`);
     if (currentProject) parts.push(`<p>${renderInlineMarkdown(currentProject)}</p>`);
-    homeContent = `<div class="home-bio">${parts.join('\n')}</div>`;
+    if (parts.length > 0) {
+      homeContent = `<div class="home-bio">${parts.join('\n')}</div>`;
+    }
   }
-  const homeBody = `<section class="section">
+  const homeBody = homeContent ? `<section class="section">
 <div class="section-label">About</div>
 ${homeContent}
-</section>`;
+</section>` : '';
 
   // --- EXPERIENCE ---
   const groups = experienceGroups;
